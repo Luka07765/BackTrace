@@ -34,7 +34,6 @@ builder.Services.AddDbContextFactory<ApplicationDbContext>(
     ServiceLifetime.Scoped // Set the context and options lifetime to Scoped
 );
 
-
 // Configure Identity with custom password requirements
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -114,6 +113,20 @@ builder.Services
     .AddMutationType<Mutation>()
     .ModifyRequestOptions(opt => opt.IncludeExceptionDetails = true);
 
+// ===== Add CORS services =====
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigins",
+        policyBuilder =>
+        {
+            policyBuilder
+                .WithOrigins("http://localhost:3000") // Replace with your front-end URL
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials(); // If you need to allow credentials (cookies, authorization headers)
+        });
+});
+
 var app = builder.Build();
 
 // Configure Middleware
@@ -124,6 +137,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// ===== Use the CORS policy =====
+app.UseCors("AllowSpecificOrigins");
+
 app.UseAuthentication();
 app.UseAuthorization();
 
