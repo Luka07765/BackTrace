@@ -1,2 +1,54 @@
+# Ignore Visual Studio files and directories
 .vs/
-*.vsidx
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Ignore build output directories
+bin/
+obj/
+Debug/
+Release/
+
+# Ignore package directories for NuGet and npm
+packages/
+node_modules/
+*.nupkg
+*.snupkg
+
+# Ignore environment and configuration files
+appsettings.Development.json
+appsettings.Staging.json
+appsettings.Production.json
+appsettings.local.json
+
+# Ignore logs and temporary files
+*.log
+*.tmp
+*.bak
+*.old
+
+# Ignore OS-generated files and directories
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Ignore any lock files
+*.lock
+*.lockfile
+
+# Ignore publish and deployment output
+.publish/
+publish/
+
+# Ignore Rider IDE files
+.idea/
+
+# Ignore ReSharper files
+*.DotSettings.user
+
+# Ignore Git-specific files
+.git/
