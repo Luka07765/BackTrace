@@ -1,55 +1,64 @@
-﻿namespace Trace.Service;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Trace.Models;
-using Trace.Repository;
-using Trace.GraphQL.Inputs;
-
-public class FolderService : IFolderService
+﻿namespace Trace.Service
 {
-    private readonly IFolderRepository _folderRepository;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using Trace.Models;
+    using Trace.Repository;
+    using Trace.GraphQL.Inputs;
 
-    public FolderService(IFolderRepository folderRepository)
+    public class FolderService : IFolderService
     {
-        _folderRepository = folderRepository;
-    }
+        private readonly IFolderRepository _folderRepository;
 
-    public async Task<IEnumerable<Folder>> GetAllFoldersAsync()
-    {
-        return await _folderRepository.GetAllAsync();
-    }
-
-    public async Task<Folder> GetFolderByIdAsync(int id)
-    {
-        return await _folderRepository.GetByIdAsync(id);
-    }
-
-    public async Task<Folder> CreateFolderAsync(FolderInput input)
-    {
-        var folder = new Folder
+        public FolderService(IFolderRepository folderRepository)
         {
-            Title = input.Title,
-            ParentFolderId = input.ParentFolderId
-        };
+            _folderRepository = folderRepository;
+        }
 
-        return await _folderRepository.CreateAsync(folder);
-    }
+        public async Task<IEnumerable<Folder>> GetAllFoldersAsync(string userId)
+        {
+            return await _folderRepository.GetAllFoldersAsync(userId);
+        }
 
-    public async Task<Folder> UpdateFolderAsync(int id, FolderInput input)
-    {
-        var folder = await _folderRepository.GetByIdAsync(id);
-        if (folder == null)
-            throw new Exception("Folder not found");
+        public async Task<Folder> GetFolderByIdAsync(int id, string userId)
+        {
+            return await _folderRepository.GetFolderByIdAsync(id, userId);
+        }
 
-        folder.Title = input.Title;
-        folder.ParentFolderId = input.ParentFolderId;
+        public async Task<Folder> CreateFolderAsync(FolderInput input, string userId)
+        {
+            var folder = new Folder
+            {
+                Title = input.Title,
+                ParentFolderId = input.ParentFolderId,
+                UserId = userId
+            };
+            return await _folderRepository.CreateFolderAsync(folder);
+        }
 
-        return await _folderRepository.UpdateAsync(folder);
-    }
+        public async Task<Folder> UpdateFolderAsync(int id, FolderInput input, string userId)
+        {
+            var folder = await _folderRepository.GetFolderByIdAsync(id, userId);
+            if (folder == null)
+            {
+                throw new UnauthorizedAccessException("You do not have permission to edit this folder.");
+            }
 
-    public async Task<bool> DeleteFolderAsync(int id)
-    {
-        return await _folderRepository.DeleteAsync(id);
+            folder.Title = input.Title;
+            folder.ParentFolderId = input.ParentFolderId;
+            return await _folderRepository.UpdateFolderAsync(folder);
+        }
+
+
+        public async Task<bool> DeleteFolderAsync(int id, string userId)
+        {
+            var folder = await _folderRepository.GetFolderByIdAsync(id, userId);
+            if (folder == null)
+            {
+                throw new UnauthorizedAccessException("You do not have permission to delete this folder.");
+            }
+
+            return await _folderRepository.DeleteFolderAsync(id, userId);
+        }
     }
 }

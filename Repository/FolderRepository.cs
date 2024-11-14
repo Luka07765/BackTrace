@@ -1,66 +1,60 @@
-﻿namespace Trace.Repository;
-using System;
-using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Trace.Repository;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Trace.Models;
 using Trace.Data;
+using Trace.Models;
+
+
+
 
 public class FolderRepository : IFolderRepository
 {
-    private readonly IDbContextFactory<AppDbContext> _contextFactory;
+    private readonly ApplicationDbContext _context;
 
-    public FolderRepository(IDbContextFactory<AppDbContext> contextFactory)
+    public FolderRepository(ApplicationDbContext context)
     {
-        _contextFactory = contextFactory;
+        _context = context;
     }
 
-    public async Task<IEnumerable<Folder>> GetAllAsync()
+    public async Task<IEnumerable<Folder>> GetAllFoldersAsync(string userId)
     {
-        using var context = _contextFactory.CreateDbContext();
-        return await context.Folders
+        return await _context.Folders
+            .Where(f => f.UserId == userId)
             .Include(f => f.SubFolders)
             .Include(f => f.Files)
-            .AsSplitQuery()
             .ToListAsync();
     }
 
-    public async Task<Folder> GetByIdAsync(int id)
+    public async Task<Folder> GetFolderByIdAsync(int id, string userId)
     {
-        using var context = _contextFactory.CreateDbContext();
-        return await context.Folders
+        return await _context.Folders
             .Include(f => f.SubFolders)
             .Include(f => f.Files)
-            .FirstOrDefaultAsync(f => f.Id == id);
+            .FirstOrDefaultAsync(f => f.Id == id && f.UserId == userId);
     }
 
-    public async Task<Folder> CreateAsync(Folder folder)
+    public async Task<Folder> CreateFolderAsync(Folder folder)
     {
-        using var context = _contextFactory.CreateDbContext();
-        context.Folders.Add(folder);
-        await context.SaveChangesAsync();
+        _context.Folders.Add(folder);
+        await _context.SaveChangesAsync();
         return folder;
     }
 
-    public async Task<Folder> UpdateAsync(Folder folder)
+    public async Task<Folder> UpdateFolderAsync(Folder folder)
     {
-        using var context = _contextFactory.CreateDbContext();
-        context.Folders.Update(folder);
-        await context.SaveChangesAsync();
+        _context.Folders.Update(folder);
+        await _context.SaveChangesAsync();
         return folder;
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteFolderAsync(int id, string userId)
     {
-        using var context = _contextFactory.CreateDbContext();
-        var folder = await context.Folders
-            .Include(f => f.SubFolders)
-            .Include(f => f.Files)
-            .FirstOrDefaultAsync(f => f.Id == id);
+        var folder = await GetFolderByIdAsync(id, userId);
         if (folder == null) return false;
 
-        context.Folders.Remove(folder);
-        await context.SaveChangesAsync();
+        _context.Folders.Remove(folder);
+        await _context.SaveChangesAsync();
         return true;
     }
 }

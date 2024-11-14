@@ -1,61 +1,60 @@
 ﻿namespace Trace.Repository;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Trace.Data;
+using Trace.Repository;
 using Trace.Models;
+
+
 
 public class FileRepository : IFileRepository
 {
-    private readonly IDbContextFactory<AppDbContext> _contextFactory;
+    private readonly ApplicationDbContext _context;
 
-    public FileRepository(IDbContextFactory<AppDbContext> contextFactory)
+    public FileRepository(ApplicationDbContext context)
     {
-        _contextFactory = contextFactory;
+        _context = context;
     }
 
-    public async Task<IEnumerable<File>> GetAllAsync()
+    public async Task<IEnumerable<File>> GetAllFilesAsync(string userId)
     {
-        using var context = _contextFactory.CreateDbContext();
-        return await context.Files
+        return await _context.Files
+            .Where(f => f.UserId == userId)
             .Include(f => f.Folder)
             .ToListAsync();
     }
 
-    public async Task<File> GetByIdAsync(int id)
+    public async Task<File> GetFileByIdAsync(int id, string userId)
     {
-        using var context = _contextFactory.CreateDbContext();
-        return await context.Files
+        return await _context.Files
             .Include(f => f.Folder)
-            .FirstOrDefaultAsync(f => f.Id == id);
+            .FirstOrDefaultAsync(f => f.Id == id && f.UserId == userId);
     }
 
-    public async Task<File> CreateAsync(File file)
+    public async Task<File> CreateFileAsync(File file)
     {
-        using var context = _contextFactory.CreateDbContext();
-        context.Files.Add(file);
-        await context.SaveChangesAsync();
+        _context.Files.Add(file);
+        await _context.SaveChangesAsync();
         return file;
     }
 
-    public async Task<File> UpdateAsync(File file)
+    public async Task<File> UpdateFileAsync(File file)
     {
-        using var context = _contextFactory.CreateDbContext();
-        context.Files.Update(file);
-        await context.SaveChangesAsync();
+        _context.Files.Update(file);
+        await _context.SaveChangesAsync();
         return file;
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteFileAsync(int id, string userId)
     {
-        using var context = _contextFactory.CreateDbContext();
-        var file = await context.Files
-            .Include(f => f.Folder)
-            .FirstOrDefaultAsync(f => f.Id == id);
+        var file = await GetFileByIdAsync(id, userId);
         if (file == null) return false;
 
-        context.Files.Remove(file);
-        await context.SaveChangesAsync();
+        _context.Files.Remove(file);
+        await _context.SaveChangesAsync();
         return true;
     }
 }
+

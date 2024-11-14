@@ -5,9 +5,9 @@ using Trace.Models;
 using Trace.GraphQL.Inputs;
 public interface IFileService
 {
-    Task<IEnumerable<File>> GetAllFilesAsync();
-    Task<File> GetFileByIdAsync(int id);
-    Task<File> CreateFileAsync(FileInput input);
-    Task<File> UpdateFileAsync(int id, FileInput input);
-    Task<bool> DeleteFileAsync(int id);
+    Task<IEnumerable<File>> GetAllFilesAsync(string userId);
+    Task<File> GetFileByIdAsync(int id, string userId);
+    Task<File> CreateFileAsync(FileInput input, string userId);
+    Task<File> UpdateFileAsync(int id, FileInput input, string userId);
+    Task<bool> DeleteFileAsync(int id, string userId);
 }

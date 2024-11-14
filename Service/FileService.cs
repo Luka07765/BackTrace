@@ -15,43 +15,50 @@ public class FileService : IFileService
         _fileRepository = fileRepository;
     }
 
-    public async Task<IEnumerable<File>> GetAllFilesAsync()
+    public async Task<IEnumerable<File>> GetAllFilesAsync(string userId)
     {
-        return await _fileRepository.GetAllAsync();
+        return await _fileRepository.GetAllFilesAsync(userId);
     }
 
-    public async Task<File> GetFileByIdAsync(int id)
+    public async Task<File> GetFileByIdAsync(int id, string userId)
     {
-        return await _fileRepository.GetByIdAsync(id);
+        return await _fileRepository.GetFileByIdAsync(id, userId);
     }
 
-    public async Task<File> CreateFileAsync(FileInput input)
+    public async Task<File> CreateFileAsync(FileInput input, string userId)
     {
         var file = new File
         {
             Title = input.Title,
             Content = input.Content,
-            FolderId = input.FolderId
+            FolderId = input.FolderId,
+            UserId = userId
         };
-
-        return await _fileRepository.CreateAsync(file);
+        return await _fileRepository.CreateFileAsync(file);
     }
 
-    public async Task<File> UpdateFileAsync(int id, FileInput input)
+    public async Task<File> UpdateFileAsync(int id, FileInput input, string userId)
     {
-        var file = await _fileRepository.GetByIdAsync(id);
+        var file = await _fileRepository.GetFileByIdAsync(id, userId);
         if (file == null)
-            throw new Exception("File not found");
+        {
+            throw new UnauthorizedAccessException("You do not have permission to edit this file.");
+        }
 
         file.Title = input.Title;
         file.Content = input.Content;
         file.FolderId = input.FolderId;
-
-        return await _fileRepository.UpdateAsync(file);
+        return await _fileRepository.UpdateFileAsync(file);
     }
 
-    public async Task<bool> DeleteFileAsync(int id)
+    public async Task<bool> DeleteFileAsync(int id, string userId)
     {
-        return await _fileRepository.DeleteAsync(id);
+        var file = await _fileRepository.GetFileByIdAsync(id, userId);
+        if (file == null)
+        {
+            throw new UnauthorizedAccessException("You do not have permission to delete this file.");
+        }
+
+        return await _fileRepository.DeleteFileAsync(id, userId);
     }
 }

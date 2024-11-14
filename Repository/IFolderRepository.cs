@@ -5,9 +5,10 @@ using Trace.Models;
 
 public interface IFolderRepository
 {
-    Task<IEnumerable<Folder>> GetAllAsync();
-    Task<Folder> GetByIdAsync(int id);
-    Task<Folder> CreateAsync(Folder folder);
-    Task<Folder> UpdateAsync(Folder folder);
-    Task<bool> DeleteAsync(int id);
+    Task<IEnumerable<Folder>> GetAllFoldersAsync(string userId);
+    Task<Folder> GetFolderByIdAsync(int id, string userId);
+    Task<Folder> CreateFolderAsync(Folder folder);
+    Task<Folder> UpdateFolderAsync(Folder folder);
+    Task<bool> DeleteFolderAsync(int id, string userId);
 }
+
