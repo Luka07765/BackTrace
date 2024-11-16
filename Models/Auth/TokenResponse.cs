@@ -1,4 +1,4 @@
-﻿namespace Trace.Models
+﻿namespace Trace.Models.Auth
 {
     public class TokenResponse
     {

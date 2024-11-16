@@ -1,10 +1,10 @@
-﻿namespace Trace.Service;
+﻿namespace Trace.Service.Logic.File;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Trace.Repository;
-using Trace.Models;
 using Trace.GraphQL.Inputs;
+using Trace.Models.Logic;
+using Trace.Repository.File;
 
 public class FileService : IFileService
 {

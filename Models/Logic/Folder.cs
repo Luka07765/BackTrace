@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
+using Trace.Models.Auth;
 
-namespace Trace.Models
+namespace Trace.Models.Logic
 {
     public class Folder
     {
@@ -10,7 +11,7 @@ namespace Trace.Models
 
         // User association
         public string UserId { get; set; }
-        public IdentityUser User { get; set; }
+        public ApplicationUser User { get; set; }
 
         // Parent-Child relationship
         public int? ParentFolderId { get; set; }

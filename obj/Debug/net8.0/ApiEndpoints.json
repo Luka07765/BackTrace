@@ -1,6 +1,16 @@
 [
   {
     "ContainingType": "Jade.Controllers.AuthController",
+    "Method": "GetClaims",
+    "RelativePath": "api/Auth/claims",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Jade.Controllers.AuthController",
     "Method": "Login",
     "RelativePath": "api/Auth/Login",
     "HttpMethod": "POST",
@@ -35,7 +45,7 @@
     "Parameters": [
       {
         "Name": "model",
-        "Type": "Trace.Models.RefreshTokenRequest",
+        "Type": "Trace.Models.Auth.RefreshTokenRequest",
         "IsRequired": true
       }
     ],
@@ -55,6 +65,26 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Jade.Controllers.AuthController",
+    "Method": "TestCookie",
+    "RelativePath": "api/Auth/TestCookie",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Jade.Controllers.AuthController",
+    "Method": "ValidateToken",
+    "RelativePath": "api/Auth/ValidateToken",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   }
 ]

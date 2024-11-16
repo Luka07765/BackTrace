@@ -1,13 +1,10 @@
-﻿namespace Trace.Repository;
+﻿namespace Trace.Repository.File;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Trace.Data;
-using Trace.Repository;
-using Trace.Models;
-
-
+using Trace.Models.Logic;
 
 public class FileRepository : IFileRepository
 {

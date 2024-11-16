@@ -1,12 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Trace.Repository;
+namespace Trace.Repository.Folder;
 using System.Threading.Tasks;
 using Trace.Data;
-using Trace.Models;
-
-
-
+using Trace.Models.Logic;
 
 public class FolderRepository : IFolderRepository
 {

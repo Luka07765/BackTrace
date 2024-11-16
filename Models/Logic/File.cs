@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Trace.Models.Auth;
 
-namespace Trace.Models
+namespace Trace.Models.Logic
 {
     public class File
     {
@@ -10,7 +11,7 @@ namespace Trace.Models
 
         // User association
         public string UserId { get; set; }
-        public IdentityUser User { get; set; }
+        public ApplicationUser User { get; set; }
 
         // Folder association
         public int FolderId { get; set; }

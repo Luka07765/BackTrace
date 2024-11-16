@@ -1,10 +1,10 @@
-﻿namespace Trace.Service
+﻿namespace Trace.Service.Logic.Folder
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Trace.Models;
-    using Trace.Repository;
     using Trace.GraphQL.Inputs;
+    using Trace.Models.Logic;
+    using Trace.Repository.Folder;
 
     public class FolderService : IFolderService
     {

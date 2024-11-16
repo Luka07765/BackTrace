@@ -1,8 +1,7 @@
-﻿namespace Trace.Repository;
+﻿namespace Trace.Repository.File;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Trace.Models;
-
+using Trace.Models.Logic;
 
 public interface IFileRepository
 {

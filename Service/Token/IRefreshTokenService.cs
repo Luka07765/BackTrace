@@ -1,6 +1,6 @@
-﻿using Trace.Models;
+﻿using Trace.Models.Auth;
 
-namespace Trace.Service
+namespace Trace.Service.Token
 {
 
     public interface IRefreshTokenService

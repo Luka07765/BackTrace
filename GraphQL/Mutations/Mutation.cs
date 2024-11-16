@@ -2,11 +2,12 @@
 {
     using System.Threading.Tasks;
     using Trace.GraphQL.Inputs;
-    using Trace.Models;
-    using Trace.Service;
     using HotChocolate;
     using HotChocolate.Authorization;
     using System.Security.Claims;
+    using Trace.Models.Logic;
+    using Trace.Service.Logic.File;
+    using Trace.Service.Logic.Folder;
 
     public class Mutation
     {

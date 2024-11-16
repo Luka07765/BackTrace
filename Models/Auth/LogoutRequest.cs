@@ -1,6 +1,6 @@
-﻿namespace Trace.Models
+﻿namespace Trace.Models.Auth
 {
-    public class RefreshTokenRequest
+    public class LogoutRequest
     {
         public string RefreshToken { get; set; }
     }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Trace.Models
+namespace Trace.Models.Auth
 {
     public class RefreshToken
     {
@@ -14,8 +14,8 @@ namespace Trace.Models
         public string? RevokedByIp { get; set; }
         public string? ReplacedByToken { get; set; } // Made nullable
         public bool IsActive => Revoked == null && !IsExpired;
-
+        public int SessionVersion { get; set; }
         public string UserId { get; set; } // Foreign Key
-        public IdentityUser User { get; set; }
+        public ApplicationUser User { get; set; }
     }
 }

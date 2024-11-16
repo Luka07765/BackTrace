@@ -1,7 +1,5 @@
 using Trace.Data;
-using Trace.Repository;
 using Microsoft.EntityFrameworkCore;
-using Trace.Service;
 using Trace.GraphQL.Mutations;
 using Trace.GraphQL.Queries;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -9,7 +7,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using Microsoft.Extensions.DependencyInjection;
+using Trace.Service.Logic.File;
+using Trace.Service.Logic.Folder;
+using Trace.Service.Token;
+using Trace.Service.Auth;
+using Trace.Repository.File;
+using Trace.Repository.Folder;
+using Trace.Models.Auth;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +22,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+
 
 // Register DbContext for Identity
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -35,7 +41,7 @@ builder.Services.AddDbContextFactory<ApplicationDbContext>(
 );
 
 // Configure Identity with custom password requirements
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+builder.Services.AddIdentityCore<ApplicationUser>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
@@ -46,6 +52,9 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequireUppercase = false;
     options.Password.RequireLowercase = false;
+
+    options.ClaimsIdentity.UserNameClaimType = ClaimTypes.Email;
+    options.User.RequireUniqueEmail = true;
 });
 
 // Configure JWT Authentication
@@ -65,7 +74,30 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = builder.Configuration["Jwt:Audience"],
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
-        ClockSkew = TimeSpan.Zero
+        ClockSkew = TimeSpan.Zero,
+        ValidateLifetime = true, // Ensure token expiration is validated
+        ValidateIssuerSigningKey = true,
+        NameClaimType = ClaimTypes.NameIdentifier,
+
+    };
+
+    // Add the event handler to check for revoked tokens
+    options.Events = new JwtBearerEvents
+    {
+        OnTokenValidated = async context =>
+        {
+            var tokenService = context.HttpContext.RequestServices.GetRequiredService<ITokenService>();
+            var accessToken = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!string.IsNullOrEmpty(accessToken))
+            {
+                var isRevoked = await tokenService.IsAccessTokenRevoked(accessToken);
+                if (isRevoked)
+                {
+                    context.Fail("Token has been revoked.");
+                }
+            }
+        }
     };
 });
 
