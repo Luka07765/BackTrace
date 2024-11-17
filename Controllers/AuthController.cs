@@ -144,8 +144,9 @@ namespace Jade.Controllers
             var user = await _userManager.FindByIdAsync(existingToken.UserId);
             if (user == null)
             {
-                return NotFound(new { message = "User not found." });
+                Console.WriteLine($"User not found for UserId: {existingToken.UserId}");
             }
+
 
             // Validate session version
             if (user.SessionVersion != existingToken.SessionVersion)

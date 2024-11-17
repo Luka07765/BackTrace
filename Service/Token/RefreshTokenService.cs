@@ -2,16 +2,19 @@
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using Trace.Models.Auth;
+using Microsoft.AspNetCore.Identity;
 
 namespace Trace.Service.Token
 {
     public class RefreshTokenService : IRefreshTokenService
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public RefreshTokenService(ApplicationDbContext context)
+        public RefreshTokenService(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // Generate a new refresh token
@@ -19,6 +22,12 @@ namespace Trace.Service.Token
         {
             // Optionally revoke all active tokens for the user
             await InvalidateAllUserRefreshTokens(userId, ipAddress);
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                throw new Exception("User not found.");
+            }
+
 
             // Create a new refresh token
             var refreshToken = new RefreshToken
@@ -27,7 +36,8 @@ namespace Trace.Service.Token
                 Expires = DateTime.UtcNow.AddDays(7), // Token valid for 7 days
                 Created = DateTime.UtcNow,
                 CreatedByIp = ipAddress,
-                UserId = userId
+                UserId = userId,
+                SessionVersion = user.SessionVersion 
             };
 
             await _context.RefreshTokens.AddAsync(refreshToken);
