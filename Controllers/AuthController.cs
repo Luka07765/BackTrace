@@ -86,6 +86,9 @@ namespace Jade.Controllers
 
 
 
+
+
+
         [Authorize]
         [HttpGet("ValidateToken")]
         public async Task<IActionResult> ValidateToken()

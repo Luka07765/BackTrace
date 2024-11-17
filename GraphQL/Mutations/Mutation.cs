@@ -18,7 +18,12 @@
             [Service] IFolderService folderService,
             ClaimsPrincipal user)
         {
-            var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = user.FindFirstValue("CustomUserId");
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
+            }
+
             return await folderService.CreateFolderAsync(input, userId);
         }
 
@@ -32,14 +37,19 @@
         {
             try
             {
-                var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+                var userId = user.FindFirstValue("CustomUserId");
+                if (string.IsNullOrEmpty(userId))
+                {
+                    throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
+                }
+
                 return await folderService.UpdateFolderAsync(id, input, userId);
             }
             catch (UnauthorizedAccessException ex)
             {
                 throw new GraphQLException(new Error(ex.Message, "UNAUTHORIZED"));
             }
-        } 
+        }
 
         [Authorize]
         [GraphQLName("deleteFolder")]
@@ -50,15 +60,18 @@
         {
             try
             {
-                var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
-                return await folderService.DeleteFolderAsync(id, userId);
+                var userId = user.FindFirstValue("CustomUserId");
+                if (string.IsNullOrEmpty(userId))
+                {
+                    throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
+                }
 
+                return await folderService.DeleteFolderAsync(id, userId);
             }
             catch (UnauthorizedAccessException ex)
             {
                 throw new GraphQLException(new Error(ex.Message, "UNAUTHORIZED"));
             }
-
         }
 
         [Authorize]
@@ -68,7 +81,12 @@
             [Service] IFileService fileService,
             ClaimsPrincipal user)
         {
-            var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = user.FindFirstValue("CustomUserId");
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
+            }
+
             return await fileService.CreateFileAsync(input, userId);
         }
 
@@ -82,15 +100,18 @@
         {
             try
             {
-                var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
-                return await fileService.UpdateFileAsync(id, input, userId);
+                var userId = user.FindFirstValue("CustomUserId");
+                if (string.IsNullOrEmpty(userId))
+                {
+                    throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
+                }
 
+                return await fileService.UpdateFileAsync(id, input, userId);
             }
             catch (UnauthorizedAccessException ex)
             {
                 throw new GraphQLException(new Error(ex.Message, "UNAUTHORIZED"));
             }
-
         }
 
         [Authorize]
@@ -102,14 +123,18 @@
         {
             try
             {
-                var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+                var userId = user.FindFirstValue("CustomUserId");
+                if (string.IsNullOrEmpty(userId))
+                {
+                    throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
+                }
+
                 return await fileService.DeleteFileAsync(id, userId);
             }
             catch (UnauthorizedAccessException ex)
             {
                 throw new GraphQLException(new Error(ex.Message, "UNAUTHORIZED"));
             }
-
         }
     }
 }

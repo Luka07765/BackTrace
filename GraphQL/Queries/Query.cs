@@ -17,7 +17,12 @@
             [Service] IFolderService folderService,
             ClaimsPrincipal user)
         {
-            var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = user.FindFirstValue("CustomUserId");
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
+            }
+
             return await folderService.GetAllFoldersAsync(userId);
         }
 
@@ -28,7 +33,12 @@
             [Service] IFolderService folderService,
             ClaimsPrincipal user)
         {
-            var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = user.FindFirstValue("CustomUserId");
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
+            }
+
             return await folderService.GetFolderByIdAsync(id, userId);
         }
 
@@ -38,7 +48,12 @@
             [Service] IFileService fileService,
             ClaimsPrincipal user)
         {
-            var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = user.FindFirstValue("CustomUserId");
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
+            }
+
             return await fileService.GetAllFilesAsync(userId);
         }
 
@@ -49,7 +64,12 @@
             [Service] IFileService fileService,
             ClaimsPrincipal user)
         {
-            var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = user.FindFirstValue("CustomUserId");
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
+            }
+
             return await fileService.GetFileByIdAsync(id, userId);
         }
     }
