@@ -224,23 +224,6 @@ namespace Jade.Controllers
   
 
 
-        [HttpGet("claims")] // Ensure the user is authenticated
-        public IActionResult GetClaims()
-        {
-            // Extract claims from the user's identity
-            var claims = User.Claims.Select(c => new
-            {
-                Type = c.Type,
-                Value = c.Value
-            });
-
-            return Ok(new
-            {
-                Message = "Claims retrieved successfully!",
-                Claims = claims,
-                IpAddress = GetIpAddress() // Include IP address in the response
-            });
-        }
 
         private string GetIpAddress()
         {

@@ -1,16 +1,6 @@
 [
   {
     "ContainingType": "Jade.Controllers.AuthController",
-    "Method": "GetClaims",
-    "RelativePath": "api/Auth/claims",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "Jade.Controllers.AuthController",
     "Method": "Login",
     "RelativePath": "api/Auth/Login",
     "HttpMethod": "POST",
@@ -81,16 +71,6 @@
     "ContainingType": "Jade.Controllers.AuthController",
     "Method": "ValidateToken",
     "RelativePath": "api/Auth/ValidateToken",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "TestController",
-    "Method": "GetCurrentNumber",
-    "RelativePath": "api/Test/GetCurrentNumber",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

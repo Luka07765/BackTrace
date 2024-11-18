@@ -21,7 +21,7 @@ namespace Trace.Service.Token
         public async Task<RefreshToken> GenerateRefreshToken(string userId, string ipAddress)
         {
             // Optionally revoke all active tokens for the user
-            await InvalidateAllUserRefreshTokens(userId, ipAddress);
+
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
@@ -42,7 +42,7 @@ namespace Trace.Service.Token
 
             await _context.RefreshTokens.AddAsync(refreshToken);
             await _context.SaveChangesAsync();
-
+            await InvalidateAllUserRefreshTokens(userId, ipAddress);
             return refreshToken;
         }
 
