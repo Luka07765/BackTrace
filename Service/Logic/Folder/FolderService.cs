@@ -2,6 +2,8 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Microsoft.EntityFrameworkCore;
+    using Trace.Data;
     using Trace.GraphQL.Inputs;
     using Trace.Models.Logic;
     using Trace.Repository.Folder;
@@ -9,10 +11,12 @@
     public class FolderService : IFolderService
     {
         private readonly IFolderRepository _folderRepository;
+        private readonly ApplicationDbContext _context;
 
-        public FolderService(IFolderRepository folderRepository)
+        public FolderService(IFolderRepository folderRepository, ApplicationDbContext context)
         {
             _folderRepository = folderRepository;
+            _context = context;
         }
 
         public async Task<IEnumerable<Folder>> GetAllFoldersAsync(string userId)
@@ -49,7 +53,6 @@
             return await _folderRepository.UpdateFolderAsync(folder);
         }
 
-
         public async Task<bool> DeleteFolderAsync(int id, string userId)
         {
             var folder = await _folderRepository.GetFolderByIdAsync(id, userId);
@@ -59,6 +62,12 @@
             }
 
             return await _folderRepository.DeleteFolderAsync(id, userId);
+        }
+
+        public async Task<bool> IsFolderOwnedByUserAsync(int folderId, string userId)
+        {
+            // Check folder ownership using the ApplicationDbContext
+            return await _context.Folders.AnyAsync(f => f.Id == folderId && f.UserId == userId);
         }
     }
 }

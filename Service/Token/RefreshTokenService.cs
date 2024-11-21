@@ -20,14 +20,15 @@ namespace Trace.Service.Token
         // Generate a new refresh token
         public async Task<RefreshToken> GenerateRefreshToken(string userId, string ipAddress)
         {
-            // Optionally revoke all active tokens for the user
-
+            // Retrieve the user
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 throw new Exception("User not found.");
             }
 
+            // Invalidate all active refresh tokens for the user before generating a new one
+            await InvalidateAllUserRefreshTokens(userId, ipAddress);
 
             // Create a new refresh token
             var refreshToken = new RefreshToken
@@ -37,14 +38,15 @@ namespace Trace.Service.Token
                 Created = DateTime.UtcNow,
                 CreatedByIp = ipAddress,
                 UserId = userId,
-                SessionVersion = user.SessionVersion 
+                SessionVersion = user.SessionVersion
             };
 
             await _context.RefreshTokens.AddAsync(refreshToken);
             await _context.SaveChangesAsync();
-            await InvalidateAllUserRefreshTokens(userId, ipAddress);
+
             return refreshToken;
         }
+
 
         // Retrieve an existing refresh token
         public async Task<RefreshToken> GetRefreshToken(string token)

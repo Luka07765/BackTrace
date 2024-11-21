@@ -7,6 +7,7 @@
 
     public interface IFolderService
     {
+        Task<bool> IsFolderOwnedByUserAsync(int folderId, string userId);
         Task<IEnumerable<Folder>> GetAllFoldersAsync(string userId);
         Task<Folder> GetFolderByIdAsync(int id, string userId);
         Task<Folder> CreateFolderAsync(FolderInput input, string userId);
