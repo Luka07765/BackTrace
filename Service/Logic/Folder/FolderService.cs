@@ -42,27 +42,69 @@
 
         public async Task<Folder> UpdateFolderAsync(int id, FolderInput input, string userId)
         {
-            var folder = await _folderRepository.GetFolderByIdAsync(id, userId);
-            if (folder == null)
+            // Retrieve the existing folder
+            var existingFolder = await _context.Folders.FindAsync(id);
+            if (existingFolder == null)
             {
-                throw new UnauthorizedAccessException("You do not have permission to edit this folder.");
+                throw new Exception("Folder not found");
             }
 
-            folder.Title = input.Title;
-            folder.ParentFolderId = input.ParentFolderId;
-            return await _folderRepository.UpdateFolderAsync(folder);
+            // Check if the folder belongs to the user (optional, for security)
+            if (existingFolder.UserId != userId)
+            {
+                throw new UnauthorizedAccessException("You do not have permission to update this folder.");
+            }
+
+            // Update only the properties that are provided
+            if (input.Title != null)
+            {
+                existingFolder.Title = input.Title;
+            }
+
+            // Only update ParentFolderId if it's provided in the input
+            if (input.ParentFolderId.HasValue)
+            {
+                existingFolder.ParentFolderId = input.ParentFolderId;
+            }
+
+            // Save changes
+            await _context.SaveChangesAsync();
+            return existingFolder;
         }
+
 
         public async Task<bool> DeleteFolderAsync(int id, string userId)
         {
+            // Retrieve the folder to ensure the user has access
             var folder = await _folderRepository.GetFolderByIdAsync(id, userId);
             if (folder == null)
             {
                 throw new UnauthorizedAccessException("You do not have permission to delete this folder.");
             }
 
-            return await _folderRepository.DeleteFolderAsync(id, userId);
+            // Check for child folders or files
+            var childFolders = await _context.Folders.Where(f => f.ParentFolderId == id).ToListAsync();
+            var associatedFiles = await _context.Files.Where(f => f.FolderId == id).ToListAsync();
+
+            // Delete associated files
+            _context.Files.RemoveRange(associatedFiles);
+
+            // Delete child folders recursively
+            foreach (var childFolder in childFolders)
+            {
+                await DeleteFolderAsync(childFolder.Id, userId);
+            }
+
+            // Delete the folder
+            _context.Folders.Remove(folder);
+
+            // Persist changes to the database
+            await _context.SaveChangesAsync();
+
+            return true;
         }
+
+
 
         public async Task<bool> IsFolderOwnedByUserAsync(int folderId, string userId)
         {

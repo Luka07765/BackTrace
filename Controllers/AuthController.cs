@@ -138,7 +138,7 @@ namespace Jade.Controllers
             if (string.IsNullOrEmpty(refreshToken))
             {
                 return Unauthorized(new { message = "Refresh token is missing." });
-            }
+            } 
 
             // Validate the refresh token
             var existingToken = await _refreshTokenService.GetRefreshToken(refreshToken);

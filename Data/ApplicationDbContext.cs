@@ -43,7 +43,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasMany(f => f.SubFolders)
             .WithOne(f => f.ParentFolder)
             .HasForeignKey(f => f.ParentFolderId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
+
 
         modelBuilder.Entity<Folder>()
             .HasOne(f => f.User)
