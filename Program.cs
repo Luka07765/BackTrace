@@ -54,7 +54,7 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireLowercase = false;
 
     options.ClaimsIdentity.UserNameClaimType = ClaimTypes.Email;
-    options.User.RequireUniqueEmail = true;
+
 });
 
 // Configure JWT Authentication

@@ -16,11 +16,17 @@ namespace Trace.Service.Auth
 
         public async Task<IdentityResult> RegisterUser(RegisterModel model)
         {
+            // Check if the username already exists
             var userExists = await _userManager.FindByNameAsync(model.Username);
             if (userExists != null)
-                return IdentityResult.Failed(new IdentityError { Description = "User already exists!" });
+                return IdentityResult.Failed(new IdentityError { Description = "Username already exists!" });
 
-            var user = new ApplicationUser // Change from IdentityUser to ApplicationUser
+            // Check if the email already exists
+            var emailExists = await _userManager.FindByEmailAsync(model.Email);
+            if (emailExists != null)
+                return IdentityResult.Failed(new IdentityError { Description = "Email already exists!" });
+
+            var user = new ApplicationUser
             {
                 UserName = model.Username,
                 Email = model.Email,
@@ -30,6 +36,7 @@ namespace Trace.Service.Auth
 
             return await _userManager.CreateAsync(user, model.Password);
         }
+
 
         public async Task<ApplicationUser> AuthenticateUser(LoginModel model)
         {
