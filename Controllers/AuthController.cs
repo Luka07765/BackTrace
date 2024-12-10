@@ -57,7 +57,6 @@ namespace Jade.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // Find user by email
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
@@ -65,20 +64,18 @@ namespace Jade.Controllers
                 return Unauthorized(new { message = "Invalid email or password." });
             }
 
-       
-
             var ipAddress = GetIpAddress();
 
             // Generate tokens
             var tokenResponse = await _tokenService.CreateTokenResponse(user, ipAddress);
 
-            // Append the refresh token as a secure HTTP-only cookie
+            // Set the refresh token as a secure HTTP-only cookie
             HttpContext.Response.Cookies.Append("refreshToken", tokenResponse.RefreshToken, new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
-                Expires = DateTime.UtcNow.AddDays(7)
+                Secure = true, // Required for SameSite=None in cross-origin requests
+                SameSite = SameSiteMode.None, // Use None for cross-origin cookie
+                Expires = DateTime.UtcNow.AddDays(7) // Same expiration as refresh token
             });
 
             return Ok(new { AccessToken = tokenResponse.AccessToken });
@@ -168,12 +165,16 @@ namespace Jade.Controllers
             // Generate a new access token
             var newAccessToken = await _tokenService.CreateAccessToken(user);
 
-            // Update refresh token cookie
+            
+
+
+
+
             HttpContext.Response.Cookies.Append("refreshToken", newRefreshToken.Token, new CookieOptions
             {
                 HttpOnly = true,
-                Secure = false, // Set to true in production (HTTPS)
-                SameSite = SameSiteMode.None, // Allows cross-site cookies
+                Secure = true, // Required for SameSite=None in Chrome
+                SameSite = SameSiteMode.None, // Allows cross-site cookie
                 Expires = newRefreshToken.Expires
             });
 

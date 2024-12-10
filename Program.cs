@@ -22,6 +22,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+builder.Services.AddDistributedMemoryCache();
 
 
 // Register DbContext for Identity
@@ -148,18 +149,18 @@ builder.Services
 // ===== Add CORS services =====
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigins",
-        policyBuilder =>
-        {
-            policyBuilder
-                .WithOrigins("http://localhost:3000") // Replace with your front-end URL
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials(); // If you need to allow credentials (cookies, authorization headers)
-        });
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.WithOrigins("https://localhost:3000") // Your frontend URL
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .AllowCredentials(); // Allow sending credentials (cookies)
+    });
 });
 
+
 var app = builder.Build();
+app.UseCors("AllowAll");
 
 // Configure Middleware
 if (app.Environment.IsDevelopment())
