@@ -73,10 +73,11 @@ namespace Jade.Controllers
             HttpContext.Response.Cookies.Append("refreshToken", tokenResponse.RefreshToken, new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true, // Required for SameSite=None in cross-origin requests
-                SameSite = SameSiteMode.None, // Use None for cross-origin cookie
-                Expires = DateTime.UtcNow.AddDays(7) // Same expiration as refresh token
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = DateTime.UtcNow.AddDays(7)
             });
+
 
             return Ok(new { AccessToken = tokenResponse.AccessToken });
         }

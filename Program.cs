@@ -149,17 +149,18 @@ builder.Services
 // ===== Add CORS services =====
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", builder =>
+    options.AddPolicy("AllowAll", policy =>
     {
-        builder.WithOrigins("https://localhost:3000") // Your frontend URL
-               .AllowAnyMethod()
-               .AllowAnyHeader()
-               .AllowCredentials(); // Allow sending credentials (cookies)
+        policy
+            .WithOrigins("http://localhost:3000") // Must match the frontend URL with https
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
-
 var app = builder.Build();
+app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 
 // Configure Middleware
@@ -169,10 +170,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
-// ===== Use the CORS policy =====
-app.UseCors("AllowSpecificOrigins");
 
 app.UseAuthentication();
 app.UseAuthorization();
