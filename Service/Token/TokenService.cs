@@ -50,7 +50,7 @@ namespace Trace.Service.Token
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
-                expires: DateTime.UtcNow.AddMinutes(double.Parse(_configuration["Jwt:AccessTokenLifetime"] ?? "30")), // Configurable expiration
+                expires: DateTime.UtcNow.AddMinutes(double.Parse(_configuration["Jwt:AccessTokenLifetime"])), // Configurable expiration
                 claims: claims,
                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
             );
