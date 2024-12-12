@@ -63,10 +63,11 @@ namespace Jade.Controllers
                 _logger.LogWarning("Invalid login attempt with email: {Email}", model.Email);
                 return Unauthorized(new { message = "Invalid email or password." });
             }
+
             var isPasswordValid = await _userManager.CheckPasswordAsync(user, model.Password);
             if (!isPasswordValid)
             {
-                _logger.LogWarning("Invalid login attempt with email: {Password}", model.Email);
+                _logger.LogWarning("Invalid login attempt with email: {Email}", model.Email);
                 return Unauthorized(new { message = "Invalid password." });
             }
 
@@ -75,9 +76,18 @@ namespace Jade.Controllers
             // Generate tokens
             var tokenResponse = await _tokenService.CreateTokenResponse(user, ipAddress);
 
+            // Set refresh token in HttpOnly cookie
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true, // Ensure this is true in production
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddDays(7) // Set appropriate expiration
+            };
+            Response.Cookies.Append("refreshToken", tokenResponse.RefreshToken, cookieOptions);
 
-
-            return Ok(new { AccessToken = tokenResponse.AccessToken, RefreshToken = tokenResponse.RefreshToken });
+            // Return only the access token in the response body
+            return Ok(new { AccessToken = tokenResponse.AccessToken });
         }
 
 
@@ -125,15 +135,17 @@ namespace Jade.Controllers
 
 
         [HttpPost("RefreshToken")]
-        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
+        public async Task<IActionResult> RefreshToken()
         {
-            if (request == null || string.IsNullOrEmpty(request.RefreshToken))
+            // Retrieve the refresh token from the HttpOnly cookie
+            var refreshToken = Request.Cookies["refreshToken"];
+
+            if (string.IsNullOrEmpty(refreshToken))
             {
                 return BadRequest(new { message = "Refresh token is required." });
             }
 
             var ipAddress = GetIpAddress();
-            var refreshToken = request.RefreshToken;
 
             // Validate the refresh token
             var existingToken = await _refreshTokenService.GetRefreshToken(refreshToken);
@@ -163,8 +175,18 @@ namespace Jade.Controllers
             // Generate a new access token
             var newAccessToken = await _tokenService.CreateAccessToken(user);
 
-            // Return both tokens in the response body
-            return Ok(new { accessToken = newAccessToken, refreshToken = newRefreshToken.Token });
+            // Set the new refresh token in HttpOnly cookie
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true, // Ensure this is true in production
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddDays(7) // Set appropriate expiration
+            };
+            Response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions);
+
+            // Return the new access token
+            return Ok(new { AccessToken = newAccessToken });
         }
 
 
