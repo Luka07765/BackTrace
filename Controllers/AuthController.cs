@@ -217,14 +217,35 @@ namespace Jade.Controllers
 
             // Increment session version to invalidate all tokens
             user.SessionVersion++;
-            await _userManager.UpdateAsync(user);
+            var updateResult = await _userManager.UpdateAsync(user);
+
+            if (!updateResult.Succeeded)
+            {
+                var errors = string.Join(", ", updateResult.Errors.Select(e => e.Description));
+                _logger.LogError("Failed to update session version for user ID: {UserId}. Errors: {Errors}", userId, errors);
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred while processing your request." });
+            }
+            _logger.LogInformation("Session version incremented for user ID: {UserId}", userId);
 
             // Invalidate all refresh tokens
             var ipAddress = GetIpAddress();
             await _refreshTokenService.InvalidateAllUserRefreshTokens(userId, ipAddress);
 
-            // Remove the refresh token cookie
-            HttpContext.Response.Cookies.Delete("refreshToken");
+
+            if (Request.Cookies.ContainsKey("refreshToken"))
+            {
+                var cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true, // Ensure this matches the setting used when setting the cookie
+                    SameSite = SameSiteMode.Strict, // Ensure this matches the setting used when setting the cookie
+                    Path = "/", // Ensure this matches the path used when setting the cookie
+                    Expires = DateTime.UtcNow.AddDays(-1) // Expire the cookie immediately
+                };
+                Response.Cookies.Delete("refreshToken", cookieOptions);
+                _logger.LogInformation("Refresh token cookie deleted for user ID: {UserId}", userId);
+            }
+        
 
             return Ok(new { message = "Logged out successfully." });
         }
