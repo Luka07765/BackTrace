@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "ukrvXlglM+0=",
+  "dgSpecHash": "dkfKnuQmF0g=",
   "success": true,
   "projectFilePath": "C:\\Users\\lukat\\source\\repos\\Mind\\Trace.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\lukat\\.nuget\\packages\\chillicream.nitro.app\\20.0.2\\chillicream.nitro.app.20.0.2.nupkg.sha512",
+    "C:\\Users\\lukat\\.nuget\\packages\\dapper\\2.1.35\\dapper.2.1.35.nupkg.sha512",
     "C:\\Users\\lukat\\.nuget\\packages\\greendonut\\14.1.0\\greendonut.14.1.0.nupkg.sha512",
     "C:\\Users\\lukat\\.nuget\\packages\\hotchocolate\\14.1.0\\hotchocolate.14.1.0.nupkg.sha512",
     "C:\\Users\\lukat\\.nuget\\packages\\hotchocolate.abstractions\\14.1.0\\hotchocolate.abstractions.14.1.0.nupkg.sha512",
@@ -80,7 +81,7 @@
     "C:\\Users\\lukat\\.nuget\\packages\\microsoft.identitymodel.tokens\\7.1.2\\microsoft.identitymodel.tokens.7.1.2.nupkg.sha512",
     "C:\\Users\\lukat\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
     "C:\\Users\\lukat\\.nuget\\packages\\mono.texttemplating\\2.2.1\\mono.texttemplating.2.2.1.nupkg.sha512",
-    "C:\\Users\\lukat\\.nuget\\packages\\mysqlconnector\\2.3.5\\mysqlconnector.2.3.5.nupkg.sha512",
+    "C:\\Users\\lukat\\.nuget\\packages\\mysqlconnector\\2.4.0\\mysqlconnector.2.4.0.nupkg.sha512",
     "C:\\Users\\lukat\\.nuget\\packages\\pomelo.entityframeworkcore.mysql\\8.0.2\\pomelo.entityframeworkcore.mysql.8.0.2.nupkg.sha512",
     "C:\\Users\\lukat\\.nuget\\packages\\swashbuckle.aspnetcore\\6.4.0\\swashbuckle.aspnetcore.6.4.0.nupkg.sha512",
     "C:\\Users\\lukat\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.4.0\\swashbuckle.aspnetcore.swagger.6.4.0.nupkg.sha512",

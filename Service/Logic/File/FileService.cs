@@ -39,17 +39,17 @@ public class FileService : IFileService
 
     public async Task<File> UpdateFileAsync(int id, FileInput input, string userId)
     {
+        // Ensure the file exists and belongs to the user
         var file = await _fileRepository.GetFileByIdAsync(id, userId);
         if (file == null)
         {
             throw new UnauthorizedAccessException("You do not have permission to edit this file.");
         }
 
-        file.Title = input.Title;
-        file.Content = input.Content;
-        file.FolderId = input.FolderId;
-        return await _fileRepository.UpdateFileAsync(file);
+        // Directly call SaveFileDeltaAsync for the delta update
+        return await _fileRepository.SaveFileDeltaAsync(id, input.Title, input.Content, userId);
     }
+
 
     public async Task<bool> DeleteFileAsync(int id, string userId)
     {

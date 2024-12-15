@@ -13,7 +13,7 @@ namespace Trace.Models.Logic
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
 
-        // Folder association
+       
         public int FolderId { get; set; }
         public Folder Folder { get; set; }
     }

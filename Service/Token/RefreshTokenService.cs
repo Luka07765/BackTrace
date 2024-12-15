@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using Trace.Models.Auth;
 using Microsoft.AspNetCore.Identity;
-using System.Collections.Generic;
+
 
 namespace Trace.Service.Token
 {

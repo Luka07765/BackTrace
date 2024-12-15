@@ -309,3 +309,4 @@ C:\Users\lukat\source\repos\Mind\bin\Debug\net8.0\Microsoft.IdentityModel.Protoc
 C:\Users\lukat\source\repos\Mind\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\lukat\source\repos\Mind\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\lukat\source\repos\Mind\bin\Debug\net8.0\HotChocolate.AspNetCore.Authorization.dll
+C:\Users\lukat\source\repos\Mind\bin\Debug\net8.0\Dapper.dll
