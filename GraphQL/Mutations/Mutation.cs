@@ -77,7 +77,7 @@
         [Authorize]
         [GraphQLName("createFile")]
         public async Task<File> CreateFile(
-         FileInput input,
+         CreateFileInput input,
         [Service] IFileService fileService,
         [Service] IFolderService folderService,
      ClaimsPrincipal user)
@@ -105,7 +105,7 @@
         [GraphQLName("updateFile")]
         public async Task<File> UpdateFile(
             int id,
-            FileInput input,
+            UpdateFileInput input,
             [Service] IFileService fileService,
             ClaimsPrincipal user)
         {

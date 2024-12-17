@@ -25,7 +25,7 @@ public class FileService : IFileService
         return await _fileRepository.GetFileByIdAsync(id, userId);
     }
 
-    public async Task<File> CreateFileAsync(FileInput input, string userId)
+    public async Task<File> CreateFileAsync(CreateFileInput input, string userId)
     {
         var file = new File
         {
@@ -37,7 +37,7 @@ public class FileService : IFileService
         return await _fileRepository.CreateFileAsync(file);
     }
 
-    public async Task<File> UpdateFileAsync(int id, FileInput input, string userId)
+    public async Task<File> UpdateFileAsync(int id, UpdateFileInput input, string userId)
     {
         // Ensure the file exists and belongs to the user
         var file = await _fileRepository.GetFileByIdAsync(id, userId);
