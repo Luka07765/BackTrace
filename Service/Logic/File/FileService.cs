@@ -27,15 +27,37 @@ public class FileService : IFileService
 
     public async Task<File> CreateFileAsync(CreateFileInput input, string userId)
     {
+        List<Delta> deltas;
+        if (string.IsNullOrEmpty(input.Content))
+        {
+            // Default content
+            deltas = new List<Delta> { new Delta { Insert = "" } };
+        }
+        else
+        {
+            try
+            {
+                deltas = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Delta>>(input.Content);
+            }
+            catch
+            {
+                // Fallback to default content if input is invalid
+                deltas = new List<Delta> { new Delta { Insert = "" } };
+            }
+        }
+        var serializedContent = Newtonsoft.Json.JsonConvert.SerializeObject(deltas);
+
         var file = new File
         {
-            Title = input.Title,
-            Content = input.Content,
+            Title = input.Title,      
+            Content = serializedContent,  
             FolderId = input.FolderId,
             UserId = userId
         };
+
         return await _fileRepository.CreateFileAsync(file);
     }
+
 
     public async Task<File> UpdateFileAsync(int id, UpdateFileInput input, string userId)
     {

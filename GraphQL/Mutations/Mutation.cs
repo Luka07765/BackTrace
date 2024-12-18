@@ -88,7 +88,6 @@
                 throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
             }
 
-            // Validate folder ownership
             var isOwner = await folderService.IsFolderOwnedByUserAsync(input.FolderId, userId);
             if (!isOwner)
             {
