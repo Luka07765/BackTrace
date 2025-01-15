@@ -20,7 +20,7 @@ public class FileService : IFileService
         return await _fileRepository.GetAllFilesAsync(userId);
     }
 
-    public async Task<File> GetFileByIdAsync(int id, string userId)
+    public async Task<File> GetFileByIdAsync(Guid id, string userId)
     {
         return await _fileRepository.GetFileByIdAsync(id, userId);
     }
@@ -59,7 +59,7 @@ public class FileService : IFileService
     }
 
 
-    public async Task<File> UpdateFileAsync(int id, UpdateFileInput input, string userId)
+    public async Task<File> UpdateFileAsync(Guid id, UpdateFileInput input, string userId)
     {
         // Ensure the file exists and belongs to the user
         var file = await _fileRepository.GetFileByIdAsync(id, userId);
@@ -73,7 +73,7 @@ public class FileService : IFileService
     }
 
 
-    public async Task<bool> DeleteFileAsync(int id, string userId)
+    public async Task<bool> DeleteFileAsync(Guid id, string userId)
     {
         var file = await _fileRepository.GetFileByIdAsync(id, userId);
         if (file == null)

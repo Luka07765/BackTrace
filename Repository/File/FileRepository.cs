@@ -31,7 +31,7 @@
         }
 
         // EF Core: Get file by ID for a user
-        public async Task<File> GetFileByIdAsync(int id, string userId)
+        public async Task<File> GetFileByIdAsync(Guid id, string userId)
         {
             return await _context.Files
                 .Include(f => f.Folder)
@@ -41,11 +41,12 @@
         // EF Core: Create a new file
         public async Task<File> CreateFileAsync(File file)
         {
+            file.Id = Guid.NewGuid();
             _context.Files.Add(file);
             await _context.SaveChangesAsync();
             return file;
         }
-        public async Task<File> SaveFileDeltaAsync(int fileId, string? title, string? content, string userId)
+        public async Task<File> SaveFileDeltaAsync(Guid fileId, string? title, string? content, string userId)
         {
             using var connection = new MySqlConnection(_connectionString);
 
@@ -63,7 +64,7 @@
         }
 
 
-        public async Task<bool> DeleteFileAsync(int id, string userId)
+        public async Task<bool> DeleteFileAsync(Guid id, string userId)
         {
             var file = await GetFileByIdAsync(id, userId);
             if (file == null) return false;

@@ -6,8 +6,8 @@ using Trace.Models.Logic;
 public interface IFileRepository
 {
     Task<IEnumerable<File>> GetAllFilesAsync(string userId);
-    Task<File> GetFileByIdAsync(int id, string userId);
+    Task<File> GetFileByIdAsync(Guid id, string userId);
     Task<File> CreateFileAsync(File file);
-    Task<File> SaveFileDeltaAsync(int fileId, string? title, string? content, string userId);
-    Task<bool> DeleteFileAsync(int id, string userId);
+    Task<File> SaveFileDeltaAsync(Guid fileId, string? title, string? content, string userId);
+    Task<bool> DeleteFileAsync(Guid id, string userId);
 }

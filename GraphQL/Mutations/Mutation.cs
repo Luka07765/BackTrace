@@ -103,7 +103,7 @@
         [Authorize]
         [GraphQLName("updateFile")]
         public async Task<File> UpdateFile(
-            int id,
+            Guid id,
             UpdateFileInput input,
             [Service] IFileService fileService,
             ClaimsPrincipal user)
@@ -127,7 +127,7 @@
         [Authorize]
         [GraphQLName("deleteFile")]
         public async Task<bool> DeleteFile(
-            int id,
+            Guid id,
             [Service] IFileService fileService,
             ClaimsPrincipal user)
         {

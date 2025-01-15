@@ -8,8 +8,8 @@ public interface IFileService
 {
    
     Task<IEnumerable<File>> GetAllFilesAsync(string userId);
-    Task<File> GetFileByIdAsync(int id, string userId);
+    Task<File> GetFileByIdAsync(Guid id, string userId);
     Task<File> CreateFileAsync(CreateFileInput input, string userId);
-    Task<File> UpdateFileAsync(int id, UpdateFileInput input, string userId);
-    Task<bool> DeleteFileAsync(int id, string userId);
+    Task<File> UpdateFileAsync(Guid id, UpdateFileInput input, string userId);
+    Task<bool> DeleteFileAsync(Guid id, string userId);
 }

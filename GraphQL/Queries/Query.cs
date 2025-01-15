@@ -60,7 +60,7 @@
         [Authorize]
         [GraphQLName("getFileById")]
         public async Task<File> GetFileById(
-            int id,
+            Guid id,
             [Service] IFileService fileService,
             ClaimsPrincipal user)
         {
