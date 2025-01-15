@@ -22,12 +22,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         base.OnModelCreating(modelBuilder);
 
-
-          modelBuilder.Ignore<IdentityRole>();
-        modelBuilder.Ignore<IdentityUserRole<string>>();
-        modelBuilder.Ignore<IdentityRoleClaim<string>>();
-
-
         modelBuilder.Entity<ApplicationUser>(entity =>
         {
             entity.Ignore(e => e.PhoneNumber);
