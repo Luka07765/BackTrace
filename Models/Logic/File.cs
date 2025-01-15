@@ -14,7 +14,7 @@ namespace Trace.Models.Logic
         public ApplicationUser User { get; set; }
 
        
-        public int FolderId { get; set; }
+        public Guid FolderId { get; set; }
         public Folder Folder { get; set; }
     }
 }

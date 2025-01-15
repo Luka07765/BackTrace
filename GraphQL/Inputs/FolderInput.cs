@@ -3,7 +3,7 @@
     public class FolderInput
     {
         public string Title { get; set; }
-        public int? ParentFolderId { get; set; }
+        public Guid? ParentFolderId { get; set; }
     }
 
 }

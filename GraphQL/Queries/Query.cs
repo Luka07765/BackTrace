@@ -29,7 +29,7 @@
         [Authorize]
         [GraphQLName("getFolderById")]
         public async Task<Folder> GetFolderById(
-            int id,
+            Guid id,
             [Service] IFolderService folderService,
             ClaimsPrincipal user)
         {

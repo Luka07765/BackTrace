@@ -6,7 +6,7 @@ namespace Trace.Models.Logic
 {
     public class Folder
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Title { get; set; }
 
         // User association
@@ -14,7 +14,7 @@ namespace Trace.Models.Logic
         public ApplicationUser User { get; set; }
 
         // Parent-Child relationship
-        public int? ParentFolderId { get; set; }
+        public Guid? ParentFolderId { get; set; }
         public Folder ParentFolder { get; set; }
         public ICollection<Folder> SubFolders { get; set; }
 

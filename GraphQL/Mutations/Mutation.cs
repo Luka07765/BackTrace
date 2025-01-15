@@ -30,7 +30,7 @@
         [Authorize]
         [GraphQLName("updateFolder")]
         public async Task<Folder> UpdateFolder(
-            int id,
+            Guid id,
             FolderInput input,
             [Service] IFolderService folderService,
             ClaimsPrincipal user)
@@ -54,7 +54,7 @@
         [Authorize]
         [GraphQLName("deleteFolder")]
         public async Task<bool> DeleteFolder(
-            int id,
+            Guid id,
             [Service] IFolderService folderService,
             ClaimsPrincipal user)
         {

@@ -24,7 +24,7 @@
             return await _folderRepository.GetAllFoldersAsync(userId);
         }
 
-        public async Task<Folder> GetFolderByIdAsync(int id, string userId)
+        public async Task<Folder> GetFolderByIdAsync(Guid id, string userId)
         {
             return await _folderRepository.GetFolderByIdAsync(id, userId);
         }
@@ -40,7 +40,7 @@
             return await _folderRepository.CreateFolderAsync(folder);
         }
 
-        public async Task<Folder> UpdateFolderAsync(int id, FolderInput input, string userId)
+        public async Task<Folder> UpdateFolderAsync(Guid id, FolderInput input, string userId)
         {
             // Retrieve the existing folder
             var existingFolder = await _context.Folders.FindAsync(id);
@@ -73,7 +73,7 @@
         }
 
 
-        public async Task<bool> DeleteFolderAsync(int id, string userId)
+        public async Task<bool> DeleteFolderAsync(Guid id, string userId)
         {
             // Retrieve the folder to ensure the user has access
             var folder = await _folderRepository.GetFolderByIdAsync(id, userId);
@@ -106,7 +106,7 @@
 
 
 
-        public async Task<bool> IsFolderOwnedByUserAsync(int folderId, string userId)
+        public async Task<bool> IsFolderOwnedByUserAsync(Guid folderId, string userId)
         {
             // Check folder ownership using the ApplicationDbContext
             return await _context.Folders.AnyAsync(f => f.Id == folderId && f.UserId == userId);

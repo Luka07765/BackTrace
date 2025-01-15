@@ -23,7 +23,7 @@ public class FolderRepository : IFolderRepository
             .ToListAsync();
     }
 
-    public async Task<Folder> GetFolderByIdAsync(int id, string userId)
+    public async Task<Folder> GetFolderByIdAsync(Guid id, string userId)
     {
         return await _context.Folders
             .Include(f => f.SubFolders)
@@ -33,6 +33,10 @@ public class FolderRepository : IFolderRepository
 
     public async Task<Folder> CreateFolderAsync(Folder folder)
     {
+        if (folder.Id == Guid.Empty)  
+        {
+            folder.Id = Guid.NewGuid();  
+        }
         _context.Folders.Add(folder);
         await _context.SaveChangesAsync();
         return folder;
@@ -45,7 +49,7 @@ public class FolderRepository : IFolderRepository
         return folder;
     }
 
-    public async Task<bool> DeleteFolderAsync(int id, string userId)
+    public async Task<bool> DeleteFolderAsync(Guid id, string userId)
     {
         var folder = await GetFolderByIdAsync(id, userId);
         if (folder == null) return false;
