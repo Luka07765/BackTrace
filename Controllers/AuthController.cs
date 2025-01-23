@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Trace.DTO;
 using Trace.Models.Auth;
-using Trace.Service.Auth;
+using Trace.Service.Auth.GeneralAuth;
 using Trace.Service.Token;
 
 namespace Jade.Controllers

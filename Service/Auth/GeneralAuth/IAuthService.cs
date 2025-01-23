@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using Trace.Models.Auth;
 
-namespace Trace.Service.Auth
+namespace Trace.Service.Auth.GeneralAuth
 {
     public interface IUserService
     {

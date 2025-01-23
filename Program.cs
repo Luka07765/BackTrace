@@ -10,7 +10,7 @@ using System.Text;
 using Trace.Service.Logic.File;
 using Trace.Service.Logic.Folder;
 using Trace.Service.Token;
-using Trace.Service.Auth;
+using Trace.Service.Auth.GeneralAuth;
 using Trace.Repository.File;
 using Trace.Repository.Folder;
 using Trace.Models.Auth;
