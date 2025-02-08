@@ -53,8 +53,8 @@
             var query = @"
         UPDATE Files
         SET 
-            Title = COALESCE(@Title, Title),
-            Content = COALESCE(@Content, Content)
+            Title = @Title,
+            Content = @Content
         WHERE Id = @Id AND UserId = @UserId;
     ";
             await connection.ExecuteAsync(query, new { Id = fileId, Title = title, Content = content, UserId = userId });
