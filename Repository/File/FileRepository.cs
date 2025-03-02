@@ -50,19 +50,38 @@
         {
             using var connection = new MySqlConnection(_connectionString);
 
-            var query = @"
+            var setClauses = new List<string>();
+            var parameters = new DynamicParameters();
+            parameters.Add("Id", fileId);
+            parameters.Add("UserId", userId);
+
+            if (title != null)
+            {
+                setClauses.Add("Title = @Title");
+                parameters.Add("Title", title);
+            }
+            if (content != null)
+            {
+                setClauses.Add("Content = @Content");
+                parameters.Add("Content", content);
+            }
+
+            if (setClauses.Count == 0)
+            {
+                // No fields to update, return the current file
+                return await GetFileByIdAsync(fileId, userId);
+            }
+
+            var query = $@"
         UPDATE Files
-        SET 
-            Title = @Title,
-            Content = @Content
+        SET {string.Join(", ", setClauses)}
         WHERE Id = @Id AND UserId = @UserId;
+        
+        SELECT * FROM Files WHERE Id = @Id AND UserId = @UserId;
     ";
-            await connection.ExecuteAsync(query, new { Id = fileId, Title = title, Content = content, UserId = userId });
 
-            var selectQuery = "SELECT * FROM Files WHERE Id = @Id AND UserId = @UserId";
-            return await connection.QueryFirstOrDefaultAsync<File>(selectQuery, new { Id = fileId, UserId = userId });
+            return await connection.QueryFirstOrDefaultAsync<File>(query, parameters);
         }
-
 
         public async Task<bool> DeleteFileAsync(Guid id, string userId)
         {
