@@ -24,6 +24,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 builder.Services.AddDistributedMemoryCache();
 
+
 // Register DbContext for Identity
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(
@@ -52,7 +53,9 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequireUppercase = false;
     options.Password.RequireLowercase = false;
+
     options.ClaimsIdentity.UserNameClaimType = ClaimTypes.Email;
+
 });
 
 // Configure JWT Authentication
@@ -76,6 +79,7 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true, // Ensure token expiration is validated
         ValidateIssuerSigningKey = true,
         NameClaimType = ClaimTypes.NameIdentifier,
+
     };
 
     // Add the event handler to check for revoked tokens
@@ -142,7 +146,7 @@ builder.Services
     .AddMutationType<Mutation>()
     .ModifyRequestOptions(opt => opt.IncludeExceptionDetails = true);
 
-// Add CORS services
+// ===== Add CORS services =====
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -155,28 +159,22 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Configure Kestrel to listen on port 80 (HTTP)
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
-    serverOptions.ListenAnyIP(80); // HTTP only
+    serverOptions.ListenAnyIP(80); // HTTP
+    serverOptions.ListenAnyIP(443, listenOptions => listenOptions.UseHttps()); // HTTPS
 });
-
-// Configure HTTPS redirection
 builder.Services.AddHttpsRedirection(options =>
 {
     options.HttpsPort = 443; // Azure uses port 443 for HTTPS
+}); builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.ListenAnyIP(8080); // Listen on port 8080
 });
+
 
 var app = builder.Build();
-
-// Force HTTPS in production
-app.Use((context, next) =>
-{
-    context.Request.Scheme = "https"; // Force HTTPS
-    return next();
-});
 app.UseHttpsRedirection();
-
 app.UseCors("AllowAll");
 
 // Configure Middleware
@@ -186,12 +184,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Map endpoints
-app.MapGet("/", () => "Welcome to the Trace API!"); // Default route
 app.MapControllers();
+app.MapGet("/", () => "Welcome to the Trace API!");
 app.MapGraphQL();
 
 app.Run();
