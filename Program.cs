@@ -158,16 +158,7 @@ builder.Services.AddCors(options =>
             .AllowCredentials();
     });
 });
-
-builder.WebHost.ConfigureKestrel(serverOptions =>
-{
-    serverOptions.ListenAnyIP(80); // HTTP
-    serverOptions.ListenAnyIP(443, listenOptions => listenOptions.UseHttps()); // HTTPS
-});
-builder.Services.AddHttpsRedirection(options =>
-{
-    options.HttpsPort = 443; // Azure uses port 443 for HTTPS
-}); builder.WebHost.ConfigureKestrel(serverOptions =>
+ builder.WebHost.ConfigureKestrel(serverOptions =>
 {
     serverOptions.ListenAnyIP(8080); // Listen on port 8080
 });
