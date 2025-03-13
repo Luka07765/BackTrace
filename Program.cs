@@ -152,7 +152,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAll", policy =>
     {
         policy
-            .WithOrigins("https://localhost:3000") // Must match the frontend URL with https
+            .WithOrigins("*") // Must match the frontend URL with https
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
