@@ -152,7 +152,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAll", policy =>
     {
         policy
-            .WithOrigins("*") // Must match the frontend URL with https
+            .WithOrigins("https://front-trace.vercel.app") // Must match the frontend URL with https
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
