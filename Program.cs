@@ -152,15 +152,11 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAll", policy =>
     {
         policy
-            .WithOrigins("https://front-trace.vercel.app") // Must match the frontend URL with https
+            .WithOrigins("https://localhost:3000") // Must match the frontend URL with https
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
     });
-});
- builder.WebHost.ConfigureKestrel(serverOptions =>
-{
-    serverOptions.ListenAnyIP(8080); // Listen on port 8080
 });
 
 
@@ -180,7 +176,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapGet("/", () => "Welcome to the Trace API!");
+
 app.MapGraphQL();
 
 app.Run();
