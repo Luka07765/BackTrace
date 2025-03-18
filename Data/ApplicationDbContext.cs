@@ -32,6 +32,39 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.Ignore(e => e.LockoutEnabled);
             entity.Ignore(e => e.AccessFailedCount);
         });
+
+
+        modelBuilder.Entity<IdentityRole>(entity =>
+        {
+            entity.Property(r => r.ConcurrencyStamp).HasColumnType("text");
+            entity.Property(r => r.Id).HasMaxLength(127); // Adjust length for PostgreSQL
+        });
+
+        modelBuilder.Entity<IdentityUser>(entity =>
+        {
+            entity.Property(u => u.ConcurrencyStamp).HasColumnType("text");
+            entity.Property(u => u.Id).HasMaxLength(127);
+        });
+
+        modelBuilder.Entity<IdentityUserClaim<string>>(entity =>
+        {
+            entity.Property(uc => uc.ClaimType).HasColumnType("text");
+            entity.Property(uc => uc.ClaimValue).HasColumnType("text");
+        });
+
+        modelBuilder.Entity<IdentityUserLogin<string>>(entity =>
+        {
+            entity.Property(ul => ul.ProviderKey).HasMaxLength(127);
+        });
+
+        modelBuilder.Entity<IdentityUserToken<string>>(entity =>
+        {
+            entity.Property(t => t.Value).HasColumnType("text");
+            entity.Property(t => t.Name).HasMaxLength(127);
+            entity.Property(t => t.LoginProvider).HasMaxLength(127);
+        });
+
+
         // Configure Folder entity
         modelBuilder.Entity<Folder>()
             .HasMany(f => f.SubFolders)

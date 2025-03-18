@@ -311,3 +311,5 @@ C:\Users\lukat\source\repos\Mind\bin\Debug\net8.0\System.IdentityModel.Tokens.Jw
 C:\Users\lukat\source\repos\Mind\bin\Debug\net8.0\HotChocolate.AspNetCore.Authorization.dll
 C:\Users\lukat\source\repos\Mind\bin\Debug\net8.0\Dapper.dll
 C:\Users\lukat\source\repos\Mind\bin\Debug\net8.0\Newtonsoft.Json.dll
+C:\Users\lukat\source\repos\Mind\bin\Debug\net8.0\Npgsql.dll
+C:\Users\lukat\source\repos\Mind\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll

@@ -18,6 +18,8 @@ using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
+string connectionString = Environment.GetEnvironmentVariable("DATABASE_MAIN_URL");
+
 // Register Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
@@ -27,19 +29,14 @@ builder.Services.AddDistributedMemoryCache();
 
 // Register DbContext for Identity
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseMySql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        new MySqlServerVersion(new Version(8, 0, 26))
-    ));
+    options.UseNpgsql(connectionString));
 
 // Register DbContextFactory for Repositories with singleton lifetimes
 builder.Services.AddDbContextFactory<ApplicationDbContext>(
-    options => options.UseMySql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        new MySqlServerVersion(new Version(8, 0, 26))
-    ),
-    ServiceLifetime.Scoped // Set the context and options lifetime to Scoped
+    options => options.UseNpgsql(connectionString),
+    ServiceLifetime.Scoped
 );
+
 
 // Configure Identity with custom password requirements
 builder.Services.AddIdentityCore<ApplicationUser>()
@@ -58,7 +55,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 });
 
-// Configure JWT Authentication
+// KOnfiguracija jwt tokena
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -152,7 +149,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAll", policy =>
     {
         policy
-            .WithOrigins("https://localhost:3000") // Must match the frontend URL with https
+            .WithOrigins("https://front-trace.vercel.app") // Must match the frontend URL with https
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
@@ -170,7 +167,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.MapGet("/", () => "Radi !");
 
 app.UseAuthentication();
 app.UseAuthorization();
