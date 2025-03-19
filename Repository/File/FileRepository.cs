@@ -7,7 +7,7 @@
     using System.Threading.Tasks;
     using Trace.Data;
     using Trace.Models.Logic;
-    using MySqlConnector;
+    using Npgsql;
     using Microsoft.Extensions.Configuration;
 
     public class FileRepository : IFileRepository
@@ -46,41 +46,18 @@
             await _context.SaveChangesAsync();
             return file;
         }
-        public async Task<File> SaveFileDeltaAsync(Guid fileId, string? title, string? content, string userId)
+        public async Task<File?> SaveFileDeltaAsync(Guid fileId, string? title, string? content, string userId)
         {
-            using var connection = new MySqlConnection(_connectionString);
+            var file = await _context.Files.FirstOrDefaultAsync(f => f.Id == fileId && f.UserId == userId);
 
-            var setClauses = new List<string>();
-            var parameters = new DynamicParameters();
-            parameters.Add("Id", fileId);
-            parameters.Add("UserId", userId);
+            if (file == null) return null;
 
-            if (title != null)
-            {
-                setClauses.Add("Title = @Title");
-                parameters.Add("Title", title);
-            }
-            if (content != null)
-            {
-                setClauses.Add("Content = @Content");
-                parameters.Add("Content", content);
-            }
+            if (title != null) file.Title = title;
+            if (content != null) file.Content = content;
 
-            if (setClauses.Count == 0)
-            {
-                // No fields to update, return the current file
-                return await GetFileByIdAsync(fileId, userId);
-            }
+            await _context.SaveChangesAsync();
 
-            var query = $@"
-        UPDATE Files
-        SET {string.Join(", ", setClauses)}
-        WHERE Id = @Id AND UserId = @UserId;
-        
-        SELECT * FROM Files WHERE Id = @Id AND UserId = @UserId;
-    ";
-
-            return await connection.QueryFirstOrDefaultAsync<File>(query, parameters);
+            return file;
         }
 
         public async Task<bool> DeleteFileAsync(Guid id, string userId)
