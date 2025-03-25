@@ -9,7 +9,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using Trace.Service.Logic.File;
 using Trace.Service.Logic.Folder;
-using Trace.Service.Token;
+using Trace.Service.Auth.Token;
 using Trace.Service.Auth.GeneralAuth;
 using Trace.Repository.File;
 using Trace.Repository.Folder;
@@ -18,7 +18,10 @@ using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
-string connectionString = Environment.GetEnvironmentVariable("DATABASE_MAIN_URL");
+string connectionString = Environment.GetEnvironmentVariable("DATABASE_MAIN_URL") ?? "User Id=postgres.ugmsgixmsqekhvxvuxet;Password=nuGqsKetCUWjCuPX;Server=aws-0-eu-central-1.pooler.supabase.com;Port=5432;Database=postgres";
+string jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET");
+string validAudience = Environment.GetEnvironmentVariable("JWT_Audience");
+string validIssuer = Environment.GetEnvironmentVariable("JWT_Issuer");
 
 // Register Services
 builder.Services.AddScoped<IUserService, UserService>();
@@ -69,9 +72,9 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+        ValidAudience = validAudience,
+        ValidIssuer = validIssuer,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret) ?? throw new Exception("JWT_SECRET is not set")),
         ClockSkew = TimeSpan.Zero,
         ValidateLifetime = true, // Ensure token expiration is validated
         ValidateIssuerSigningKey = true,
@@ -149,7 +152,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAll", policy =>
     {
         policy
-            .WithOrigins("https://front-trace.vercel.app") // Must match the frontend URL with https
+            .WithOrigins("https://front-trace.vercel.app")
+            .WithOrigins("https://localhost:3000")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();

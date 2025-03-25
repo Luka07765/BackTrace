@@ -31,7 +31,10 @@ namespace Trace.Service.Auth.Token
 
         public async Task<string> CreateAccessToken(ApplicationUser user)
         {
-            // Generate a unique identifier for the token (jti claim)
+            string jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET");
+            string validAudience = Environment.GetEnvironmentVariable("JWT_Audience");
+            string validIssuer = Environment.GetEnvironmentVariable("JWT_Issuer");
+            string AccessTokenLifetime = Environment.GetEnvironmentVariable("AccessTokenLifetime");
             var jti = Guid.NewGuid().ToString();
 
             var claims = new[]
@@ -45,12 +48,12 @@ namespace Trace.Service.Auth.Token
 };
 
 
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret));
 
             var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
-                expires: DateTime.UtcNow.AddMinutes(double.Parse(_configuration["Jwt:AccessTokenLifetime"])), // Configurable expiration
+                issuer: validIssuer,
+                audience: validAudience,
+                expires: DateTime.UtcNow.AddMinutes(double.Parse(AccessTokenLifetime)), // Configurable expiration
                 claims: claims,
                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
             );

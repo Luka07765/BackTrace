@@ -5,7 +5,7 @@ using System.Security.Claims;
 using Trace.DTO;
 using Trace.Models.Auth;
 using Trace.Service.Auth.GeneralAuth;
-using Trace.Service.Token;
+using Trace.Service.Auth.Token;
 
 namespace Jade.Controllers
 {
