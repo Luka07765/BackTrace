@@ -42,11 +42,12 @@
         public async Task<File> CreateFileAsync(File file)
         {
             file.Id = Guid.NewGuid();
+            file.Colors =  "Green" ;
             _context.Files.Add(file);
             await _context.SaveChangesAsync();
             return file;
         }
-        public async Task<File?> SaveFileDeltaAsync(Guid fileId, string? title, string? content, string userId)
+        public async Task<File?> SaveFileDeltaAsync(Guid fileId, string? colors, string? title, string? content, string userId)
         {
             var file = await _context.Files.FirstOrDefaultAsync(f => f.Id == fileId && f.UserId == userId);
 
@@ -54,6 +55,7 @@
 
             if (title != null) file.Title = title;
             if (content != null) file.Content = content;
+            if (colors != null) file.Colors = colors;
 
             await _context.SaveChangesAsync();
 

@@ -1,11 +1,12 @@
 {
   "Version": 1,
-  "Hash": "ox8TKI3ARRZV/fesNngcDBjD3X4pkw5OJl6HOEGEabg=",
+  "Hash": "cqnnrldRVG8r/Z+W4QK7fcgTjNJU9u2mbrqNr3xLhg4=",
   "Source": "Trace",
   "BasePath": "_content/Trace",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
   "DiscoveryPatterns": [],
-  "Assets": []
+  "Assets": [],
+  "Endpoints": []
 }

@@ -16,5 +16,8 @@ namespace Trace.Models.Logic
        
         public Guid FolderId { get; set; }
         public Folder Folder { get; set; }
+        public string Colors { get; set; } = "[]";
+
+
     }
 }

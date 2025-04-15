@@ -32,7 +32,8 @@ public class FileService : IFileService
             Title = input.Title,
             Content = input.Content ?? "", 
             FolderId = input.FolderId,
-            UserId = userId
+            UserId = userId,
+            Colors = input.Colors
         };
 
         return await _fileRepository.CreateFileAsync(file);
@@ -50,7 +51,7 @@ public class FileService : IFileService
         }
 
         // Directly call SaveFileDeltaAsync for the delta update
-        return await _fileRepository.SaveFileDeltaAsync(id, input.Title, input.Content, userId);
+        return await _fileRepository.SaveFileDeltaAsync(id, input.Colors, input.Title, input.Content, userId);
     }
 
 

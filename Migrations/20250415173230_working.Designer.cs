@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Trace.Data;
@@ -11,9 +12,11 @@ using Trace.Data;
 namespace Trace.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250415173230_working")]
+    partial class working
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -124,7 +127,7 @@ namespace Trace.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("IdentityUser", (string)null);
+                    b.ToTable("IdentityUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -300,7 +303,7 @@ namespace Trace.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RefreshTokens", (string)null);
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("Trace.Models.Logic.File", b =>
@@ -334,7 +337,7 @@ namespace Trace.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Files", (string)null);
+                    b.ToTable("Files");
                 });
 
             modelBuilder.Entity("Trace.Models.Logic.Folder", b =>
@@ -360,7 +363,7 @@ namespace Trace.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Folders", (string)null);
+                    b.ToTable("Folders");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
