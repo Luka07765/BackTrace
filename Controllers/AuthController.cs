@@ -180,7 +180,7 @@ namespace Jade.Controllers
             {
                 HttpOnly = true,
                 Secure = true, // Ensure this is true in production
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None,
                 Expires = DateTime.UtcNow.AddDays(7) // Set appropriate expiration
             };
             Response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions);
