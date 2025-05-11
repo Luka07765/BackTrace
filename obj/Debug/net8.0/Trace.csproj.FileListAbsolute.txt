@@ -484,3 +484,9 @@ C:\Users\Luka Admin\source\repos\Luka07765\BackTrace\obj\Debug\net8.0\refint\Tra
 C:\Users\Luka Admin\source\repos\Luka07765\BackTrace\obj\Debug\net8.0\Trace.pdb
 C:\Users\Luka Admin\source\repos\Luka07765\BackTrace\obj\Debug\net8.0\Trace.genruntimeconfig.cache
 C:\Users\Luka Admin\source\repos\Luka07765\BackTrace\obj\Debug\net8.0\ref\Trace.dll
+C:\Users\Luka Admin\source\repos\Luka07765\BackTrace\bin\Debug\net8.0\publish\web.config
+C:\Users\Luka Admin\source\repos\Luka07765\BackTrace\bin\Debug\net8.0\publish\appsettings.Development.json
+C:\Users\Luka Admin\source\repos\Luka07765\BackTrace\bin\Debug\net8.0\publish\appsettings.json
+C:\Users\Luka Admin\source\repos\Luka07765\BackTrace\bin\Debug\net8.0\publish\Trace.deps.json
+C:\Users\Luka Admin\source\repos\Luka07765\BackTrace\bin\Debug\net8.0\publish\Trace.runtimeconfig.json
+C:\Users\Luka Admin\source\repos\Luka07765\BackTrace\bin\Debug\net8.0\publish\Trace.staticwebassets.endpoints.json

@@ -31,10 +31,12 @@ namespace Trace.Service.Auth.Token
 
         public async Task<string> CreateAccessToken(ApplicationUser user)
         {
-            string jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET");
-            string validAudience = Environment.GetEnvironmentVariable("JWT_Audience");
-            string validIssuer = Environment.GetEnvironmentVariable("JWT_Issuer");
-            string AccessTokenLifetime = Environment.GetEnvironmentVariable("AccessTokenLifetime");
+            string jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? _configuration["Jwt:Key"]
+    ?? throw new Exception("JWT secret is not set.");
+            string validAudience = Environment.GetEnvironmentVariable("JWT_Audience") ?? _configuration["Jwt:Audience"];
+            string validIssuer = Environment.GetEnvironmentVariable("JWT_Issuer") ?? _configuration["Jwt:Issuer"];
+            string AccessTokenLifetime = Environment.GetEnvironmentVariable("AccessTokenLifetime") ?? _configuration["Jwt:AccessTokenLifetime"];
+
             var jti = Guid.NewGuid().ToString();
 
             var claims = new[]
