@@ -80,9 +80,9 @@ namespace Jade.Controllers
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true, // Ensure this is true in production
-                SameSite = SameSiteMode.Strict,
-                Expires = DateTime.UtcNow.AddDays(7) // Set appropriate expiration
+                Secure = true, 
+                SameSite = SameSiteMode.None,
+                Expires = DateTime.UtcNow.AddDays(7) 
             };
             Response.Cookies.Append("refreshToken", tokenResponse.RefreshToken, cookieOptions);
 
