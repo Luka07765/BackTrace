@@ -19,9 +19,11 @@ using System.Security.Claims;
 var builder = WebApplication.CreateBuilder(args);
 
 string connectionString = Environment.GetEnvironmentVariable("DATABASE_MAIN_URL") ?? "User Id=postgres.ugmsgixmsqekhvxvuxet;Password=nuGqsKetCUWjCuPX;Server=aws-0-eu-central-1.pooler.supabase.com;Port=5432;Database=postgres";
-string jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET");
-string validAudience = Environment.GetEnvironmentVariable("JWT_Audience");
-string validIssuer = Environment.GetEnvironmentVariable("JWT_Issuer");
+string jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? builder.Configuration["Jwt:Key"]
+    ?? throw new Exception("JWT_SECRET is not set in environment or appsettings.json");
+
+string validAudience = Environment.GetEnvironmentVariable("JWT_Audience") ?? builder.Configuration["Jwt:Audience"];
+string validIssuer = Environment.GetEnvironmentVariable("JWT_Issuer") ?? builder.Configuration["Jwt:Issuer"];
 
 // Register Services
 builder.Services.AddScoped<IUserService, UserService>();
