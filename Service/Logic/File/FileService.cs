@@ -51,7 +51,7 @@ public class FileService : IFileService
         }
 
         // Directly call SaveFileDeltaAsync for the delta update
-        return await _fileRepository.SaveFileDeltaAsync(id, input.Colors, input.Title, input.Content, userId);
+        return await _fileRepository.SaveFileDeltaAsync(id, input.FolderId, input.Colors, input.Title, input.Content, userId);
     }
 
 

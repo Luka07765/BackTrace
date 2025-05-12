@@ -116,7 +116,6 @@ namespace Jade.Controllers
                     return NotFound(new { message = "User not found." });
                 }
 
-                // Compare session versions
                 if (user.SessionVersion.ToString() != sessionVersionInToken)
                 {
                     return Unauthorized(new { message = "User has logged off. Token is invalid." });
@@ -127,7 +126,6 @@ namespace Jade.Controllers
             }
             catch (Exception ex)
             {
-                // Catch any unexpected errors
                 return StatusCode(500, new { message = "An error occurred while validating the token.", error = ex.Message });
             }
         }
@@ -137,7 +135,6 @@ namespace Jade.Controllers
         [HttpPost("RefreshToken")]
         public async Task<IActionResult> RefreshToken()
         {
-            // Retrieve the refresh token from the HttpOnly cookie
             var refreshToken = Request.Cookies["refreshToken"];
 
             if (string.IsNullOrEmpty(refreshToken))
@@ -147,14 +144,14 @@ namespace Jade.Controllers
 
             var ipAddress = GetIpAddress();
 
-            // Validate the refresh token
+       
             var existingToken = await _refreshTokenService.GetRefreshToken(refreshToken);
             if (existingToken == null || !existingToken.IsActive)
             {
                 return Unauthorized(new { message = "Refresh token is invalid or has been revoked." });
             }
 
-            // Retrieve the associated user
+      
             var user = await _userManager.FindByIdAsync(existingToken.UserId);
             if (user == null)
             {
@@ -162,26 +159,22 @@ namespace Jade.Controllers
                 return Unauthorized(new { message = "User not found." });
             }
 
-            // Validate session version
             if (user.SessionVersion != existingToken.SessionVersion)
             {
                 return Unauthorized(new { message = "Invalid refresh token. User has logged off or session has expired." });
             }
-
-            // Generate a new refresh token and invalidate the old one
             var newRefreshToken = await _refreshTokenService.GenerateRefreshToken(user.Id, ipAddress);
             await _refreshTokenService.InvalidateRefreshToken(existingToken, ipAddress, newRefreshToken.Token);
 
-            // Generate a new access token
             var newAccessToken = await _tokenService.CreateAccessToken(user);
 
-            // Set the new refresh token in HttpOnly cookie
+
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true, // Ensure this is true in production
+                Secure = true, 
                 SameSite = SameSiteMode.None,
-                Expires = DateTime.UtcNow.AddDays(7) // Set appropriate expiration
+                Expires = DateTime.UtcNow.AddDays(7) 
             };
             Response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions);
 

@@ -20,5 +20,7 @@ namespace Trace.Models.Logic
 
         // Files in the folder
         public ICollection<File> Files { get; set; }
+
+        public int FolderPosition { get; set; }
     }
 }

@@ -47,7 +47,7 @@
             await _context.SaveChangesAsync();
             return file;
         }
-        public async Task<File?> SaveFileDeltaAsync(Guid fileId, string? colors, string? title, string? content, string userId)
+        public async Task<File?> SaveFileDeltaAsync(Guid fileId, Guid? folderId, string? colors, string? title, string? content, string userId)
         {
             var file = await _context.Files.FirstOrDefaultAsync(f => f.Id == fileId && f.UserId == userId);
 
@@ -56,6 +56,28 @@
             if (title != null) file.Title = title;
             if (content != null) file.Content = content;
             if (colors != null) file.Colors = colors;
+
+            if (folderId.HasValue)
+            {
+                // Verify the target folder exists and belongs to the user
+                var folderExists = await _context.Folders
+                    .AnyAsync(f => f.Id == folderId.Value && f.UserId == userId);
+
+                if (!folderExists)
+                {
+                    throw new ArgumentException("Target folder doesn't exist or you don't have permission");
+                }
+
+                // Prevent moving to same folder
+                if (file.FolderId == folderId.Value)
+                {
+                    throw new ArgumentException("File is already in this folder");
+                }
+
+                file.FolderId = folderId.Value;
+            }
+
+
 
             await _context.SaveChangesAsync();
 

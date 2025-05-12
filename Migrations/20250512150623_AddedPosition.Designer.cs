@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Trace.Data;
@@ -11,9 +12,11 @@ using Trace.Data;
 namespace Trace.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250512150623_AddedPosition")]
+    partial class AddedPosition
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -317,9 +320,6 @@ namespace Trace.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("FilePosition")
-                        .HasColumnType("integer");
-
                     b.Property<Guid>("FolderId")
                         .HasColumnType("uuid");
 
@@ -330,6 +330,9 @@ namespace Trace.Migrations
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("filePosition")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -346,9 +349,6 @@ namespace Trace.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int>("FolderPosition")
-                        .HasColumnType("integer");
-
                     b.Property<Guid?>("ParentFolderId")
                         .HasColumnType("uuid");
 
@@ -359,6 +359,9 @@ namespace Trace.Migrations
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("folderPosition")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 

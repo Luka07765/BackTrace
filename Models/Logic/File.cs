@@ -18,6 +18,8 @@ namespace Trace.Models.Logic
         public Folder Folder { get; set; }
         public string Colors { get; set; } = "[]";
 
+        public int FilePosition { get; set; }
+
 
     }
 }
