@@ -7,6 +7,8 @@
         public Guid FolderId { get; set; }
 
         public string Colors { get; set; } = "Green";
+
+        public int FilePosition { get; set; }
     }
 
     public class UpdateFileInput
@@ -16,6 +18,8 @@
         public Guid? FolderId { get; set; }
 
         public string? Colors { get; set; }
+
+        public int? FilePosition { get; set; }
     }
 }
 

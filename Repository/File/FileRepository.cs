@@ -47,7 +47,13 @@
             await _context.SaveChangesAsync();
             return file;
         }
-        public async Task<File?> SaveFileDeltaAsync(Guid fileId, Guid? folderId, string? colors, string? title, string? content, string userId)
+        public async Task<File?> SaveFileDeltaAsync(Guid fileId,
+            Guid? folderId,
+            string? colors,
+            string? title,
+            string? content,
+            string userId,
+            int? filePosition)
         {
             var file = await _context.Files.FirstOrDefaultAsync(f => f.Id == fileId && f.UserId == userId);
 
@@ -56,6 +62,7 @@
             if (title != null) file.Title = title;
             if (content != null) file.Content = content;
             if (colors != null) file.Colors = colors;
+            if (filePosition.HasValue) file.FilePosition = filePosition.Value;
 
             if (folderId.HasValue)
             {
