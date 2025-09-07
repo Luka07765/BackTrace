@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Luka Admin\\source\\repos\\Luka07765\\BackTrace\\Trace.csproj": {}
+    "C:\\Users\\ACER\\Source\\Repos\\BackTrace\\Trace.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Luka Admin\\source\\repos\\Luka07765\\BackTrace\\Trace.csproj": {
+    "C:\\Users\\ACER\\Source\\Repos\\BackTrace\\Trace.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Luka Admin\\source\\repos\\Luka07765\\BackTrace\\Trace.csproj",
+        "projectUniqueName": "C:\\Users\\ACER\\Source\\Repos\\BackTrace\\Trace.csproj",
         "projectName": "Trace",
-        "projectPath": "C:\\Users\\Luka Admin\\source\\repos\\Luka07765\\BackTrace\\Trace.csproj",
-        "packagesPath": "C:\\Users\\Luka Admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Luka Admin\\source\\repos\\Luka07765\\BackTrace\\obj\\",
+        "projectPath": "C:\\Users\\ACER\\Source\\Repos\\BackTrace\\Trace.csproj",
+        "packagesPath": "C:\\Users\\ACER\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ACER\\Source\\Repos\\BackTrace\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "D:\\Microsoft Visual Studio\\SDK\\NuGetPackages"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Luka Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ACER\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -44,7 +44,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
@@ -130,7 +130,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

@@ -173,7 +173,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.MapGet("/", () => "Radi !");
+app.MapGet("/", () => "Radi spajdermen!");
 
 app.UseAuthentication();
 app.UseAuthorization();
