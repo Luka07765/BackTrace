@@ -20,6 +20,8 @@ namespace Trace.Models.Logic
 
         public int? FilePosition { get; set; }
 
+        public int IconId { get; set; } = 1;
+        public ICollection<FileTag> FileTags { get; set; }
 
     }
 }

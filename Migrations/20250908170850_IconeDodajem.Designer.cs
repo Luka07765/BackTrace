@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Trace.Data;
@@ -11,9 +12,11 @@ using Trace.Data;
 namespace Trace.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250908170850_IconeDodajem")]
+    partial class IconeDodajem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -343,21 +346,6 @@ namespace Trace.Migrations
                     b.ToTable("Files");
                 });
 
-            modelBuilder.Entity("Trace.Models.Logic.FileTag", b =>
-                {
-                    b.Property<Guid>("FileId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("TagId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("FileId", "TagId");
-
-                    b.HasIndex("TagId");
-
-                    b.ToTable("FileTags");
-                });
-
             modelBuilder.Entity("Trace.Models.Logic.Folder", b =>
                 {
                     b.Property<Guid>("Id")
@@ -388,65 +376,6 @@ namespace Trace.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Folders");
-                });
-
-            modelBuilder.Entity("Trace.Models.Logic.SpecialGroup", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("IconId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SpecialGroups");
-                });
-
-            modelBuilder.Entity("Trace.Models.Logic.Tag", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("IconId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Tags");
-                });
-
-            modelBuilder.Entity("Trace.Models.Logic.TagSpecialGroup", b =>
-                {
-                    b.Property<Guid>("TagId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("SpecialGroupId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("TagId", "SpecialGroupId");
-
-                    b.HasIndex("SpecialGroupId");
-
-                    b.ToTable("TagSpecialGroups");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -530,25 +459,6 @@ namespace Trace.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Trace.Models.Logic.FileTag", b =>
-                {
-                    b.HasOne("Trace.Models.Logic.File", "File")
-                        .WithMany("FileTags")
-                        .HasForeignKey("FileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Trace.Models.Logic.Tag", "Tag")
-                        .WithMany("FileTags")
-                        .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("File");
-
-                    b.Navigation("Tag");
-                });
-
             modelBuilder.Entity("Trace.Models.Logic.Folder", b =>
                 {
                     b.HasOne("Trace.Models.Logic.Folder", "ParentFolder")
@@ -567,47 +477,11 @@ namespace Trace.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Trace.Models.Logic.TagSpecialGroup", b =>
-                {
-                    b.HasOne("Trace.Models.Logic.SpecialGroup", "SpecialGroup")
-                        .WithMany("TagSpecialGroups")
-                        .HasForeignKey("SpecialGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Trace.Models.Logic.Tag", "Tag")
-                        .WithMany("TagSpecialGroups")
-                        .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("SpecialGroup");
-
-                    b.Navigation("Tag");
-                });
-
-            modelBuilder.Entity("Trace.Models.Logic.File", b =>
-                {
-                    b.Navigation("FileTags");
-                });
-
             modelBuilder.Entity("Trace.Models.Logic.Folder", b =>
                 {
                     b.Navigation("Files");
 
                     b.Navigation("SubFolders");
-                });
-
-            modelBuilder.Entity("Trace.Models.Logic.SpecialGroup", b =>
-                {
-                    b.Navigation("TagSpecialGroups");
-                });
-
-            modelBuilder.Entity("Trace.Models.Logic.Tag", b =>
-                {
-                    b.Navigation("FileTags");
-
-                    b.Navigation("TagSpecialGroups");
                 });
 #pragma warning restore 612, 618
         }

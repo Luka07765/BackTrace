@@ -22,5 +22,7 @@ namespace Trace.Models.Logic
         public ICollection<File> Files { get; set; }
 
         public int FolderPosition { get; set; }
+
+        public int IconId { get; set; } = 1;
     }
 }
