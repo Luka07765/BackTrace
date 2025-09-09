@@ -9,6 +9,8 @@
         public string Colors { get; set; } = "Green";
 
         public int FilePosition { get; set; }
+
+        public int IconId { get; set; }
     }
 
     public class UpdateFileInput
@@ -20,6 +22,7 @@
         public string? Colors { get; set; }
 
         public int? FilePosition { get; set; }
+        public int? IconId { get; set; }
     }
 }
 

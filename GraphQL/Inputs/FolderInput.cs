@@ -4,6 +4,8 @@
     {
         public string Title { get; set; }
         public Guid? ParentFolderId { get; set; }
+
+        public int IconId { get; set; }
     }
 
 }

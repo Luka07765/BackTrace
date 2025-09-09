@@ -43,6 +43,7 @@
         {
             file.Id = Guid.NewGuid();
             file.Colors =  "Green" ;
+            file.IconId = 1;    
             _context.Files.Add(file);
             await _context.SaveChangesAsync();
             return file;
@@ -53,7 +54,10 @@
             string? title,
             string? content,
             string userId,
-            int? filePosition)
+            int? filePosition,
+            int? iconId
+            
+            )
         {
             var file = await _context.Files.FirstOrDefaultAsync(f => f.Id == fileId && f.UserId == userId);
 
@@ -63,7 +67,7 @@
             if (content != null) file.Content = content;
             if (colors != null) file.Colors = colors;
             if (filePosition.HasValue) file.FilePosition = filePosition.Value;
-
+            if (iconId.HasValue) file.IconId = iconId.Value;
             if (folderId.HasValue)
             {
                 // Verify the target folder exists and belongs to the user

@@ -37,6 +37,7 @@ public class FolderRepository : IFolderRepository
         {
             folder.Id = Guid.NewGuid();  
         }
+        folder.IconId = 1;
         _context.Folders.Add(folder);
         await _context.SaveChangesAsync();
         return folder;

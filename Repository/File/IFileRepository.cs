@@ -9,5 +9,5 @@ public interface IFileRepository
     Task<File> GetFileByIdAsync(Guid id, string userId);
     Task<File> CreateFileAsync(File file);
     Task<bool> DeleteFileAsync(Guid id, string userId);
-    Task<File> SaveFileDeltaAsync(Guid id, Guid? folderId, string? colors, string? title, string? content, string userId, int? filePosition);
+    Task<File> SaveFileDeltaAsync(Guid id, Guid? folderId, string? colors, string? title, string? content, string userId, int? filePosition,int? iconId);
 }
