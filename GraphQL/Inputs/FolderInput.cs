@@ -2,10 +2,10 @@
 {
     public class FolderInput
     {
-        public string Title { get; set; }
+        public string? Title { get; set; }
         public Guid? ParentFolderId { get; set; }
 
-        public int IconId { get; set; }
+        public int? IconId { get; set; }
     }
 
 }

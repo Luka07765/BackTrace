@@ -36,7 +36,7 @@
                 Title = input.Title,
                 ParentFolderId = input.ParentFolderId,
                 UserId = userId,
-                IconId = input.IconId
+                IconId = input.IconId ?? 1
             };
             return await _folderRepository.CreateFolderAsync(folder);
         }
@@ -67,7 +67,11 @@
             {
                 existingFolder.ParentFolderId = input.ParentFolderId;
             }
-            existingFolder.IconId = input.IconId;
+            if (input.IconId.HasValue)
+            {
+                existingFolder.IconId = input.IconId.Value;
+            }
+
 
             // Save changes
             await _context.SaveChangesAsync();
