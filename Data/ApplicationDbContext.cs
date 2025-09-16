@@ -18,10 +18,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<File> Files { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
 
-    public DbSet<Tag> Tags { get; set; }
-    public DbSet<SpecialGroup> SpecialGroups { get; set; }
-    public DbSet<FileTag> FileTags { get; set; }
-    public DbSet<TagSpecialGroup> TagSpecialGroups { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -109,31 +106,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         // -------------------------------
 
         // FileTag: many-to-many File <-> Tag
-        modelBuilder.Entity<FileTag>()
-            .HasKey(ft => new { ft.FileId, ft.TagId });
 
-        modelBuilder.Entity<FileTag>()
-            .HasOne(ft => ft.File)
-            .WithMany(f => f.FileTags)
-            .HasForeignKey(ft => ft.FileId);
-
-        modelBuilder.Entity<FileTag>()
-            .HasOne(ft => ft.Tag)
-            .WithMany(t => t.FileTags)
-            .HasForeignKey(ft => ft.TagId);
-
-        // TagSpecialGroup: many-to-many Tag <-> SpecialGroup
-        modelBuilder.Entity<TagSpecialGroup>()
-            .HasKey(tsg => new { tsg.TagId, tsg.SpecialGroupId });
-
-        modelBuilder.Entity<TagSpecialGroup>()
-            .HasOne(tsg => tsg.Tag)
-            .WithMany(t => t.TagSpecialGroups)
-            .HasForeignKey(tsg => tsg.TagId);
-
-        modelBuilder.Entity<TagSpecialGroup>()
-            .HasOne(tsg => tsg.SpecialGroup)
-            .WithMany(sg => sg.TagSpecialGroups)
-            .HasForeignKey(tsg => tsg.SpecialGroupId);
     }
 }
