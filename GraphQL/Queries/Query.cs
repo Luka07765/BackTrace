@@ -8,7 +8,8 @@
     using Trace.Models.Logic;
     using Trace.Service.Logic.File;
     using Trace.Service.Logic.Folder;
-
+    using Trace.Service.Tag;
+    using Trace.Models.TagSystem;
     public class Query
     {
         [Authorize]
@@ -71,6 +72,32 @@
             }
 
             return await fileService.GetFileByIdAsync(id, userId);
+        }
+
+        [Authorize]
+        [GraphQLName("getTags")]
+        public async Task<IEnumerable<Tag>> GetTags(
+        [Service] ITagService tagService)
+        {
+            return await tagService.GetAllTagsAsync();
+        }
+
+        [Authorize]
+        [GraphQLName("getTagById")]
+        public async Task<Tag> GetTagById(
+            Guid id,
+            [Service] ITagService tagService)
+        {
+            return await tagService.GetTagByIdAsync(id);
+        }
+
+        [Authorize]
+        [GraphQLName("getFilesByTag")]
+        public async Task<IEnumerable<File>> GetFilesByTag(
+            Guid tagId,
+            [Service] ITagService tagService)
+        {
+            return await tagService.GetFilesByTagAsync(tagId);
         }
     }
 }

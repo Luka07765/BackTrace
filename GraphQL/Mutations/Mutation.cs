@@ -8,6 +8,9 @@
     using Trace.Models.Logic;
     using Trace.Service.Logic.File;
     using Trace.Service.Logic.Folder;
+    using Trace.Models.TagSystem;
+    using Trace.Service.Tag;
+
 
     public class Mutation
     {
@@ -145,6 +148,77 @@
             {
                 throw new GraphQLException(new Error(ex.Message, "UNAUTHORIZED"));
             }
+
+
+        }
+
+
+        // ----------------- TAG -----------------
+        [Authorize]
+        [GraphQLName("createTag")]
+        public async Task<Tag> CreateTag(
+            TagInput.CreateTagInput input,
+            [Service] ITagService tagService)
+        {
+            await tagService.CreateTagAsync(input.Title, input.Color, input.IconId);
+
+            return new Tag
+            {
+                Id = Guid.NewGuid(),
+                Title = input.Title,
+                Color = input.Color,
+                IconId = input.IconId
+            };
+        }
+
+        [Authorize]
+        [GraphQLName("updateTag")]
+        public async Task<Tag> UpdateTag(
+            TagInput.UpdateTagInput input,
+            [Service] ITagService tagService)
+        {
+            var tag = new Tag
+            {
+                Id = input.Id,
+                Title = input.Title,
+                Color = input.Color,
+                IconId = input.IconId
+            };
+
+            await tagService.UpdateTagAsync(tag);
+            return tag;
+        }
+
+        [Authorize]
+        [GraphQLName("deleteTag")]
+        public async Task<bool> DeleteTag(
+            Guid id,
+            [Service] ITagService tagService)
+        {
+            await tagService.DeleteTagAsync(id);
+            return true;
+        }
+
+        [Authorize]
+        [GraphQLName("assignTagToFile")]
+        public async Task<bool> AssignTagToFile(
+            TagInput.AssignTagInput input,
+            [Service] ITagService tagService)
+        {
+            await tagService.AssignTagToFileAsync(input.FileId, input.TagId);
+            return true;
+        }
+
+        [Authorize]
+        [GraphQLName("removeTagFromFile")]
+        public async Task<bool> RemoveTagFromFile(
+            TagInput.AssignTagInput input,
+            [Service] ITagService tagService)
+        {
+            await tagService.RemoveTagFromFileAsync(input.FileId, input.TagId);
+            return true;
         }
     }
+
 }
+

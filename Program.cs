@@ -1,20 +1,23 @@
-using Trace.Data;
-using Microsoft.EntityFrameworkCore;
-using Trace.GraphQL.Mutations;
-using Trace.GraphQL.Queries;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Security.Claims;
 using System.Text;
-using Trace.Service.Logic.File;
-using Trace.Service.Logic.Folder;
-using Trace.Service.Auth.Token;
-using Trace.Service.Auth.GeneralAuth;
+using Trace.Data;
+using Trace.GraphQL.Mutations;
+using Trace.GraphQL.Queries;
+using Trace.Models.Auth;
+using Trace.Repositories;
 using Trace.Repository.File;
 using Trace.Repository.Folder;
-using Trace.Models.Auth;
-using System.Security.Claims;
+using Trace.Repository.TagSystem.Tag;
+using Trace.Service.Auth.GeneralAuth;
+using Trace.Service.Auth.Token;
+using Trace.Service.Logic.File;
+using Trace.Service.Logic.Folder;
+using Trace.Service.Tag;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +32,9 @@ string validIssuer = Environment.GetEnvironmentVariable("JWT_Issuer") ?? builder
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+// Register Tag Repository and Service
+
+
 builder.Services.AddDistributedMemoryCache();
 
 
@@ -140,6 +146,8 @@ builder.Services.AddScoped<IFileRepository, FileRepository>();
 builder.Services.AddScoped<IFolderService, FolderService>();
 builder.Services.AddScoped<IFileService, FileService>();
 
+builder.Services.AddScoped<ITagRepository, TagRepository>();
+builder.Services.AddScoped<ITagService, TagService>();
 // Register GraphQL
 builder.Services
     .AddGraphQLServer()

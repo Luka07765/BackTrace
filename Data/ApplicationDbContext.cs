@@ -19,6 +19,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<File> Files { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
 
+    public DbSet<Tag> Tag{ get; set; }    
+
+    public DbSet<TagAssignment> TagAssignments { get; set; }    
+
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
