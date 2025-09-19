@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Trace.Models.Auth;
+using Trace.Models.TagSystem;
 
 namespace Trace.Models.Logic
 {
@@ -21,7 +22,7 @@ namespace Trace.Models.Logic
         public int? FilePosition { get; set; }
 
         public int IconId { get; set; } = 1;
-
+        public ICollection<TagAssignment> TagAssignments { get; set; } = new List<TagAssignment>();
 
     }
 }

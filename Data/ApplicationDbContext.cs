@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Trace.Models.Auth;
 using Trace.Models.Logic;
+using Trace.Models.TagSystem;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
@@ -105,7 +106,21 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         // Tag system configuration
         // -------------------------------
 
-        // FileTag: many-to-many File <-> Tag
+        modelBuilder.Entity<TagAssignment>()
+    .HasKey(ta => new { ta.FileId, ta.TagId });
+
+        modelBuilder.Entity<TagAssignment>()
+            .HasOne(ta => ta.File)
+            .WithMany(f => f.TagAssignments)
+            .HasForeignKey(ta => ta.FileId);
+
+        modelBuilder.Entity<TagAssignment>()
+            .HasOne(ta => ta.Tag)
+            .WithMany(t => t.TagAssignments)
+            .HasForeignKey(ta => ta.TagId);
+
+
+
 
     }
 }
