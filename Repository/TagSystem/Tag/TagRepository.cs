@@ -17,17 +17,18 @@ namespace Trace.Repositories
             _context = context;
         }
 
-        public async Task<Tag> GetTagByIdAsync(Guid tagId)
+        public async Task<Tag> GetTagByIdAsync(Guid tagId, string userId)
         {
             return await _context.Tag
                 .Include(t => t.TagAssignments)
                 .ThenInclude(ta => ta.File)
-                .FirstOrDefaultAsync(t => t.Id == tagId);
+                .FirstOrDefaultAsync(t => t.Id == tagId && t.UserId == userId);
         }
 
-        public async Task<IEnumerable<Tag>> GetAllTagsAsync()
+        public async Task<IEnumerable<Tag>> GetAllTagsAsync(string userId)
         {
             return await _context.Tag
+                .Where(f => f.UserId == userId)
                 .Include(t => t.TagAssignments)
                 .ToListAsync();
         }
@@ -47,9 +48,10 @@ namespace Trace.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteTagAsync(Guid tagId)
+        public async Task DeleteTagAsync(Guid tagId, string userId)
         {
-            var tag = await _context.Tag.FindAsync(tagId);
+            var tag = await _context.Tag.FirstOrDefaultAsync(t => t.Id == tagId && t.UserId == userId);
+
             if (tag != null)
             {
                 _context.Tag.Remove(tag);

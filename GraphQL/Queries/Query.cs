@@ -73,31 +73,52 @@
 
             return await fileService.GetFileByIdAsync(id, userId);
         }
-
         [Authorize]
         [GraphQLName("getTags")]
         public async Task<IEnumerable<Tag>> GetTags(
-        [Service] ITagService tagService)
+            [Service] ITagService tagService,
+            ClaimsPrincipal user)
         {
-            return await tagService.GetAllTagsAsync();
+            var userId = user.FindFirstValue("CustomUserId");
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
+            }
+
+            return await tagService.GetAllTagsAsync(userId);
         }
 
         [Authorize]
         [GraphQLName("getTagById")]
         public async Task<Tag> GetTagById(
             Guid id,
-            [Service] ITagService tagService)
+            [Service] ITagService tagService,
+            ClaimsPrincipal user)
         {
-            return await tagService.GetTagByIdAsync(id);
+            var userId = user.FindFirstValue("CustomUserId");
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
+            }
+
+            return await tagService.GetTagByIdAsync(id, userId);
         }
 
         [Authorize]
         [GraphQLName("getFilesByTag")]
         public async Task<IEnumerable<File>> GetFilesByTag(
             Guid tagId,
-            [Service] ITagService tagService)
+            [Service] ITagService tagService,
+            ClaimsPrincipal user)
         {
-            return await tagService.GetFilesByTagAsync(tagId);
+            var userId = user.FindFirstValue("CustomUserId");
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
+            }
+
+            return await tagService.GetFilesByTagAsync(tagId, userId);
         }
+
     }
 }

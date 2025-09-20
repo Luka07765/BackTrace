@@ -2,16 +2,17 @@
 {
     using Trace.Models.TagSystem;
     using Trace.Models.Logic;
+
     public interface ITagService
     {
-        Task<Tag> GetTagByIdAsync(Guid tagId);
-        Task<IEnumerable<Tag>> GetAllTagsAsync();
-        Task CreateTagAsync(string title, string color = "#FFFFFF", int iconId = 1);
+        Task<Tag> GetTagByIdAsync(Guid tagId, string userId);
+        Task<IEnumerable<Tag>> GetAllTagsAsync(string userId);
+        Task CreateTagAsync(string userId, string title, string color = "#FFFFFF", int iconId = 1);
         Task UpdateTagAsync(Tag tag);
-        Task DeleteTagAsync(Guid tagId);
+        Task DeleteTagAsync(Guid tagId, string userId);
 
-        Task AssignTagToFileAsync(Guid fileId, Guid tagId);
-        Task RemoveTagFromFileAsync(Guid fileId, Guid tagId);
-        Task<IEnumerable<File>> GetFilesByTagAsync(Guid tagId);
+        Task AssignTagToFileAsync(Guid fileId, Guid tagId, string userId);
+        Task RemoveTagFromFileAsync(Guid fileId, Guid tagId, string userId);
+        Task<IEnumerable<File>> GetFilesByTagAsync(Guid tagId, string userId);
     }
 }

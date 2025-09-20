@@ -154,20 +154,28 @@
 
 
         // ----------------- TAG -----------------
+        // ----------------- TAG -----------------
         [Authorize]
         [GraphQLName("createTag")]
         public async Task<Tag> CreateTag(
             TagInput.CreateTagInput input,
-            [Service] ITagService tagService)
+            [Service] ITagService tagService,
+            ClaimsPrincipal user)
         {
-            await tagService.CreateTagAsync(input.Title, input.Color, input.IconId);
+            var userId = user.FindFirstValue("CustomUserId");
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
+            }
+
+            await tagService.CreateTagAsync(userId, input.Title, input.Color, input.IconId);
 
             return new Tag
             {
-                Id = Guid.NewGuid(),
                 Title = input.Title,
                 Color = input.Color,
-                IconId = input.IconId
+                IconId = input.IconId,
+                UserId = userId
             };
         }
 
@@ -175,14 +183,22 @@
         [GraphQLName("updateTag")]
         public async Task<Tag> UpdateTag(
             TagInput.UpdateTagInput input,
-            [Service] ITagService tagService)
+            [Service] ITagService tagService,
+            ClaimsPrincipal user)
         {
+            var userId = user.FindFirstValue("CustomUserId");
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
+            }
+
             var tag = new Tag
             {
                 Id = input.Id,
                 Title = input.Title,
                 Color = input.Color,
-                IconId = input.IconId
+                IconId = input.IconId,
+                UserId = userId
             };
 
             await tagService.UpdateTagAsync(tag);
@@ -193,9 +209,16 @@
         [GraphQLName("deleteTag")]
         public async Task<bool> DeleteTag(
             Guid id,
-            [Service] ITagService tagService)
+            [Service] ITagService tagService,
+            ClaimsPrincipal user)
         {
-            await tagService.DeleteTagAsync(id);
+            var userId = user.FindFirstValue("CustomUserId");
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
+            }
+
+            await tagService.DeleteTagAsync(id, userId);
             return true;
         }
 
@@ -203,9 +226,16 @@
         [GraphQLName("assignTagToFile")]
         public async Task<bool> AssignTagToFile(
             TagInput.AssignTagInput input,
-            [Service] ITagService tagService)
+            [Service] ITagService tagService,
+            ClaimsPrincipal user)
         {
-            await tagService.AssignTagToFileAsync(input.FileId, input.TagId);
+            var userId = user.FindFirstValue("CustomUserId");
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
+            }
+
+            await tagService.AssignTagToFileAsync(input.FileId, input.TagId, userId);
             return true;
         }
 
@@ -213,11 +243,19 @@
         [GraphQLName("removeTagFromFile")]
         public async Task<bool> RemoveTagFromFile(
             TagInput.AssignTagInput input,
-            [Service] ITagService tagService)
+            [Service] ITagService tagService,
+            ClaimsPrincipal user)
         {
-            await tagService.RemoveTagFromFileAsync(input.FileId, input.TagId);
+            var userId = user.FindFirstValue("CustomUserId");
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
+            }
+
+            await tagService.RemoveTagFromFileAsync(input.FileId, input.TagId, userId);
             return true;
         }
+
     }
 
 }
