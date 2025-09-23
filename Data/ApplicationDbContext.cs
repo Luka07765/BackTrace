@@ -124,7 +124,5 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey(ta => ta.TagId);
 
 
-
-
     }
 }

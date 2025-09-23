@@ -21,7 +21,12 @@
 
         public async Task<IEnumerable<Folder>> GetAllFoldersAsync(string userId)
         {
-            return await _folderRepository.GetAllFoldersAsync(userId);
+            return await _context.Folders
+                .Where(f => f.UserId == userId)
+                .Include(f => f.Files)
+                    .ThenInclude(file => file.TagAssignments)
+                        .ThenInclude(ta => ta.Tag)
+                .ToListAsync();
         }
 
         public async Task<Folder> GetFolderByIdAsync(Guid id, string userId)

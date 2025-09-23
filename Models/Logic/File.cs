@@ -22,6 +22,8 @@ namespace Trace.Models.Logic
         public int? FilePosition { get; set; }
 
         public int IconId { get; set; } = 1;
+
+        public IEnumerable<Trace.Models.TagSystem.Tag> Tags => TagAssignments.Select(ta => ta.Tag);
         public ICollection<TagAssignment> TagAssignments { get; set; } = new List<TagAssignment>();
 
     }

@@ -35,6 +35,8 @@
         {
             return await _context.Files
                 .Include(f => f.Folder)
+                .Include(f => f.TagAssignments)        // load the join table
+                    .ThenInclude(ta => ta.Tag)         // load the tag itself
                 .FirstOrDefaultAsync(f => f.Id == id && f.UserId == userId);
         }
 

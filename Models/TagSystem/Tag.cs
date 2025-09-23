@@ -1,4 +1,5 @@
-﻿using Trace.Models.Auth;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Trace.Models.Auth;
 
 namespace Trace.Models.TagSystem
 {
@@ -13,6 +14,7 @@ namespace Trace.Models.TagSystem
         public string UserId { get; set; }
 
         public ApplicationUser User { get; set; }
+
         public ICollection<TagAssignment> TagAssignments { get; set; } = new List<TagAssignment>();
     }
 }
