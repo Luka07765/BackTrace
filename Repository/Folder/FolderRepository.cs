@@ -17,10 +17,12 @@ public class FolderRepository : IFolderRepository
     public async Task<IEnumerable<Folder>> GetAllFoldersAsync(string userId)
     {
         return await _context.Folders
-            .Where(f => f.UserId == userId)
-            .Include(f => f.SubFolders)
-            .Include(f => f.Files)
-            .ToListAsync();
+      .Where(f => f.UserId == userId)
+      .Include(f => f.SubFolders)
+      .Include(f => f.Files)
+      .ThenInclude(file => file.TagAssignments)
+       .ThenInclude(ta => ta.Tag)
+      .ToListAsync();
     }
 
     public async Task<Folder> GetFolderByIdAsync(Guid id, string userId)
