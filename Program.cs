@@ -21,7 +21,17 @@ using Trace.Service.Tag;
 
 var builder = WebApplication.CreateBuilder(args);
 
-string connectionString = Environment.GetEnvironmentVariable("DATABASE_MAIN_URL") ?? "User Id=postgres.ugmsgixmsqekhvxvuxet;Password=nuGqsKetCUWjCuPX;Server=aws-0-eu-central-1.pooler.supabase.com;Port=5432;Database=postgres";
+string connectionString =
+    "User Id=postgres.ugmsgixmsqekhvxvuxet;" +
+    "Password=nuGqsKetCUWjCuPX;" +
+    "Host=aws-0-eu-central-1.pooler.supabase.com;" +
+    "Port=5432;" +
+    "Database=postgres;" +
+    "Pooling=true;" +
+    "Keepalive=30;" +
+    "Connection Idle Lifetime=60;" +
+    "Command Timeout=180;";
+
 string jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? builder.Configuration["Jwt:Key"]
     ?? throw new Exception("JWT_SECRET is not set in environment or appsettings.json");
 
@@ -40,11 +50,25 @@ builder.Services.AddDistributedMemoryCache();
 
 // Register DbContext for Identity
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(connectionString));
+    options.UseNpgsql(connectionString, npgsqlOptions =>
+    {
+        npgsqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(10),
+            errorCodesToAdd: null
+        );
+    }));
 
 // Register DbContextFactory for Repositories with singleton lifetimes
 builder.Services.AddDbContextFactory<ApplicationDbContext>(
-    options => options.UseNpgsql(connectionString),
+    options => options.UseNpgsql(connectionString, npgsqlOptions =>
+    {
+        npgsqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(10),
+            errorCodesToAdd: null
+        );
+    }),
     ServiceLifetime.Scoped
 );
 
