@@ -7,6 +7,9 @@
 
     public interface IFolderService
     {
+
+        Task<IEnumerable<Folder>> GetRootFoldersAsync(string userId);
+        Task<Folder> GetFirstLayerAsync(Guid folderId, string userId);
         Task<bool> IsFolderOwnedByUserAsync(Guid folderId, string userId);
         Task<IEnumerable<Folder>> GetAllFoldersAsync(string userId);
         Task<Folder> GetFolderByIdAsync(Guid id, string userId);

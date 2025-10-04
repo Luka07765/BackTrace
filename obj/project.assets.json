@@ -4812,11 +4812,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ACER\\Source\\Repos\\BackTrace\\Trace.csproj",
+      "projectUniqueName": "D:\\Projects\\Back_Trace\\Trace.csproj",
       "projectName": "Trace",
-      "projectPath": "C:\\Users\\ACER\\Source\\Repos\\BackTrace\\Trace.csproj",
+      "projectPath": "D:\\Projects\\Back_Trace\\Trace.csproj",
       "packagesPath": "C:\\Users\\ACER\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\ACER\\Source\\Repos\\BackTrace\\obj\\",
+      "outputPath": "D:\\Projects\\Back_Trace\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -4935,7 +4935,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

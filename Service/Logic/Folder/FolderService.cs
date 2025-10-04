@@ -29,6 +29,17 @@
             return await _folderRepository.GetFolderByIdAsync(id, userId);
         }
 
+        public async Task<IEnumerable<Folder>> GetRootFoldersAsync(string userId)
+        {
+            return await _folderRepository.GetRootFoldersAsync(userId);
+        }
+
+        public async Task<Folder> GetFirstLayerAsync(Guid folderId, string userId)
+        {
+            return await _folderRepository.GetFirstLayerAsync(folderId, userId);
+        }
+
+
         public async Task<Folder> CreateFolderAsync(FolderInput input, string userId)
         {
             var folder = new Folder

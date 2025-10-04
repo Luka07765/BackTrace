@@ -42,6 +42,37 @@
 
             return await folderService.GetFolderByIdAsync(id, userId);
         }
+        [Authorize]
+        [GraphQLName("getRootFolders")]
+        public async Task<IEnumerable<Folder>> GetRootFolders(
+    [Service] IFolderService folderService,
+    ClaimsPrincipal user)
+        {
+            var userId = user.FindFirstValue("CustomUserId");
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
+            }
+
+            return await folderService.GetRootFoldersAsync(userId);
+        }
+
+        [Authorize]
+        [GraphQLName("getFirstLayer")]
+        public async Task<Folder> GetFolderFirstLayer(
+            Guid folderId,
+            [Service] IFolderService folderService,
+            ClaimsPrincipal user)
+        {
+            var userId = user.FindFirstValue("CustomUserId");
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
+            }
+
+            return await folderService.GetFirstLayerAsync(folderId, userId);
+        }
+
 
         [Authorize]
         [GraphQLName("getFiles")]

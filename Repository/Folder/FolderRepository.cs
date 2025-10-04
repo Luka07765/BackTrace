@@ -25,6 +25,25 @@ public class FolderRepository : IFolderRepository
       .ToListAsync();
     }
 
+
+
+    public async Task<Folder> GetFirstLayerAsync(Guid folderId, string userId)
+    {
+        return await _context.Folders
+            .Where(f => f.Id == folderId && f.UserId == userId)
+            .Include(f => f.SubFolders)
+            .Include(f => f.Files)
+            .FirstOrDefaultAsync();
+    }
+    public async Task<IEnumerable<Folder>> GetRootFoldersAsync(string userId)
+    {
+        return await _context.Folders
+            .Where(f => f.UserId == userId && f.ParentFolderId == null)
+      
+            .ToListAsync();
+    }
+
+
     public async Task<Folder> GetFolderByIdAsync(Guid id, string userId)
     {
         return await _context.Folders
@@ -32,6 +51,8 @@ public class FolderRepository : IFolderRepository
             .Include(f => f.Files)
             .FirstOrDefaultAsync(f => f.Id == id && f.UserId == userId);
     }
+
+    //MUTATIONS
 
     public async Task<Folder> CreateFolderAsync(Folder folder)
     {
