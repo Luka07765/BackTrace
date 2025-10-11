@@ -26,9 +26,16 @@
         {
             return await _context.Files
                 .Where(f => f.UserId == userId)
-                .Include(f => f.Folder)
+                .Select(f => new File
+                {
+                    Id = f.Id,
+                    Title = f.Title,
+                    FolderId = f.FolderId,
+                    FilePosition = f.FilePosition
+                })
                 .ToListAsync();
         }
+
 
         // EF Core: Get file by ID for a user
         public async Task<File> GetFileByIdAsync(Guid id, string userId)
