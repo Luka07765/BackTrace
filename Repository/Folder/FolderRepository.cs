@@ -19,13 +19,11 @@ public class FolderRepository : IFolderRepository
         return await _context.Folders
       .Where(f => f.UserId == userId)
       .Include(f => f.SubFolders)
-      .Include(f => f.Files)
-      .ThenInclude(file => file.TagAssignments)
-       .ThenInclude(ta => ta.Tag)
+
       .ToListAsync();
     }
 
-
+    
 
     public async Task<Folder> GetFirstLayerAsync(Guid folderId, string userId)
     {
