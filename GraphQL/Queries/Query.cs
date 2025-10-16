@@ -58,7 +58,7 @@
         }
 
         [Authorize]
-        [GraphQLName("getFirstLayer")]
+        [GraphQLName("getLayer")]
         public async Task<Folder> GetFolderFirstLayer(
             Guid folderId,
             [Service] IFolderService folderService,
