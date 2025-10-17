@@ -8,6 +8,7 @@ using System.Text;
 using Trace.Data;
 using Trace.GraphQL.Mutations;
 using Trace.GraphQL.Queries;
+using Trace.GraphQL.Subscriptions;
 using Trace.Models.Auth;
 using Trace.Repositories;
 using Trace.Repository.File;
@@ -178,6 +179,8 @@ builder.Services
     .AddAuthorization()
     .AddQueryType<Query>()
     .AddMutationType<Mutation>()
+    .AddSubscriptionType<FolderSubscription>()
+    .AddInMemorySubscriptions()
     .ModifyRequestOptions(opt => opt.IncludeExceptionDetails = true);
 
 // ===== Add CORS services =====

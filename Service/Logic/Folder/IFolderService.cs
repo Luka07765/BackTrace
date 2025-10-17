@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Trace.DTO;
     using Trace.GraphQL.Inputs;
     using Trace.Models.Logic;
 
@@ -17,5 +18,11 @@
         Task<Folder> UpdateFolderAsync(Guid id, FolderInput input, string userId);
         Task<bool> DeleteFolderAsync(Guid id, string userId);
         Task<Folder> GetFolderTreeAsync(Guid folderId, string userId);
+
+        IAsyncEnumerable<FolderLayerPayload> StreamFolderHierarchyAsync(
+        Guid rootFolderId,
+        string userId,
+        CancellationToken cancellationToken = default);
     }
 }
+
