@@ -75,6 +75,21 @@
 
 
         [Authorize]
+        [GraphQLName("getFolderTree")]
+        public async Task<Folder> GetFolderTree(
+    Guid folderId,
+    [Service] IFolderService folderService,
+    ClaimsPrincipal user)
+        {
+            var userId = user.FindFirstValue("CustomUserId");
+            if (string.IsNullOrEmpty(userId))
+                throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
+
+            return await folderService.GetFolderTreeAsync(folderId, userId);
+        }
+
+
+        [Authorize]
         [GraphQLName("getFiles")]
         public async Task<IEnumerable<File>> GetFiles(
             [Service] IFileService fileService,

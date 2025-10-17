@@ -1,8 +1,9 @@
 ﻿namespace Trace.Service.Logic.Folder
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Threading.Tasks;
     using Trace.Data;
     using Trace.GraphQL.Inputs;
     using Trace.Models.Logic;
@@ -12,11 +13,14 @@
     {
         private readonly IFolderRepository _folderRepository;
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<FolderService> _logger;
 
-        public FolderService(IFolderRepository folderRepository, ApplicationDbContext context)
+        public FolderService(IFolderRepository folderRepository, ApplicationDbContext context, ILogger<FolderService> logger)
         {
             _folderRepository = folderRepository;
             _context = context;
+            _logger = logger;
+    
         }
 
         public async Task<IEnumerable<Folder>> GetAllFoldersAsync(string userId)
@@ -39,6 +43,48 @@
             return await _folderRepository.GetFirstLayerAsync(folderId, userId);
         }
 
+        public async Task<Folder> GetFolderTreeAsync(Guid folderId, string userId)
+        {
+            var sw = Stopwatch.StartNew();
+            _logger.LogInformation("Starting recursive fetch for folder {FolderId}", folderId);
+
+            var root = await _folderRepository.GetFirstLayerAsync(folderId, userId);
+            if (root == null)
+            {
+                _logger.LogWarning("Folder {FolderId} not found", folderId);
+                return null;
+            }
+
+            await LoadSubFoldersRecursive(root, userId, 1);
+
+            sw.Stop();
+            _logger.LogInformation("Finished fetching full tree for {FolderId} in {Elapsed}ms", folderId, sw.ElapsedMilliseconds);
+            return root;
+        }
+
+        private async Task LoadSubFoldersRecursive(Folder folder, string userId, int depth)
+        {
+            _logger.LogInformation("Fetching layer {Depth} for folder {FolderId}", depth, folder.Id);
+
+            foreach (var subFolder in folder.SubFolders)
+            {
+                var sw = Stopwatch.StartNew();
+
+                var fullSubFolder = await _folderRepository.GetFirstLayerAsync(subFolder.Id, userId);
+                if (fullSubFolder != null)
+                {
+                    subFolder.Files = fullSubFolder.Files;
+                    subFolder.SubFolders = fullSubFolder.SubFolders;
+
+                    _logger.LogInformation(
+                        "Loaded folder {FolderId} with {FileCount} files and {SubCount} subfolders at depth {Depth} (took {Elapsed}ms)",
+                        subFolder.Id, subFolder.Files.Count, subFolder.SubFolders.Count, depth, sw.ElapsedMilliseconds
+                    );
+
+                    await LoadSubFoldersRecursive(subFolder, userId, depth + 1);
+                }
+            }
+        }
 
         public async Task<Folder> CreateFolderAsync(FolderInput input, string userId)
         {
