@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Trace.GraphQL.Inputs;
 using Trace.Models.Logic;
-using Trace.Repository.File;
+using Trace.Repository.Files;
 
 public class FileService : IFileService
 {
@@ -15,15 +15,6 @@ public class FileService : IFileService
         _fileRepository = fileRepository;
     }
 
-    public async Task<IEnumerable<File>> GetAllFilesAsync(string userId)
-    {
-        return await _fileRepository.GetAllFilesAsync(userId);
-    }
-
-    public async Task<File> GetFileByIdAsync(Guid id, string userId)
-    {
-        return await _fileRepository.GetFileByIdAsync(id, userId);
-    }
 
     public async Task<File> CreateFileAsync(CreateFileInput input, string userId)
     {
@@ -46,25 +37,25 @@ public class FileService : IFileService
     public async Task<File> UpdateFileAsync(Guid id, UpdateFileInput input, string userId)
     {
         // Ensure the file exists and belongs to the user
-        var file = await _fileRepository.GetFileByIdAsync(id, userId);
-        if (file == null)
-        {
-            throw new UnauthorizedAccessException("You do not have permission to edit this file.");
-        }
+        //var file = await _fileRepository.GetFileByIdAsync(id, userId);
+        //if (file == null)
+        //{
+        //    throw new UnauthorizedAccessException("You do not have permission to edit this file.");
+        //}
 
         // Directly call SaveFileDeltaAsync for the delta update
         return await _fileRepository.SaveFileDeltaAsync(id, input.FolderId, input.Colors, input.Title, input.Content, userId, input.FilePosition, input.IconId);
     }
 
 
-    public async Task<bool> DeleteFileAsync(Guid id, string userId)
-    {
-        var file = await _fileRepository.GetFileByIdAsync(id, userId);
-        if (file == null)
-        {
-            throw new UnauthorizedAccessException("You do not have permission to delete this file.");
-        }
+    //public async Task<bool> DeleteFileAsync(Guid id, string userId)
+    //{
+    //    var file = await _fileRepository.GetFileByIdAsync(id, userId);
+    //    if (file == null)
+    //    {
+    //        throw new UnauthorizedAccessException("You do not have permission to delete this file.");
+    //    }
 
-        return await _fileRepository.DeleteFileAsync(id, userId);
-    }
+    //    return await _fileRepository.DeleteFileAsync(id, userId);
+    //}
 }

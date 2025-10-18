@@ -89,36 +89,7 @@
         }
 
 
-        [Authorize]
-        [GraphQLName("getFiles")]
-        public async Task<IEnumerable<File>> GetFiles(
-            [Service] IFileService fileService,
-            ClaimsPrincipal user)
-        {
-            var userId = user.FindFirstValue("CustomUserId");
-            if (string.IsNullOrEmpty(userId))
-            {
-                throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
-            }
 
-            return await fileService.GetAllFilesAsync(userId);
-        }
-
-        [Authorize]
-        [GraphQLName("getFileById")]
-        public async Task<File> GetFileById(
-            Guid id,
-            [Service] IFileService fileService,
-            ClaimsPrincipal user)
-        {
-            var userId = user.FindFirstValue("CustomUserId");
-            if (string.IsNullOrEmpty(userId))
-            {
-                throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
-            }
-
-            return await fileService.GetFileByIdAsync(id, userId);
-        }
         [Authorize]
         [GraphQLName("getTags")]
         public async Task<IEnumerable<Tag>> GetTags(

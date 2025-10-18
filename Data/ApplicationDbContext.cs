@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Trace.Data.Configurations;
 using Trace.Models.Auth;
 using Trace.Models.Logic;
 using Trace.Models.TagSystem;
@@ -18,9 +19,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Folder> Folders { get; set; }
     public DbSet<File> Files { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
-
     public DbSet<Tag> Tag{ get; set; }    
-
     public DbSet<TagAssignment> TagAssignments { get; set; }    
 
 
@@ -29,16 +28,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<ApplicationUser>(entity =>
-        {
-            entity.Ignore(e => e.PhoneNumber);
-            entity.Ignore(e => e.PhoneNumberConfirmed);
-            entity.Ignore(e => e.EmailConfirmed);
-            entity.Ignore(e => e.TwoFactorEnabled);
-            entity.Ignore(e => e.LockoutEnd);
-            entity.Ignore(e => e.LockoutEnabled);
-            entity.Ignore(e => e.AccessFailedCount);
-        });
+        modelBuilder.ApplyConfiguration(new ApplicationUserConfiguration());
+        modelBuilder.ApplyConfiguration(new FileConfiguration());
+
+
+
 
 
         modelBuilder.Entity<IdentityRole>(entity =>
@@ -86,18 +80,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey(f => f.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // Configure File entity
-        modelBuilder.Entity<File>()
-            .HasOne(f => f.Folder)
-            .WithMany(f => f.Files)
-            .HasForeignKey(f => f.FolderId)
-            .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<File>()
-            .HasOne(f => f.User)
-            .WithMany() // No navigation collection in ApplicationUser for Files
-            .HasForeignKey(f => f.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
 
         // Configure RefreshToken entity
         modelBuilder.Entity<RefreshToken>()

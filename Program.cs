@@ -8,18 +8,20 @@ using System.Text;
 using Trace.Data;
 using Trace.GraphQL.Mutations;
 using Trace.GraphQL.Queries;
+using Trace.GraphQL.Queries.Files;
 using Trace.GraphQL.Subscriptions;
 using Trace.Models.Auth;
 using Trace.Repositories;
-using Trace.Repository.File;
+using Trace.Repository.Files;
+using Trace.Repository.Files.Fetch;
 using Trace.Repository.Folder;
 using Trace.Repository.TagSystem.Tag;
 using Trace.Service.Auth.GeneralAuth;
 using Trace.Service.Auth.Token;
+using Trace.Service.Files.Fetch;
 using Trace.Service.Logic.File;
 using Trace.Service.Logic.Folder;
 using Trace.Service.Tag;
-
 var builder = WebApplication.CreateBuilder(args);
 
 string connectionString =
@@ -164,7 +166,8 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
-
+builder.Services.AddScoped<IFileQueryRepository, FileQueryRepository>();
+builder.Services.AddScoped<IFileQueryService, FileQueryService>();
 // Register Repositories and Services
 builder.Services.AddScoped<IFolderRepository, FolderRepository>();
 builder.Services.AddScoped<IFileRepository, FileRepository>();
@@ -178,6 +181,7 @@ builder.Services
     .AddGraphQLServer()
     .AddAuthorization()
     .AddQueryType<Query>()
+    .AddTypeExtension<QueryFiles>()
     .AddMutationType<Mutation>()
     .AddSubscriptionType<FolderSubscription>()
     .AddInMemorySubscriptions()
