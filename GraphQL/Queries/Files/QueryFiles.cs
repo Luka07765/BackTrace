@@ -1,5 +1,4 @@
-﻿
-namespace Trace.GraphQL.Queries.Files.Fetch
+﻿namespace Trace.GraphQL.Queries.Files
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
