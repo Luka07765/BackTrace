@@ -18,9 +18,12 @@ using Trace.Repository.TagSystem.Tag;
 using Trace.Service.Auth.GeneralAuth;
 using Trace.Service.Auth.Token;
 using Trace.Service.Files.Fetch;
+using Trace.Service.Files.Modify;  
+using Trace.Repository.Files.Modify;
 using Trace.Service.Logic.File;
 using Trace.Service.Logic.Folder;
 using Trace.Service.Tag;
+using Trace.GraphQL.Mutations.Files;
 var builder = WebApplication.CreateBuilder(args);
 
 string connectionString =
@@ -167,6 +170,8 @@ builder.Services.AddSwaggerGen(options =>
 });
 builder.Services.AddScoped<IFileQueryRepository, FileQueryRepository>();
 builder.Services.AddScoped<IFileQueryService, FileQueryService>();
+builder.Services.AddScoped<IFileModifyService, FileModifyService>();
+builder.Services.AddScoped<IFileModifyRepository, FileModifyRepository>();
 // Register Repositories and Services
 builder.Services.AddScoped<IFolderRepository, FolderRepository>();
 builder.Services.AddScoped<IFileRepository, FileRepository>();
@@ -182,6 +187,7 @@ builder.Services
     .AddQueryType<Query>()
     .AddTypeExtension<QueryFiles>()
     .AddMutationType<Mutation>()
+    .AddTypeExtension<FilesMutation>()
     .AddSubscriptionType<FolderSubscription>()
     .AddInMemorySubscriptions()
     .ModifyRequestOptions(opt => opt.IncludeExceptionDetails = true);

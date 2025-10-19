@@ -1,6 +1,9 @@
 ﻿namespace Trace.Repository.Files.Modify
 {
-    public class IFileModifyRepository
+    using System.Threading.Tasks;
+    using Trace.Models.Logic;
+    public interface IFileModifyRepository
     {
+        Task<File> CreateFileAsync(File file);
     }
 }
