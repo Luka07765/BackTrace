@@ -7,5 +7,7 @@ namespace Trace.Service.Files.Modify
     {
         Task<File> CreateFileAsync(CreateFileInput input, string userId);
         Task<bool> DeleteFileAsync(Guid id);
+
+        Task<File?> UpdateFileAsync(Guid id, UpdateFileInput input);
     }
 }

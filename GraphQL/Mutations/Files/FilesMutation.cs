@@ -13,6 +13,26 @@ namespace Trace.GraphQL.Mutations.Files
     [ExtendObjectType(Name = "Mutation")]
     public class FilesMutation
     {
+        [Authorize]
+        [GraphQLName("updateFile")]
+        public async Task<File?> UpdateFile(
+             Guid id,
+             UpdateFileInput input,
+            [Service] IFileModifyService fileModifyService)
+        {
+            try
+            {
+                var updatedFile = await fileModifyService.UpdateFileAsync(id, input);
+                if (updatedFile == null)
+                    throw new GraphQLException(new Error("File not found", "NOT_FOUND"));
+
+                return updatedFile;
+            }
+            catch (Exception ex)
+            {
+                throw new GraphQLException(new Error(ex.Message, "UPDATE_FAILED"));
+            }
+        }
 
 
 

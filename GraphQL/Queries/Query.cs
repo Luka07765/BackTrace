@@ -6,7 +6,7 @@
     using HotChocolate.Authorization;
     using System.Security.Claims;
     using Trace.Models.Logic;
-    using Trace.Service.Logic.File;
+
     using Trace.Service.Logic.Folder;
     using Trace.Service.Tag;
     using Trace.Models.TagSystem;

@@ -32,6 +32,10 @@ namespace Trace.Service.Files.Modify
 
             return await _fileModifyRepository.CreateFileAsync(file);
         }
+        public async Task<File?> UpdateFileAsync(Guid id, UpdateFileInput input)
+        {
+            return await _fileModifyRepository.UpdateFileAsync(id, input);
+        }
 
         public async Task<bool> DeleteFileAsync(Guid id)
         {

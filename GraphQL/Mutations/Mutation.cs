@@ -6,7 +6,7 @@
     using HotChocolate.Authorization;
     using System.Security.Claims;
     using Trace.Models.Logic;
-    using Trace.Service.Logic.File;
+
     using Trace.Service.Logic.Folder;
     using Trace.Models.TagSystem;
     using Trace.Service.Tag;
@@ -78,30 +78,7 @@
         }
 
 
-        [Authorize]
-        [GraphQLName("updateFile")]
-        public async Task<File> UpdateFile(
-            Guid id,
-            UpdateFileInput input,
-            [Service] IFileService fileService,
-            ClaimsPrincipal user)
-        {
-            try
-            {
-                var userId = user.FindFirstValue("CustomUserId");
-                if (string.IsNullOrEmpty(userId))
-                {
-                    throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
-                }
-
-                return await fileService.UpdateFileAsync(id, input, userId);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                throw new GraphQLException(new Error(ex.Message, "UNAUTHORIZED"));
-            }
-        }
-
+      
  
 
 

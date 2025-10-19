@@ -11,7 +11,6 @@ using Trace.GraphQL.Queries;
 using Trace.GraphQL.Queries.Files;
 using Trace.GraphQL.Subscriptions;
 using Trace.Models.Auth;
-using Trace.Repository.Files;
 using Trace.Repository.Files.Fetch;
 using Trace.Repository.Folder;
 using Trace.Repository.TagSystem.Tag;
@@ -20,7 +19,6 @@ using Trace.Service.Auth.Token;
 using Trace.Service.Files.Fetch;
 using Trace.Service.Files.Modify;  
 using Trace.Repository.Files.Modify;
-using Trace.Service.Logic.File;
 using Trace.Service.Logic.Folder;
 using Trace.Service.Tag;
 using Trace.GraphQL.Mutations.Files;
@@ -174,9 +172,9 @@ builder.Services.AddScoped<IFileModifyService, FileModifyService>();
 builder.Services.AddScoped<IFileModifyRepository, FileModifyRepository>();
 // Register Repositories and Services
 builder.Services.AddScoped<IFolderRepository, FolderRepository>();
-builder.Services.AddScoped<IFileRepository, FileRepository>();
+
 builder.Services.AddScoped<IFolderService, FolderService>();
-builder.Services.AddScoped<IFileService, FileService>();
+
 
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<ITagService, TagService>();
