@@ -1,4 +1,5 @@
-﻿namespace Trace.GraphQL.Queries
+﻿
+namespace Trace.GraphQL.Queries.Folders
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -6,21 +7,16 @@
     using HotChocolate.Authorization;
     using System.Security.Claims;
     using Trace.Models.Logic;
-    using Trace.Service.Tag;
-    using Trace.Models.TagSystem;
-    using Trace.Service.Folder;
+    using Trace.Service.Folder.Fetch.Query;
 
-    public class Query
+
+    [ExtendObjectType("Query")]
+    public class QueryFolders
     {
-     
-
-   
-
-
         [Authorize]
-        [GraphQLName("getTags")]
-        public async Task<IEnumerable<Tag>> GetTags(
-            [Service] ITagService tagService,
+        [GraphQLName("getFolders")]
+        public async Task<IEnumerable<Folder>> GetFolders(
+            [Service] IFolderQueryService folderQueryService,
             ClaimsPrincipal user)
         {
             var userId = user.FindFirstValue("CustomUserId");
@@ -29,14 +25,14 @@
                 throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
             }
 
-            return await tagService.GetAllTagsAsync(userId);
+            return await folderQueryService.GetAllFoldersAsync(userId);
         }
 
         [Authorize]
-        [GraphQLName("getTagById")]
-        public async Task<Tag> GetTagById(
+        [GraphQLName("getFolderById")]
+        public async Task<Folder> GetFolderById(
             Guid id,
-            [Service] ITagService tagService,
+            [Service] IFolderQueryService folderQueryService,
             ClaimsPrincipal user)
         {
             var userId = user.FindFirstValue("CustomUserId");
@@ -45,15 +41,13 @@
                 throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
             }
 
-            return await tagService.GetTagByIdAsync(id, userId);
+            return await folderQueryService.GetFolderByIdAsync(id, userId);
         }
-
         [Authorize]
-        [GraphQLName("getFilesByTag")]
-        public async Task<IEnumerable<File>> GetFilesByTag(
-            Guid tagId,
-            [Service] ITagService tagService,
-            ClaimsPrincipal user)
+        [GraphQLName("getRootFolders")]
+        public async Task<IEnumerable<Folder>> GetRootFolders(
+    [Service] IFolderQueryService folderQueryService,
+    ClaimsPrincipal user)
         {
             var userId = user.FindFirstValue("CustomUserId");
             if (string.IsNullOrEmpty(userId))
@@ -61,8 +55,7 @@
                 throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
             }
 
-            return await tagService.GetFilesByTagAsync(tagId, userId);
+            return await folderQueryService.GetRootFoldersAsync(userId);
         }
-
     }
 }

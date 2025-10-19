@@ -14,41 +14,9 @@ public class FolderRepository : IFolderRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Folder>> GetAllFoldersAsync(string userId)
-    {
-        return await _context.Folders
-      .Where(f => f.UserId == userId)
-      .Include(f => f.SubFolders)
-
-      .ToListAsync();
-    }
 
     
 
-    public async Task<Folder> GetFirstLayerAsync(Guid folderId, string userId)
-    {
-        return await _context.Folders
-            .Where(f => f.Id == folderId && f.UserId == userId)
-            .Include(f => f.SubFolders)
-            .Include(f => f.Files)
-            .FirstOrDefaultAsync();
-    }
-    public async Task<IEnumerable<Folder>> GetRootFoldersAsync(string userId)
-    {
-        return await _context.Folders
-            .Where(f => f.UserId == userId && f.ParentFolderId == null)
-      
-            .ToListAsync();
-    }
-
-
-    public async Task<Folder> GetFolderByIdAsync(Guid id, string userId)
-    {
-        return await _context.Folders
-            .Include(f => f.SubFolders)
-            .Include(f => f.Files)
-            .FirstOrDefaultAsync(f => f.Id == id && f.UserId == userId);
-    }
 
     //MUTATIONS
 
@@ -71,13 +39,13 @@ public class FolderRepository : IFolderRepository
         return folder;
     }
 
-    public async Task<bool> DeleteFolderAsync(Guid id, string userId)
-    {
-        var folder = await GetFolderByIdAsync(id, userId);
-        if (folder == null) return false;
+    //public async Task<bool> DeleteFolderAsync(Guid id, string userId)
+    //{
+    //    var folder = await GetFolderByIdAsync(id, userId);
+    //    if (folder == null) return false;
 
-        _context.Folders.Remove(folder);
-        await _context.SaveChangesAsync();
-        return true;
-    }
+    //    _context.Folders.Remove(folder);
+    //    await _context.SaveChangesAsync();
+    //    return true;
+    //}
 }

@@ -1,9 +1,10 @@
-﻿namespace Trace.Repository.Folder.Fetch.Query
+﻿namespace Trace.Service.Folder.Fetch.Query
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+
     using Trace.Models.Logic;
-    public interface IFolderQueryRepository
+    public interface IFolderQueryService
     {
         Task<IEnumerable<Folder>> GetAllFoldersAsync(string userId);
         Task<Folder> GetFolderByIdAsync(Guid id, string userId);

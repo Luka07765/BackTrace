@@ -6,11 +6,9 @@
     using HotChocolate.Authorization;
     using System.Security.Claims;
     using Trace.Models.Logic;
-
-    using Trace.Service.Logic.Folder;
     using Trace.Models.TagSystem;
     using Trace.Service.Tag;
-
+    using Trace.Service.Folder;
 
     public class Mutation
     {
@@ -54,28 +52,28 @@
             }
         }
 
-        [Authorize]
-        [GraphQLName("deleteFolder")]
-        public async Task<bool> DeleteFolder(
-            Guid id,
-            [Service] IFolderService folderService,
-            ClaimsPrincipal user)
-        {
-            try
-            {
-                var userId = user.FindFirstValue("CustomUserId");
-                if (string.IsNullOrEmpty(userId))
-                {
-                    throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
-                }
+        //[Authorize]
+        //[GraphQLName("deleteFolder")]
+        //public async Task<bool> DeleteFolder(
+        //    Guid id,
+        //    [Service] IFolderService folderService,
+        //    ClaimsPrincipal user)
+        //{
+        //    try
+        //    {
+        //        var userId = user.FindFirstValue("CustomUserId");
+        //        if (string.IsNullOrEmpty(userId))
+        //        {
+        //            throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
+        //        }
 
-                return await folderService.DeleteFolderAsync(id, userId);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                throw new GraphQLException(new Error(ex.Message, "UNAUTHORIZED"));
-            }
-        }
+        //        return await folderService.DeleteFolderAsync(id, userId);
+        //    }
+        //    catch (UnauthorizedAccessException ex)
+        //    {
+        //        throw new GraphQLException(new Error(ex.Message, "UNAUTHORIZED"));
+        //    }
+        //}
 
 
       

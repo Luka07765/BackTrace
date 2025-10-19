@@ -6,7 +6,7 @@ namespace Trace.Repository.Folder.Fetch.Query
     using System.Threading.Tasks;
     using Trace.Data;
     using Trace.Models.Logic;
-    public class FolderQueryRepository
+    public class FolderQueryRepository: IFolderQueryRepository
     {
         private readonly ApplicationDbContext _context;
 

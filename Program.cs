@@ -7,21 +7,26 @@ using System.Security.Claims;
 using System.Text;
 using Trace.Data;
 using Trace.GraphQL.Mutations;
+using Trace.GraphQL.Mutations.Files;
 using Trace.GraphQL.Queries;
 using Trace.GraphQL.Queries.Files;
+using Trace.GraphQL.Queries.Folders;
 using Trace.GraphQL.Subscriptions;
 using Trace.Models.Auth;
 using Trace.Repository.Files.Fetch;
+using Trace.Repository.Files.Modify;
 using Trace.Repository.Folder;
+using Trace.Repository.Folder.Fetch.Progressive;
+using Trace.Repository.Folder.Fetch.Query;
 using Trace.Repository.TagSystem.Tag;
 using Trace.Service.Auth.GeneralAuth;
 using Trace.Service.Auth.Token;
 using Trace.Service.Files.Fetch;
-using Trace.Service.Files.Modify;  
-using Trace.Repository.Files.Modify;
-using Trace.Service.Logic.Folder;
+using Trace.Service.Files.Modify;
+using Trace.Service.Folder;
+using Trace.Service.Folder.Fetch.Progressive;
+using Trace.Service.Folder.Fetch.Query;
 using Trace.Service.Tag;
-using Trace.GraphQL.Mutations.Files;
 var builder = WebApplication.CreateBuilder(args);
 
 string connectionString =
@@ -171,6 +176,13 @@ builder.Services.AddScoped<IFileQueryService, FileQueryService>();
 builder.Services.AddScoped<IFileModifyService, FileModifyService>();
 builder.Services.AddScoped<IFileModifyRepository, FileModifyRepository>();
 // Register Repositories and Services
+builder.Services.AddScoped<IFolderProgressiveRepository, FolderProgressiveRepository>();
+builder.Services.AddScoped<IFolderQueryService, FolderQueryService>();
+builder.Services.AddScoped<IFolderQueryRepository, FolderQueryRepository>();
+builder.Services.AddScoped<IFolderProgressiveService, FolderProgressiveService>();
+
+
+
 builder.Services.AddScoped<IFolderRepository, FolderRepository>();
 
 builder.Services.AddScoped<IFolderService, FolderService>();
@@ -183,6 +195,8 @@ builder.Services
     .AddGraphQLServer()
     .AddAuthorization()
     .AddQueryType<Query>()
+    .AddTypeExtension<QueryFolders>()             
+    .AddTypeExtension<Progressive>()
     .AddTypeExtension<QueryFiles>()
     .AddMutationType<Mutation>()
     .AddTypeExtension<FilesMutation>()

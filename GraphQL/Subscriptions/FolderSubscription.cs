@@ -5,15 +5,15 @@ namespace Trace.GraphQL.Subscriptions
     using HotChocolate.Subscriptions;
     using System.Runtime.CompilerServices;
     using System.Security.Claims;
-    using Trace.Service.Logic.Folder;
+    using Trace.Service.Folder.Fetch.Progressive;
 
     public class FolderSubscription
     {
-        private readonly IFolderService _folderService;
+        private readonly IFolderProgressiveService _folderProgressiveService;
 
-        public FolderSubscription(IFolderService folderService)
+        public FolderSubscription(IFolderProgressiveService folderProgressiveService)
         {
-            _folderService = folderService;
+            _folderProgressiveService = folderProgressiveService;
         }
 
         [SubscribeAndResolve] // ✅ use this instead of [Subscribe]
@@ -26,7 +26,7 @@ namespace Trace.GraphQL.Subscriptions
             if (string.IsNullOrEmpty(userId))
                 yield break;
 
-            await foreach (var layer in _folderService.StreamFolderHierarchyAsync(folderId, userId, cancellationToken))
+            await foreach (var layer in _folderProgressiveService.StreamFolderHierarchyAsync(folderId, userId, cancellationToken))
             {
                 yield return layer;
             }

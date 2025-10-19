@@ -7,8 +7,8 @@ namespace Trace.GraphQL.Mutations.Files
     using HotChocolate.Authorization;
     using System.Security.Claims;
     using Trace.Models.Logic;
-    using Trace.Service.Logic.Folder;
     using Trace.Service.Files.Modify;
+    using Trace.Service.Folder;
 
     [ExtendObjectType(Name = "Mutation")]
     public class FilesMutation
