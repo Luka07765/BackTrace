@@ -1,12 +1,10 @@
-﻿
-namespace Trace.Repositories
+﻿namespace Trace.Repository.TagSystem.Tag
 {
     using Microsoft.EntityFrameworkCore;
     using System;
     using Trace.Data;
     using Trace.Models.Logic;
     using Trace.Models.TagSystem;
-    using Trace.Repository.TagSystem.Tag;
 
     public class TagRepository : ITagRepository
     {

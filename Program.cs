@@ -11,7 +11,6 @@ using Trace.GraphQL.Queries;
 using Trace.GraphQL.Queries.Files;
 using Trace.GraphQL.Subscriptions;
 using Trace.Models.Auth;
-using Trace.Repositories;
 using Trace.Repository.Files;
 using Trace.Repository.Files.Fetch;
 using Trace.Repository.Folder;
