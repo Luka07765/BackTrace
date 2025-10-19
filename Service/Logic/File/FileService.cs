@@ -16,21 +16,6 @@ public class FileService : IFileService
     }
 
 
-    public async Task<File> CreateFileAsync(CreateFileInput input, string userId)
-    {
-        var file = new File
-        {
-            Title = input.Title,
-            Content = input.Content ?? "", 
-            FolderId = input.FolderId,
-            UserId = userId,
-            Colors = input.Colors,
-            FilePosition = input.FilePosition,
-            IconId = input.IconId
-        };
-
-        return await _fileRepository.CreateFileAsync(file);
-    }
 
 
 
@@ -48,14 +33,5 @@ public class FileService : IFileService
     }
 
 
-    //public async Task<bool> DeleteFileAsync(Guid id, string userId)
-    //{
-    //    var file = await _fileRepository.GetFileByIdAsync(id, userId);
-    //    if (file == null)
-    //    {
-    //        throw new UnauthorizedAccessException("You do not have permission to delete this file.");
-    //    }
 
-    //    return await _fileRepository.DeleteFileAsync(id, userId);
-    //}
 }

@@ -5,5 +5,6 @@
     public interface IFileModifyRepository
     {
         Task<File> CreateFileAsync(File file);
+        Task<int> DeleteFileAsync(Guid id);
     }
 }

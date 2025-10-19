@@ -21,18 +21,7 @@
             _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
-        // EF Core: Get all files for a user
-    
-        // EF Core: Create a new file
-        public async Task<File> CreateFileAsync(File file)
-        {
-            file.Id = Guid.NewGuid();
-            file.Colors =  "Green" ;
-            file.IconId = 1;    
-            _context.Files.Add(file);
-            await _context.SaveChangesAsync();
-            return file;
-        }
+
         public async Task<File?> SaveFileDeltaAsync(Guid fileId,
             Guid? folderId,
             string? colors,
@@ -80,14 +69,6 @@
             return file;
         }
 
-        //public async Task<bool> DeleteFileAsync(Guid id, string userId)
-        //{
-        //    var file = await GetFileByIdAsync(id, userId);
-        //    if (file == null) return false;
 
-        //    _context.Files.Remove(file);
-        //    await _context.SaveChangesAsync();
-        //    return true;
-        //}
     }
 }

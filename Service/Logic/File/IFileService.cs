@@ -8,7 +8,6 @@ public interface IFileService
 {
    
 
-    Task<File> CreateFileAsync(CreateFileInput input, string userId);
     Task<File> UpdateFileAsync(Guid id, UpdateFileInput input, string userId);
     //Task<bool> DeleteFileAsync(Guid id);
 }

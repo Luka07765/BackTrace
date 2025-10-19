@@ -13,6 +13,33 @@ namespace Trace.GraphQL.Mutations.Files
     [ExtendObjectType(Name = "Mutation")]
     public class FilesMutation
     {
+
+
+
+        [Authorize]
+        [GraphQLName("deleteFile")]
+        public async Task<bool> DeleteFile(
+                Guid id,
+                [Service] IFileModifyService fileModifyService)
+        {
+            try
+            {
+                var deleted = await fileModifyService.DeleteFileAsync(id);
+                if (!deleted)
+                {
+                    throw new GraphQLException(new Error("File not found", "NOT_FOUND"));
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new GraphQLException(new Error(ex.Message, "DELETE_FAILED"));
+            }
+        }
+
+
+
         [Authorize]
         [GraphQLName("createFile")]
         public async Task<File> CreateFileAsync(
@@ -34,4 +61,6 @@ namespace Trace.GraphQL.Mutations.Files
             return await fileModifyService.CreateFileAsync(input, userId);
         }
     }
+
+
 }

@@ -102,30 +102,7 @@
             }
         }
 
-        //[Authorize]
-        //[GraphQLName("deleteFile")]
-        //public async Task<bool> DeleteFile(
-        //    Guid id,
-        //    [Service] IFileService fileService,
-        //    ClaimsPrincipal user)
-        //{
-        //    try
-        //    {
-        //        var userId = user.FindFirstValue("CustomUserId");
-        //        if (string.IsNullOrEmpty(userId))
-        //        {
-        //            throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
-        //        }
-
-        //        return await fileService.DeleteFileAsync(id, userId);
-        //    }
-        //    catch (UnauthorizedAccessException ex)
-        //    {
-        //        throw new GraphQLException(new Error(ex.Message, "UNAUTHORIZED"));
-        //    }
-
-
-        //}
+ 
 
 
         // ----------------- TAG -----------------
