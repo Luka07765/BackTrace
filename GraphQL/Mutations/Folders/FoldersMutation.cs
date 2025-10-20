@@ -48,6 +48,21 @@
 
             return updatedFolder;
         }
+        [Authorize]
+        [GraphQLName("deleteFolder")]
+        public async Task<bool> DeleteFolder(
+      Guid id,
+      [Service] IFolderModifyService folderModifyService)
+        {
+            var deleted = await folderModifyService.DeleteFolderAsync(id);
+
+            if (!deleted)
+            {
+                throw new GraphQLException(new Error("Folder could not be deleted", "DELETE_FAILED"));
+            }
+
+            return true;
+        }
 
     }
 }

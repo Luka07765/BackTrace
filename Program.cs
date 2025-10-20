@@ -15,7 +15,7 @@ using Trace.GraphQL.Subscriptions;
 using Trace.Models.Auth;
 using Trace.Repository.Files.Fetch;
 using Trace.Repository.Files.Modify;
-using Trace.Repository.Folder;
+
 using Trace.Repository.Folder.Fetch.Progressive;
 using Trace.Repository.Folder.Fetch.Query;
 using Trace.Repository.TagSystem.Tag;
@@ -23,7 +23,7 @@ using Trace.Service.Auth.GeneralAuth;
 using Trace.Service.Auth.Token;
 using Trace.Service.Files.Fetch;
 using Trace.Service.Files.Modify;
-using Trace.Service.Folder;
+
 using Trace.Service.Folder.Fetch.Progressive;
 using Trace.Service.Folder.Fetch.Query;
 using Trace.Service.Tag;
@@ -185,12 +185,6 @@ builder.Services.AddScoped<IFolderQueryRepository, FolderQueryRepository>();
 builder.Services.AddScoped<IFolderProgressiveService, FolderProgressiveService>();
 builder.Services.AddScoped<IFolderModifyRepository, FolderModifyRepository>();
 builder.Services.AddScoped<IFolderModifyService, FolderModifyService>();
-
-
-
-builder.Services.AddScoped<IFolderRepository, FolderRepository>();
-
-builder.Services.AddScoped<IFolderService, FolderService>();
 
 
 builder.Services.AddScoped<ITagRepository, TagRepository>();

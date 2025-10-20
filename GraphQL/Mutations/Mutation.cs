@@ -12,36 +12,14 @@
 
     public class Mutation
     {
-       
-
-   
-
-        //[Authorize]
-        //[GraphQLName("deleteFolder")]
-        //public async Task<bool> DeleteFolder(
-        //    Guid id,
-        //    [Service] IFolderService folderService,
-        //    ClaimsPrincipal user)
-        //{
-        //    try
-        //    {
-        //        var userId = user.FindFirstValue("CustomUserId");
-        //        if (string.IsNullOrEmpty(userId))
-        //        {
-        //            throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
-        //        }
-
-        //        return await folderService.DeleteFolderAsync(id, userId);
-        //    }
-        //    catch (UnauthorizedAccessException ex)
-        //    {
-        //        throw new GraphQLException(new Error(ex.Message, "UNAUTHORIZED"));
-        //    }
-        //}
 
 
-      
- 
+
+
+  
+
+
+
 
 
         // ----------------- TAG -----------------

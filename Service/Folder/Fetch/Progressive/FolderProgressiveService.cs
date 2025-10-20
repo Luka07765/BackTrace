@@ -18,9 +18,9 @@ namespace Trace.Service.Folder.Fetch.Progressive
     {
         private readonly IFolderProgressiveRepository _folderProgressiveRepository;
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<FolderService> _logger;
+        private readonly ILogger<FolderProgressiveService> _logger;
 
-        public FolderProgressiveService(IFolderProgressiveRepository folderProgressiveRepository, ApplicationDbContext context, ILogger<FolderService> logger)
+        public FolderProgressiveService(IFolderProgressiveRepository folderProgressiveRepository, ApplicationDbContext context, ILogger<FolderProgressiveService> logger)
         {
             _folderProgressiveRepository = folderProgressiveRepository;
             _context = context;

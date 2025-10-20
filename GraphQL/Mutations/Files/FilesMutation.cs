@@ -65,7 +65,7 @@ namespace Trace.GraphQL.Mutations.Files
         public async Task<File> CreateFileAsync(
             CreateFileInput input,
             [Service] IFileModifyService fileModifyService,
-            [Service] IFolderService folderService,
+      
             ClaimsPrincipal user)
         {
             // ✅ Extract User ID from JWT claims

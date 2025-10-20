@@ -8,5 +8,6 @@ namespace Trace.Service.Folder.Modify
     {
         Task<Folder> CreateFolderAsync(FolderInput input, string userId);
         Task<Folder?> UpdateFolderAsync(Guid folderId, FolderInput input);
+        Task<bool> DeleteFolderAsync(Guid id);
     }
 }
