@@ -29,6 +29,9 @@ namespace Trace.Service.Folder.Modify
 
         public async Task<Folder> CreateFolderAsync(FolderInput input, string userId)
         {
+            if (string.IsNullOrWhiteSpace(input.Title))
+                throw new ArgumentException("Mora da ima naziv foldera.");
+
             var folder = new Folder
             {
                 Title = input.Title,
