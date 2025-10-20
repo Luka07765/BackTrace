@@ -28,5 +28,26 @@
 
             return await folderModifyService.CreateFolderAsync(input, userId);
         }
+
+
+        [Authorize]
+        [GraphQLName("updateFolder")]
+        public async Task<Folder?> UpdateFolder(
+             Guid id,
+             FolderInput input,
+             [Service] IFolderModifyService folderModifyService)
+        {
+
+            var updatedFolder = await folderModifyService.UpdateFolderAsync(id, input);
+
+        
+            if (updatedFolder == null)
+            {
+                throw new GraphQLException(new Error("Folder not found", "NOT_FOUND"));
+            }
+
+            return updatedFolder;
+        }
+
     }
 }

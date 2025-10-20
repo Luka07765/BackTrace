@@ -14,9 +14,9 @@ namespace Trace.Service.Folder.Modify
     {
         private readonly IFolderModifyRepository _folderModifyRepository;
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<FolderService> _logger;
+        private readonly ILogger<FolderModifyService> _logger;
 
-        public FolderModifyService(IFolderModifyRepository folderModifyRepository, ApplicationDbContext context, ILogger<FolderService> logger)
+        public FolderModifyService(IFolderModifyRepository folderModifyRepository, ApplicationDbContext context, ILogger<FolderModifyService> logger)
         {
             _folderModifyRepository = folderModifyRepository;
             _context = context;
@@ -40,6 +40,10 @@ namespace Trace.Service.Folder.Modify
                 IconId = input.IconId ?? 1
             };
             return await _folderModifyRepository.CreateFolderAsync(folder);
+        }
+       public async Task<Folder?> UpdateFolderAsync(Guid id, FolderInput input)
+        {
+            return await _folderModifyRepository.UpdateFolderAsync(id, input);
         }
 
 

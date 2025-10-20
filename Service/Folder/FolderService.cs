@@ -28,42 +28,6 @@
 
 
 
-        public async Task<Folder> UpdateFolderAsync(Guid id, FolderInput input, string userId)
-        {
-            // Retrieve the existing folder
-            var existingFolder = await _context.Folders.FindAsync(id);
-            if (existingFolder == null)
-            {
-                throw new Exception("Folder not found");
-            }
-
-            // Check if the folder belongs to the user (optional, for security)
-            if (existingFolder.UserId != userId)
-            {
-                throw new UnauthorizedAccessException("You do not have permission to update this folder.");
-            }
-
-            // Update only the properties that are provided
-            if (input.Title != null)
-            {
-                existingFolder.Title = input.Title;
-            }
-
-            // Only update ParentFolderId if it's provided in the input
-            if (input.ParentFolderId.HasValue)
-            {
-                existingFolder.ParentFolderId = input.ParentFolderId;
-            }
-            if (input.IconId.HasValue)
-            {
-                existingFolder.IconId = input.IconId.Value;
-            }
-
-
-            // Save changes
-            await _context.SaveChangesAsync();
-            return existingFolder;
-        }
 
 
         //public async Task<bool> DeleteFolderAsync(Guid id, string userId)

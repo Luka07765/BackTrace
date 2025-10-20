@@ -2,8 +2,11 @@
 
 namespace Trace.Repository.Folder.Modify
 {
-    using Trace.Models.Logic;
+    using Microsoft.EntityFrameworkCore;
     using Trace.Data;
+    using Trace.GraphQL.Inputs;
+    using Trace.Models.Logic;
+
     public class FolderModifyRepository : IFolderModifyRepository
     {
         private readonly ApplicationDbContext _context;
@@ -18,7 +21,18 @@ namespace Trace.Repository.Folder.Modify
             await _context.SaveChangesAsync();
             return folder;
         }
+        public async Task<Folder?> UpdateFolderAsync(Guid folderId, FolderInput input)
+        {
+            var folder = await _context.Folders.FirstOrDefaultAsync(f => f.Id == folderId);
+            if (folder == null) return null;
 
+            if (input.Title != null) folder.Title = input.Title;
+            if (input.ParentFolderId.HasValue) folder.ParentFolderId = input.ParentFolderId.Value;
+            if (input.IconId.HasValue) folder.IconId = input.IconId.Value;
+
+            await _context.SaveChangesAsync();
+            return folder;
+        }
 
     }
 }

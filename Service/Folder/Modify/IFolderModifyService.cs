@@ -7,5 +7,6 @@ namespace Trace.Service.Folder.Modify
     public interface IFolderModifyService
     {
         Task<Folder> CreateFolderAsync(FolderInput input, string userId);
+        Task<Folder?> UpdateFolderAsync(Guid folderId, FolderInput input);
     }
 }

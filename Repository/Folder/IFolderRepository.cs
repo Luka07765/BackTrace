@@ -6,7 +6,6 @@ using Trace.Models.Logic;
 public interface IFolderRepository
 {
 
-    Task<Folder> UpdateFolderAsync(Folder folder);
     //Task<bool> DeleteFolderAsync(Guid id, string userId);
 
 

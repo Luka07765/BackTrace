@@ -14,29 +14,7 @@
     {
        
 
-        [Authorize]
-        [GraphQLName("updateFolder")]
-        public async Task<Folder> UpdateFolder(
-            Guid id,
-            FolderInput input,
-            [Service] IFolderService folderService,
-            ClaimsPrincipal user)
-        {
-            try
-            {
-                var userId = user.FindFirstValue("CustomUserId");
-                if (string.IsNullOrEmpty(userId))
-                {
-                    throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
-                }
-
-                return await folderService.UpdateFolderAsync(id, input, userId);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                throw new GraphQLException(new Error(ex.Message, "UNAUTHORIZED"));
-            }
-        }
+   
 
         //[Authorize]
         //[GraphQLName("deleteFolder")]

@@ -20,12 +20,7 @@ public class FolderRepository : IFolderRepository
 
     //MUTATIONS
 
-    public async Task<Folder> UpdateFolderAsync(Folder folder)
-    {
-        _context.Folders.Update(folder);
-        await _context.SaveChangesAsync();
-        return folder;
-    }
+  
 
     //public async Task<bool> DeleteFolderAsync(Guid id, string userId)
     //{
