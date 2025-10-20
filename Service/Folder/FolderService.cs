@@ -28,20 +28,6 @@
 
 
 
-    
-
-        public async Task<Folder> CreateFolderAsync(FolderInput input, string userId)
-        {
-            var folder = new Folder
-            {
-                Title = input.Title,
-                ParentFolderId = input.ParentFolderId,
-                UserId = userId,
-                IconId = input.IconId ?? 1
-            };
-            return await _folderRepository.CreateFolderAsync(folder);
-        }
-
         public async Task<Folder> UpdateFolderAsync(Guid id, FolderInput input, string userId)
         {
             // Retrieve the existing folder

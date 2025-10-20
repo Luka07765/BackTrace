@@ -12,21 +12,7 @@
 
     public class Mutation
     {
-        [Authorize]
-        [GraphQLName("createFolder")]
-        public async Task<Folder> CreateFolder(
-            FolderInput input,
-            [Service] IFolderService folderService,
-            ClaimsPrincipal user)
-        {
-            var userId = user.FindFirstValue("CustomUserId");
-            if (string.IsNullOrEmpty(userId))
-            {
-                throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
-            }
-
-            return await folderService.CreateFolderAsync(input, userId);
-        }
+       
 
         [Authorize]
         [GraphQLName("updateFolder")]

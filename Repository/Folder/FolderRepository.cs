@@ -20,18 +20,6 @@ public class FolderRepository : IFolderRepository
 
     //MUTATIONS
 
-    public async Task<Folder> CreateFolderAsync(Folder folder)
-    {
-        if (folder.Id == Guid.Empty)  
-        {
-            folder.Id = Guid.NewGuid();  
-        }
-        folder.IconId = 1;
-        _context.Folders.Add(folder);
-        await _context.SaveChangesAsync();
-        return folder;
-    }
-
     public async Task<Folder> UpdateFolderAsync(Folder folder)
     {
         _context.Folders.Update(folder);

@@ -27,6 +27,9 @@ using Trace.Service.Folder;
 using Trace.Service.Folder.Fetch.Progressive;
 using Trace.Service.Folder.Fetch.Query;
 using Trace.Service.Tag;
+using Trace.Repository.Folder.Modify;
+using Trace.Service.Folder.Modify;
+using Trace.GraphQL.Mutations.Folders;
 var builder = WebApplication.CreateBuilder(args);
 
 string connectionString =
@@ -180,6 +183,8 @@ builder.Services.AddScoped<IFolderProgressiveRepository, FolderProgressiveReposi
 builder.Services.AddScoped<IFolderQueryService, FolderQueryService>();
 builder.Services.AddScoped<IFolderQueryRepository, FolderQueryRepository>();
 builder.Services.AddScoped<IFolderProgressiveService, FolderProgressiveService>();
+builder.Services.AddScoped<IFolderModifyRepository, FolderModifyRepository>();
+builder.Services.AddScoped<IFolderModifyService, FolderModifyService>();
 
 
 
@@ -199,6 +204,7 @@ builder.Services
     .AddTypeExtension<Progressive>()
     .AddTypeExtension<QueryFiles>()
     .AddMutationType<Mutation>()
+     .AddTypeExtension<FoldersMutation>()
     .AddTypeExtension<FilesMutation>()
     .AddSubscriptionType<FolderSubscription>()
     .AddInMemorySubscriptions()
