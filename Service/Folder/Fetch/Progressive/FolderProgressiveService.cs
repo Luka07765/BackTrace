@@ -61,7 +61,7 @@ namespace Trace.Service.Folder.Fetch.Progressive
             {
                 if (cancellationToken.IsCancellationRequested)
                     yield break;
-
+                await Task.Delay(1000, cancellationToken); //fetcg every 1 secound
                 var fullSubFolder = await _folderProgressiveRepository.GetFirstLayerAsync(subFolder.Id, userId);
                 if (fullSubFolder != null)
                 {
