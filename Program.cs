@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -223,7 +223,12 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 
-// Configure Middleware
+app.UseAuthentication();
+app.UseAuthorization();
+
+//app.UseWebSockets(); 
+
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -231,11 +236,11 @@ if (app.Environment.IsDevelopment())
 }
 app.MapGet("/", () => "Radi spajdermen!");
 
-app.UseAuthentication();
-app.UseAuthorization();
 
-app.MapControllers();
 
 app.MapGraphQL();
+app.MapControllers();
 
 app.Run();
+
+
