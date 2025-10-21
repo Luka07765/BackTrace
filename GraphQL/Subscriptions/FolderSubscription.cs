@@ -23,8 +23,15 @@ namespace Trace.GraphQL.Subscriptions
             [EnumeratorCancellation] CancellationToken cancellationToken)
         {
             var userId = user.FindFirstValue("CustomUserId");
+            Console.WriteLine($"🟡 Subscription START for folder {folderId}, userId = {userId}");
+
+
             if (string.IsNullOrEmpty(userId))
+            {
+                Console.WriteLine("❌ No userId in token, stopping stream.");
                 yield break;
+            }
+
 
             await foreach (var layer in _folderProgressiveService.StreamFolderHierarchyAsync(folderId, userId, cancellationToken))
             {
