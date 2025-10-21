@@ -77,49 +77,5 @@ namespace Trace.Service.Folder.Fetch.Progressive
                 }
             }
         }
-
-        public async Task<Folder> GetFolderTreeAsync(Guid folderId, string userId)
-        {
-            var sw = Stopwatch.StartNew();
-            _logger.LogInformation("Starting recursive fetch for folder {FolderId}", folderId);
-
-            var root = await _folderProgressiveRepository.GetFirstLayerAsync(folderId, userId);
-            if (root == null)
-            {
-                _logger.LogWarning("Folder {FolderId} not found", folderId);
-                return null;
-            }
-
-            await LoadSubFoldersRecursive(root, userId, 1);
-
-            sw.Stop();
-            _logger.LogInformation("Finished fetching full tree for {FolderId} in {Elapsed}ms", folderId, sw.ElapsedMilliseconds);
-            return root;
-        }
-
-        private async Task LoadSubFoldersRecursive(Folder folder, string userId, int depth)
-        {
-            _logger.LogInformation("Fetching layer {Depth} for folder {FolderId}", depth, folder.Id);
-
-            foreach (var subFolder in folder.SubFolders)
-            {
-                var sw = Stopwatch.StartNew();
-
-                var fullSubFolder = await _folderProgressiveRepository.GetFirstLayerAsync(subFolder.Id, userId);
-                if (fullSubFolder != null)
-                {
-                    subFolder.Files = fullSubFolder.Files;
-                    subFolder.SubFolders = fullSubFolder.SubFolders;
-
-                    _logger.LogInformation(
-                        "Loaded folder {FolderId} with {FileCount} files and {SubCount} subfolders at depth {Depth} (took {Elapsed}ms)",
-                        subFolder.Id, subFolder.Files.Count, subFolder.SubFolders.Count, depth, sw.ElapsedMilliseconds
-                    );
-
-                    await LoadSubFoldersRecursive(subFolder, userId, depth + 1);
-                }
-            }
-        }
-
     }
 }

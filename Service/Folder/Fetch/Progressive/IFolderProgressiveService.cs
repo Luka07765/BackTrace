@@ -7,7 +7,7 @@
     using Trace.Models.Logic;
     public interface IFolderProgressiveService
     {
-        Task<Folder> GetFolderTreeAsync(Guid folderId, string userId);
+  
         Task<Folder> GetFirstLayerAsync(Guid folderId, string userId);
 
         IAsyncEnumerable<FolderLayerPayload> StreamFolderHierarchyAsync(

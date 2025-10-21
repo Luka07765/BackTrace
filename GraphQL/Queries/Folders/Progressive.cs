@@ -29,19 +29,6 @@ namespace Trace.GraphQL.Queries.Folders
         }
 
 
-        [Authorize]
-        [GraphQLName("getFolderTree")]
-        public async Task<Folder> GetFolderTree(
-    Guid folderId,
-    [Service] IFolderProgressiveService folderProgressiveService,
-    ClaimsPrincipal user)
-        {
-            var userId = user.FindFirstValue("CustomUserId");
-            if (string.IsNullOrEmpty(userId))
-                throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
-
-            return await folderProgressiveService.GetFolderTreeAsync(folderId, userId);
-        }
 
     }
 }
