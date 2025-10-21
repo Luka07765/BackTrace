@@ -15,7 +15,7 @@ namespace Trace.GraphQL.Subscriptions
         {
             _folderProgressiveService = folderProgressiveService;
         }
-
+        [GraphQLName("getProgressive")]
         [SubscribeAndResolve] // ✅ use this instead of [Subscribe]
         public async IAsyncEnumerable<FolderLayerPayload> FolderProgressiveAsync(
             Guid folderId,
