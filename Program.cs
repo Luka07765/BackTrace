@@ -15,7 +15,6 @@ using Trace.GraphQL.Subscriptions;
 using Trace.Models.Auth;
 using Trace.Repository.Files.Fetch;
 using Trace.Repository.Files.Modify;
-
 using Trace.Repository.Folder.Fetch.Progressive;
 using Trace.Repository.Folder.Fetch.Query;
 using Trace.Repository.TagSystem.Tag;
@@ -222,11 +221,11 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
+app.UseWebSockets();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-//app.UseWebSockets(); 
 
 
 if (app.Environment.IsDevelopment())

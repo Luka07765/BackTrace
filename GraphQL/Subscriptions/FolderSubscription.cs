@@ -2,7 +2,7 @@
 namespace Trace.GraphQL.Subscriptions
 {
     using Trace.DTO;
-    using HotChocolate.Subscriptions;
+
     using System.Runtime.CompilerServices;
     using System.Security.Claims;
     using Trace.Service.Folder.Fetch.Progressive;
