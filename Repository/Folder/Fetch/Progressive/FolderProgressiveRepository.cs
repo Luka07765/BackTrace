@@ -18,6 +18,7 @@ namespace Trace.Repository.Folder.Fetch.Progressive
         public async Task<Folder> GetFirstLayerAsync(Guid folderId, string userId)
         {
             return await _context.Folders
+                .AsNoTracking()
                 .Where(f => f.Id == folderId && f.UserId == userId)
                 .Include(f => f.SubFolders)
                 .Include(f => f.Files)

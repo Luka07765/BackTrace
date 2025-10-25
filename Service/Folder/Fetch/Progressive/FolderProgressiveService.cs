@@ -30,51 +30,55 @@ namespace Trace.Service.Folder.Fetch.Progressive
         {
             return await _folderProgressiveRepository.GetFirstLayerAsync(folderId, userId);
         }
-
         public async IAsyncEnumerable<FolderLayerPayload> StreamFolderHierarchyAsync(
-    Guid rootFolderId,
-    string userId,
-    [EnumeratorCancellation] CancellationToken cancellationToken = default)
-        {
-            int depth = 1;
-            var currentLayer = await _folderProgressiveRepository.GetFirstLayerAsync(rootFolderId, userId);
-            if (currentLayer == null)
-                yield break;
-
-            // Send the first layer
-            yield return new FolderLayerPayload(depth, new List<Folder> { currentLayer });
-
-            await foreach (var layer in StreamSubFoldersRecursive(currentLayer, userId, depth + 1, cancellationToken))
-            {
-                yield return layer;
-            }
-        }
-
-        private async IAsyncEnumerable<FolderLayerPayload> StreamSubFoldersRecursive(
-            Folder folder,
+            Guid rootFolderId,
             string userId,
-            int depth,
             [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
-            foreach (var subFolder in folder.SubFolders)
+            var root = await _folderProgressiveRepository.GetFirstLayerAsync(rootFolderId, userId);
+            if (root == null)
+                yield break;
+
+            int depth = 1;
+
+        
+            var currentLayer = new List<Folder> { root };
+
+ 
+            while (currentLayer.Any() && !cancellationToken.IsCancellationRequested)
             {
-                if (cancellationToken.IsCancellationRequested)
-                    yield break;
-                await Task.Delay(1000, cancellationToken); //fetcg every 1 secound
-                var fullSubFolder = await _folderProgressiveRepository.GetFirstLayerAsync(subFolder.Id, userId);
-                if (fullSubFolder != null)
+          
+                yield return new FolderLayerPayload(depth, currentLayer);
+
+                var nextLayer = new List<Folder>();
+
+        
+                foreach (var folder in currentLayer)
                 {
-                    subFolder.Files = fullSubFolder.Files;
-                    subFolder.SubFolders = fullSubFolder.SubFolders;
-
-                    yield return new FolderLayerPayload(depth, new List<Folder> { fullSubFolder });
-
-                    await foreach (var nestedLayer in StreamSubFoldersRecursive(fullSubFolder, userId, depth + 1, cancellationToken))
+               
+                    foreach (var sub in folder.SubFolders)
                     {
-                        yield return nestedLayer;
+                        if (cancellationToken.IsCancellationRequested)
+                            yield break;
+
+                        var fullSubFolder = await _folderProgressiveRepository.GetFirstLayerAsync(sub.Id, userId);
+                        if (fullSubFolder != null)
+                        {
+                            sub.Files = fullSubFolder.Files;
+                            sub.SubFolders = fullSubFolder.SubFolders;
+                            nextLayer.Add(fullSubFolder);
+                        }
                     }
                 }
+                if (nextLayer.Any())
+                    await Task.Delay(5000, cancellationToken);
+                currentLayer = nextLayer;
+                depth++;
             }
         }
+
+
+       
+        }
     }
-}
+
