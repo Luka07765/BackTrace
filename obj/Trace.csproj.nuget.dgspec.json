@@ -56,23 +56,27 @@
             },
             "HotChocolate.AspNetCore": {
               "target": "Package",
-              "version": "[14.3.0, )"
+              "version": "[13.8.5, )"
             },
             "HotChocolate.AspNetCore.Authorization": {
               "target": "Package",
-              "version": "[14.3.0, )"
+              "version": "[13.9.0, )"
             },
             "HotChocolate.Data": {
               "target": "Package",
-              "version": "[14.3.0, )"
+              "version": "[13.8.5, )"
             },
             "HotChocolate.Execution": {
               "target": "Package",
-              "version": "[14.3.0, )"
+              "version": "[13.8.5, )"
             },
             "HotChocolate.Subscriptions": {
               "target": "Package",
-              "version": "[14.3.0, )"
+              "version": "[13.8.5, )"
+            },
+            "HotChocolate.Types": {
+              "target": "Package",
+              "version": "[13.8.5, )"
             },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",

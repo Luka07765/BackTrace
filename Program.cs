@@ -200,7 +200,9 @@ builder.Services
      .AddTypeExtension<FoldersMutation>()
     .AddTypeExtension<FilesMutation>()
     .AddSubscriptionType<FolderSubscription>()
+
     .AddInMemorySubscriptions()
+    .AddSocketSessionInterceptor<JwtWebSocketAuthInterceptor>()
     .ModifyRequestOptions(opt => opt.IncludeExceptionDetails = true);
 
 // ===== Add CORS services =====
@@ -209,7 +211,6 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAll", policy =>
     {
         policy
-            .WithOrigins("https://front-trace.vercel.app")
             .WithOrigins("https://localhost:3000")
             .AllowAnyHeader()
             .AllowAnyMethod()
@@ -219,9 +220,10 @@ builder.Services.AddCors(options =>
 
 
 var app = builder.Build();
+app.UseWebSockets();
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
-app.UseWebSockets();
+
 
 app.UseAuthentication();
 app.UseAuthorization();
