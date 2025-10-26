@@ -23,7 +23,7 @@ namespace Trace.GraphQL.Subscriptions
             [EnumeratorCancellation] CancellationToken cancellationToken)
         {
             var userId = user.FindFirstValue("CustomUserId");
-            //var userId = "673881e3-c76b-471d-8760-e7b053974066";
+
             Console.WriteLine($"🟡 Subscription START for folder {folderId}, userId = {userId}");
 
 

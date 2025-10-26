@@ -143,6 +143,24 @@ builder.Services.AddAuthentication(options =>
         }
     };
 });
+// ✅ Make TokenValidationParameters available for WebSocket interceptor
+builder.Services.AddSingleton<TokenValidationParameters>(sp =>
+{
+    var secret = Encoding.UTF8.GetBytes(jwtSecret);
+
+    return new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidAudience = validAudience,
+        ValidIssuer = validIssuer,
+        IssuerSigningKey = new SymmetricSecurityKey(secret),
+        ClockSkew = TimeSpan.Zero,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        NameClaimType = ClaimTypes.NameIdentifier
+    };
+});
 
 // Register Controllers and Swagger
 builder.Services.AddControllers();
