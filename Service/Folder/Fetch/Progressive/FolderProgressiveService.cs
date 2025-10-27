@@ -1,84 +1,85 @@
 ﻿
 
-
 namespace Trace.Service.Folder.Fetch.Progressive
 {
-
+    using Microsoft.Extensions.Logging;
     using System.Collections.Generic;
-
+    using System.Linq;
     using System.Runtime.CompilerServices;
+    using System.Threading;
     using System.Threading.Tasks;
-    using Trace.Data;
     using Trace.DTO;
-
     using Trace.Models.Logic;
     using Trace.Repository.Folder.Fetch.Progressive;
+
     public class FolderProgressiveService : IFolderProgressiveService
     {
-        private readonly IFolderProgressiveRepository _folderProgressiveRepository;
-        private readonly ApplicationDbContext _context;
+        private readonly IFolderProgressiveRepository _repo;
         private readonly ILogger<FolderProgressiveService> _logger;
 
-        public FolderProgressiveService(IFolderProgressiveRepository folderProgressiveRepository, ApplicationDbContext context, ILogger<FolderProgressiveService> logger)
+        public FolderProgressiveService(
+            IFolderProgressiveRepository repo,
+            ILogger<FolderProgressiveService> logger)
         {
-            _folderProgressiveRepository = folderProgressiveRepository;
-            _context = context;
+            _repo = repo;
             _logger = logger;
+        }
 
-        }
-        public async Task<Folder> GetFirstLayerAsync(Guid folderId, string userId)
-        {
-            return await _folderProgressiveRepository.GetFirstLayerAsync(folderId, userId);
-        }
+        public Task<(List<Folder> SubFolders, List<File> Files)> GetContentsAsync(Guid folderId, string userId)
+            => _repo.GetContentsAsync(folderId, userId);
+
         public async IAsyncEnumerable<FolderLayerPayload> StreamFolderHierarchyAsync(
             Guid rootFolderId,
             string userId,
             [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
-            var root = await _folderProgressiveRepository.GetFirstLayerAsync(rootFolderId, userId);
-            if (root == null)
+            // Fetch children of root (no root folder itself)
+            var (subFolders, files) = await _repo.GetContentsAsync(rootFolderId, userId);
+            subFolders = subFolders.Where(f => f.Id != rootFolderId).ToList();
+
+            if (!subFolders.Any() && !files.Any())
                 yield break;
 
             int depth = 1;
+            yield return new FolderLayerPayload(depth, subFolders, files);
 
-        
-            var currentLayer = new List<Folder> { root };
+            var currentLayer = subFolders;
 
- 
+            // Iterate safely (strictly sequential, no concurrent DB calls)
             while (currentLayer.Any() && !cancellationToken.IsCancellationRequested)
             {
-          
-                yield return new FolderLayerPayload(depth, currentLayer);
-
                 var nextLayer = new List<Folder>();
+                var nextLayerFiles = new List<File>();
 
-        
                 foreach (var folder in currentLayer)
                 {
-               
-                    foreach (var sub in folder.SubFolders)
-                    {
-                        if (cancellationToken.IsCancellationRequested)
-                            yield break;
+                    if (cancellationToken.IsCancellationRequested)
+                        yield break;
 
-                        var fullSubFolder = await _folderProgressiveRepository.GetFirstLayerAsync(sub.Id, userId);
-                        if (fullSubFolder != null)
-                        {
-                            sub.Files = fullSubFolder.Files;
-                            sub.SubFolders = fullSubFolder.SubFolders;
-                            nextLayer.Add(fullSubFolder);
-                        }
-                    }
+                    // 👇 Sequentially await each repository call
+                    var contents = await _repo.GetContentsAsync(folder.Id, userId);
+                    var childSubFolders = contents.SubFolders;
+                    var childFiles = contents.Files;
+
+                    childSubFolders = childSubFolders.Where(f => f.Id != rootFolderId).ToList();
+
+                    folder.SubFolders = childSubFolders;
+                    folder.Files = childFiles;
+
+                    nextLayer.AddRange(childSubFolders);
+                    nextLayerFiles.AddRange(childFiles);
                 }
-                if (nextLayer.Any())
-                    await Task.Delay(5000, cancellationToken);
-                currentLayer = nextLayer;
+
+                if (!nextLayer.Any() && !nextLayerFiles.Any())
+                    yield break;
+
                 depth++;
+                yield return new FolderLayerPayload(depth, nextLayer, nextLayerFiles);
+
+                //await Task.Delay(5000, cancellationToken);
+
+                currentLayer = nextLayer;
             }
         }
-
-
-       
-        }
     }
-
+}
