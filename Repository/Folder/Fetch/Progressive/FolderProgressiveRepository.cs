@@ -1,5 +1,4 @@
-﻿
-namespace Trace.Repository.Folder.Fetch.Progressive
+﻿namespace Trace.Repository.Folder.Fetch.Progressive
 {
     using Microsoft.EntityFrameworkCore;
     using System.Threading.Tasks;
@@ -8,22 +7,34 @@ namespace Trace.Repository.Folder.Fetch.Progressive
 
     public class FolderProgressiveRepository : IFolderProgressiveRepository
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IDbContextFactory<ApplicationDbContext> _contextFactory;
 
-        public FolderProgressiveRepository(ApplicationDbContext context)
+        public FolderProgressiveRepository(IDbContextFactory<ApplicationDbContext> contextFactory)
         {
-            _context = context;
+            _contextFactory = contextFactory;
         }
 
-        public async Task<Folder> GetFirstLayerAsync(Guid folderId, string userId)
+        public async Task<(List<Folder> SubFolders, List<File> Files)> GetContentsAsync(Guid folderId, string userId)
         {
-            return await _context.Folders
+            // each query gets its own context instance
+            await using var context1 = _contextFactory.CreateDbContext();
+            await using var context2 = _contextFactory.CreateDbContext();
+
+            var subFoldersTask = context1.Folders
                 .AsNoTracking()
-                .Where(f => f.Id == folderId && f.UserId == userId)
-                .Include(f => f.SubFolders)
-                .Include(f => f.Files)
-                .FirstOrDefaultAsync();
+                .Where(f => f.ParentFolderId == folderId && f.UserId == userId)
+                .ToListAsync();
+
+            var filesTask = context2.Files
+                .AsNoTracking()
+                .Where(file => file.FolderId == folderId && file.UserId == userId)
+                .ToListAsync();
+
+            await Task.WhenAll(subFoldersTask, filesTask);
+
+            return (await subFoldersTask, await filesTask);
         }
 
     }
+
 }
