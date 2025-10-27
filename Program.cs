@@ -212,7 +212,7 @@ builder.Services
     .AddAuthorization()
     .AddQueryType<Query>()
     .AddTypeExtension<QueryFolders>()             
-    .AddTypeExtension<Progressive>()
+
     .AddTypeExtension<QueryFiles>()
     .AddMutationType<Mutation>()
      .AddTypeExtension<FoldersMutation>()
