@@ -20,6 +20,10 @@ namespace Trace.Service.Files.Modify
     
             var file = new File
             {
+              Id = input.Id.HasValue && input.Id.Value != Guid.Empty
+            ? input.Id.Value
+            : Guid.NewGuid(),                     
+
                 Title = input.Title,
                 Content = input.Content ?? "",
                 FolderId = input.FolderId,

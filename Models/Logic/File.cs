@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Trace.Models.Auth;
 using Trace.Models.TagSystem;
@@ -7,6 +8,8 @@ namespace Trace.Models.Logic
 {
     public class File
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)] 
         public Guid Id { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
