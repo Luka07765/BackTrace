@@ -40,7 +40,6 @@ namespace Trace.Repository.Files.Fetch
         public async Task<File> GetFileByIdAsync(Guid id, string userId)
         {
             return await _context.Files
-                .Include(f => f.Folder)
                 .Include(f => f.TagAssignments)       
                 .ThenInclude(ta => ta.Tag)     
                 .FirstOrDefaultAsync(f => f.Id == id && f.UserId == userId);
