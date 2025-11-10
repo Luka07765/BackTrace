@@ -25,13 +25,8 @@ namespace Trace.Repository.Files.Fetch
         {
             return await _context.Files
                 .Where(f => f.UserId == userId)
-                .Select(f => new File
-                {
-                    Id = f.Id,
-                    Title = f.Title,
-                    FolderId = f.FolderId,
-                    FilePosition = f.FilePosition
-                })
+                 .Include(f => f.TagAssignments)
+                .ThenInclude(ta => ta.Tag)
                 .ToListAsync();
         }
 
