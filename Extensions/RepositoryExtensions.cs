@@ -1,0 +1,38 @@
+﻿using Trace.Repository.Files.Fetch;
+using Trace.Repository.Files.Modify;
+using Trace.Repository.Folder.Fetch.Progressive;
+using Trace.Repository.Folder.Fetch.Query;
+using Trace.Repository.Folder.Modify;
+using Trace.Repository.TagSystem.Tag;
+using Trace.Service.Files.Fetch;
+using Trace.Service.Files.Modify;
+using Trace.Service.Folder.Fetch.Progressive;
+using Trace.Service.Folder.Fetch.Query;
+using Trace.Service.Folder.Modify;
+using Trace.Service.Tag;
+
+namespace Trace.Extensions
+{
+    public static class RepositoryExtensions
+    {
+        public static IServiceCollection AddRepositories(this IServiceCollection services)
+        {
+            services.AddScoped<IFileQueryRepository, FileQueryRepository>();
+            services.AddScoped<IFileQueryService, FileQueryService>();
+            services.AddScoped<IFileModifyRepository, FileModifyRepository>();
+            services.AddScoped<IFileModifyService, FileModifyService>();
+
+            services.AddScoped<IFolderProgressiveRepository, FolderProgressiveRepository>();
+            services.AddScoped<IFolderQueryRepository, FolderQueryRepository>();
+            services.AddScoped<IFolderProgressiveService, FolderProgressiveService>();
+            services.AddScoped<IFolderQueryService, FolderQueryService>();
+            services.AddScoped<IFolderModifyRepository, FolderModifyRepository>();
+            services.AddScoped<IFolderModifyService, FolderModifyService>();
+
+            services.AddScoped<ITagRepository, TagRepository>();
+            services.AddScoped<ITagService, TagService>();
+
+            return services;
+        }
+    }
+}
