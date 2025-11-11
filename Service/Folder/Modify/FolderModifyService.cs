@@ -36,6 +36,9 @@ namespace Trace.Service.Folder.Modify
 
             var folder = new Folder
             {
+              Id = input.Id.HasValue && input.Id.Value != Guid.Empty
+            ? input.Id.Value
+            : Guid.NewGuid(),
                 Title = input.Title,
                 ParentFolderId = input.ParentFolderId,
                 UserId = userId,
