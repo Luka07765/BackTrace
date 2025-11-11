@@ -7,11 +7,11 @@ using Trace.Models.Auth;
 using Trace.Service.Auth.GeneralAuth;
 using Trace.Service.Auth.Token;
 
-namespace Trace.Extensions
+namespace Trace.Registrations
 {
-    public static class AuthExtensions
+    public static class Auth_Registration
     {
-        public static IServiceCollection AddAuth(this IServiceCollection services, IConfiguration config)
+        public static IServiceCollection Register_Auth(this IServiceCollection services, IConfiguration config)
         {
             var jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET")
                 ?? config["Jwt:Key"]

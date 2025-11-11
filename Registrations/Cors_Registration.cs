@@ -1,8 +1,8 @@
-﻿namespace Trace.Extensions
+﻿namespace Trace.Registrations
 {
-    public static class CorsExtensions
+    public static class Cors_Registration
     {
-        public static IServiceCollection AddCorsPolicy(this IServiceCollection services)
+        public static IServiceCollection Register_CorsPolicy(this IServiceCollection services)
         {
             services.AddCors(options =>
             {

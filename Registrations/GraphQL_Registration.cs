@@ -7,11 +7,11 @@ using Trace.GraphQL.Queries.Folders;
 using Trace.GraphQL.Subscriptions;
 
 
-namespace Trace.Extensions
+namespace Trace.Registrations
 {
-    public static class GraphQLExtensions
+    public static class GraphQL_Registration
     {
-        public static IServiceCollection AddGraphQLServerConfig(this IServiceCollection services)
+        public static IServiceCollection Register_GraphQLServer(this IServiceCollection services)
         {
             services.AddGraphQLServer()
                 .AddAuthorization()

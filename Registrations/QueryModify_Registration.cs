@@ -11,11 +11,11 @@ using Trace.Service.Folder.Fetch.Query;
 using Trace.Service.Folder.Modify;
 using Trace.Service.Tag;
 
-namespace Trace.Extensions
+namespace Trace.Registrations
 {
-    public static class RepositoryExtensions
+    public static class QueryModify_Registration
     {
-        public static IServiceCollection AddRepositories(this IServiceCollection services)
+        public static IServiceCollection Register_QueryAndModify(this IServiceCollection services)
         {
             services.AddScoped<IFileQueryRepository, FileQueryRepository>();
             services.AddScoped<IFileQueryService, FileQueryService>();

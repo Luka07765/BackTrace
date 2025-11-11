@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Trace.Data;
 
-namespace Trace.Extensions
+namespace Trace.Registrations
 {
-    public static class DbContextExtensions
+    public static class DbContext_Registration
     {
-        public static IServiceCollection AddAppDb(this IServiceCollection services, string connectionString)
+        public static IServiceCollection Register_ApplicationDataBase(this IServiceCollection services, string connectionString)
         {
             // For Identity and runtime context
             services.AddDbContext<ApplicationDbContext>(options =>

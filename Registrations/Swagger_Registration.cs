@@ -1,10 +1,10 @@
 ﻿using Microsoft.OpenApi.Models;
 
-namespace Trace.Extensions
+namespace Trace.Registrations
 {
-    public static class SwaggerExtensions
+    public static class Swagger_Registration
     {
-        public static IServiceCollection AddSwaggerDocs(this IServiceCollection services)
+        public static IServiceCollection Register_SwaggerDocs(this IServiceCollection services)
         {
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(options =>

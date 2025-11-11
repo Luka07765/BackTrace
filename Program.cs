@@ -1,6 +1,4 @@
-﻿
-
-using Trace.Extensions;
+﻿using Trace.Registrations;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,17 +16,18 @@ string connectionString =
 
 
 
-builder.Services.AddDistributedMemoryCache();
-builder.Services.AddAppDb(connectionString);
-builder.Services.AddAuth(builder.Configuration);
-builder.Services.AddGraphQLServerConfig();
-builder.Services.AddSwaggerDocs();
-builder.Services.AddCorsPolicy();
-builder.Services.AddRepositories();
+
+
+builder.Services.Register_ApplicationDataBase(connectionString);
+builder.Services.Register_Auth(builder.Configuration);
+builder.Services.Register_GraphQLServer();
+builder.Services.Register_SwaggerDocs();
+builder.Services.Register_CorsPolicy();
+builder.Services.Register_QueryAndModify();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-
+builder.Services.AddDistributedMemoryCache();
 
 
 
