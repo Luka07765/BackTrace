@@ -49,6 +49,7 @@ namespace Trace.Service.Folder.Modify
         }
         public async Task<bool> DeleteFolderAsync(Guid id)
         {
+            // 1️⃣ Delete files in this folder
             var associatedFiles = await _context.Files
                 .Where(f => f.FolderId == id)
                 .ToListAsync();
@@ -56,6 +57,7 @@ namespace Trace.Service.Folder.Modify
             if (associatedFiles.Any())
                 _context.Files.RemoveRange(associatedFiles);
 
+            // 2️⃣ Recursively delete child folders
             var childFolders = await _context.Folders
                 .Where(f => f.ParentFolderId == id)
                 .ToListAsync();
@@ -63,9 +65,10 @@ namespace Trace.Service.Folder.Modify
             foreach (var childFolder in childFolders)
                 await DeleteFolderAsync(childFolder.Id);
 
-            var folder = new Folder { Id = id };
-            _context.Folders.Attach(folder);
-            _context.Folders.Remove(folder);
+            // 3️⃣ Delete this folder (use tracked entity if present)
+            var folder = await _context.Folders.FindAsync(id);
+            if (folder != null)
+                _context.Folders.Remove(folder);
 
             await _context.SaveChangesAsync();
             return true;
