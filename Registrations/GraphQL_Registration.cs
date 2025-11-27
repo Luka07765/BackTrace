@@ -5,7 +5,8 @@ using Trace.GraphQL.Queries;
 using Trace.GraphQL.Queries.Files;
 using Trace.GraphQL.Queries.Folders;
 using Trace.GraphQL.Subscriptions;
-
+using Trace.GraphQL.Mutations.Tags;
+using Trace.GraphQL.Queries.Tag;
 
 namespace Trace.Registrations
 {
@@ -16,9 +17,11 @@ namespace Trace.Registrations
             services.AddGraphQLServer()
                 .AddAuthorization()
                 .AddQueryType<Query>()
+                .AddTypeExtension<QueryTags>()
                 .AddTypeExtension<QueryFolders>()
                 .AddTypeExtension<QueryFiles>()
                 .AddMutationType<Mutation>()
+                .AddTypeExtension<TagsMutation>()
                 .AddTypeExtension<FoldersMutation>()
                 .AddTypeExtension<FilesMutation>()
                 .AddSubscriptionType<FolderSubscription>()
