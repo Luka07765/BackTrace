@@ -1,5 +1,6 @@
 ﻿using Trace.Repository.Files.Fetch;
 using Trace.Repository.Files.Modify;
+using Trace.Repository.Folder.Fetch.Colors;
 using Trace.Repository.Folder.Fetch.Progressive;
 using Trace.Repository.Folder.Fetch.Query;
 using Trace.Repository.Folder.Modify;
@@ -25,6 +26,7 @@ namespace Trace.Registrations
             services.AddScoped<IFolderProgressiveRepository, FolderProgressiveRepository>();
             services.AddScoped<IFolderQueryRepository, FolderQueryRepository>();
             services.AddScoped<IFolderProgressiveService, FolderProgressiveService>();
+            services.AddScoped<FolderColorsRepository>();
             services.AddScoped<IFolderQueryService, FolderQueryService>();
             services.AddScoped<IFolderModifyRepository, FolderModifyRepository>();
             services.AddScoped<IFolderModifyService, FolderModifyService>();

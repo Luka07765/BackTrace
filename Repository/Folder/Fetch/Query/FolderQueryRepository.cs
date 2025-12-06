@@ -2,17 +2,21 @@
 
 namespace Trace.Repository.Folder.Fetch.Query
 {
+    using Microsoft.AspNetCore.Routing;
     using Microsoft.EntityFrameworkCore;
     using System.Threading.Tasks;
     using Trace.Data;
     using Trace.Models.Logic;
+    using Trace.Repository.Folder.Fetch.Colors;
+
     public class FolderQueryRepository: IFolderQueryRepository
     {
         private readonly ApplicationDbContext _context;
-
-        public FolderQueryRepository(ApplicationDbContext context)
+        private readonly FolderColorsRepository _folderColorsRepository;
+        public FolderQueryRepository(ApplicationDbContext context, FolderColorsRepository folderColorsRepository)
         {
-            _context = context;
+            _context = context; 
+            _folderColorsRepository = folderColorsRepository;
         }
 
         public async Task<IEnumerable<Folder>> GetAllFoldersAsync(string userId)
@@ -26,10 +30,17 @@ namespace Trace.Repository.Folder.Fetch.Query
 
         public async Task<IEnumerable<Folder>> GetRootFoldersAsync(string userId)
         {
-            return await _context.Folders
+            var roots = await _context.Folders
                 .Where(f => f.UserId == userId && f.ParentFolderId == null)
-
                 .ToListAsync();
+
+            foreach (var folder in roots)
+            {
+                var counts = await _folderColorsRepository.FolderColorsCount(folder.Id, userId);
+                folder.ColorCounts = counts.ToList();
+            }
+
+            return roots;
         }
 
 
