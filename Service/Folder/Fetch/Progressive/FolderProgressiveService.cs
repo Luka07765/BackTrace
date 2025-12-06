@@ -10,19 +10,23 @@ namespace Trace.Service.Folder.Fetch.Progressive
     using System.Threading.Tasks;
     using Trace.DTO;
     using Trace.Models.Logic;
+    using Trace.Repository.Folder.Fetch.Colors;
     using Trace.Repository.Folder.Fetch.Progressive;
 
     public class FolderProgressiveService : IFolderProgressiveService
     {
         private readonly IFolderProgressiveRepository _repo;
         private readonly ILogger<FolderProgressiveService> _logger;
+        private readonly FolderColorsRepository _colorsRepo;
 
         public FolderProgressiveService(
             IFolderProgressiveRepository repo,
+              FolderColorsRepository colorsRepo,
             ILogger<FolderProgressiveService> logger)
         {
             _repo = repo;
             _logger = logger;
+            _colorsRepo = colorsRepo;
         }
 
         public Task<(List<Folder> SubFolders, List<File> Files)> GetContentsAsync(Guid folderId, string userId)
@@ -36,6 +40,12 @@ namespace Trace.Service.Folder.Fetch.Progressive
             // Fetch children of root (no root folder itself)
             var (subFolders, files) = await _repo.GetContentsAsync(rootFolderId, userId);
             subFolders = subFolders.Where(f => f.Id != rootFolderId).ToList();
+
+            foreach (var folder in subFolders)
+            {
+                var counts = await _colorsRepo.FolderColorsCount(folder.Id, userId);
+                folder.ColorCounts = counts.ToList();
+            }
 
             if (!subFolders.Any() && !files.Any())
                 yield break;
@@ -68,6 +78,11 @@ namespace Trace.Service.Folder.Fetch.Progressive
 
                     nextLayer.AddRange(childSubFolders);
                     nextLayerFiles.AddRange(childFiles);
+                }
+                foreach (var folder in nextLayer)
+                {
+                    var counts = await _colorsRepo.FolderColorsCount(folder.Id, userId);
+                    folder.ColorCounts = counts.ToList();
                 }
 
                 if (!nextLayer.Any() && !nextLayerFiles.Any())
