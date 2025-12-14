@@ -24,9 +24,9 @@ namespace Trace.Models.Logic
         public ICollection<File> Files { get; set; }
 
         public int FolderPosition { get; set; }
-
+        public int RedCount { get; set; }
+        public int YellowCount { get; set; }
         public int IconId { get; set; } = 1;
-        [NotMapped]
-        public List<ColorCountDto> ColorCounts { get; set; } = new();
+  
     }
 }
