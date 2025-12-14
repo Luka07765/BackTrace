@@ -14,23 +14,23 @@ namespace Trace.Repository.Files.Modify
     {
         private readonly ApplicationDbContext _context;
 
-        public FileModifyRepository(ApplicationDbContext context)
+        public FileModifyRepository(ApplicationDbContext context, IConfiguration configuration)
         {
             _context = context;
-        }
 
+        }
         private async Task<List<Folder>> GetAncestorChainAsync(Guid folderId)
         {
             var sql = @"
-                WITH RECURSIVE ancestors AS (
-                    SELECT * FROM ""Folders"" WHERE ""Id"" = {0}
-                    UNION ALL
-                    SELECT f.*
-                    FROM ""Folders"" f
-                    INNER JOIN ancestors a ON f.""Id"" = a.""ParentFolderId""
-                )
-                SELECT * FROM ancestors;
-            ";
+        WITH RECURSIVE ancestors AS (
+            SELECT * FROM ""Folders"" WHERE ""Id"" = {0}
+            UNION ALL
+            SELECT f.*
+            FROM ""Folders"" f
+            INNER JOIN ancestors a ON f.""Id"" = a.""ParentFolderId""
+        )
+        SELECT * FROM ancestors;
+    ";
 
             return await _context.Folders
                 .FromSqlRaw(sql, folderId)
@@ -38,22 +38,9 @@ namespace Trace.Repository.Files.Modify
                 .ToListAsync();
         }
 
-        private static void ApplyDelta(IEnumerable<Folder> folders, string color, int delta)
-        {
-            foreach (var folder in folders)
-            {
-                if (color == "Red")
-                    folder.RedCount = Math.Max(0, folder.RedCount + delta);
-
-                else if (color == "Yellow")
-                    folder.YellowCount = Math.Max(0, folder.YellowCount + delta);
-            }
-        }
-
         public async Task<File?> UpdateFileAsync(Guid fileId, UpdateFileInput input)
         {
-            await using var tx = await _context.Database.BeginTransactionAsync();
-
+            // 1️⃣ Load file (tracked)
             var file = await _context.Files
                 .AsTracking()
                 .FirstOrDefaultAsync(f => f.Id == fileId);
@@ -61,10 +48,11 @@ namespace Trace.Repository.Files.Modify
             if (file == null)
                 return null;
 
+            // 2️⃣ Capture OLD state
             var oldColor = file.Colors;
             var oldFolderId = file.FolderId;
 
-            // apply changes
+            // 3️⃣ Apply file updates
             if (input.Title != null) file.Title = input.Title;
             if (input.Content != null) file.Content = input.Content;
             if (input.Colors != null) file.Colors = input.Colors;
@@ -78,66 +66,60 @@ namespace Trace.Repository.Files.Modify
             bool colorChanged = oldColor != newColor;
             bool folderChanged = oldFolderId != newFolderId;
 
-            if (colorChanged || folderChanged)
+            // 4️⃣ If nothing relevant changed → save file only
+            if (!colorChanged && !folderChanged)
             {
-                var oldAncestors = await GetAncestorChainAsync(oldFolderId);
-                var newAncestors = oldFolderId == newFolderId
+                await _context.SaveChangesAsync();
+                return file;
+            }
+
+            // 5️⃣ Load ancestor chains (single query each)
+            var oldAncestors = await GetAncestorChainAsync(oldFolderId);
+
+            List<Folder> newAncestors =
+                oldFolderId == newFolderId
                     ? oldAncestors
                     : await GetAncestorChainAsync(newFolderId);
 
-                ApplyDelta(oldAncestors, oldColor, -1);
-                ApplyDelta(newAncestors, newColor, +1);
+            // 6️⃣ Apply deltas
+            void ApplyDelta(IEnumerable<Folder> folders, string color, int delta)
+            {
+                foreach (var folder in folders)
+                {
+                    if (color == "Red")
+                        folder.RedCount = Math.Max(0, folder.RedCount + delta);
+                    else if (color == "Yellow")
+                        folder.YellowCount = Math.Max(0, folder.YellowCount + delta);
+                }
             }
 
-            await _context.SaveChangesAsync();
-            await tx.CommitAsync();
+            // remove old contribution
+            if (oldColor == "Red" || oldColor == "Yellow")
+                ApplyDelta(oldAncestors, oldColor, -1);
 
+            // add new contribution
+            if (newColor == "Red" || newColor == "Yellow")
+                ApplyDelta(newAncestors, newColor, +1);
+
+            // 7️⃣ Persist everything
+            await _context.SaveChangesAsync();
             return file;
         }
 
-   
+
+
+
         public async Task<File> CreateFileAsync(File file)
         {
-            await using var tx = await _context.Database.BeginTransactionAsync();
-
             _context.Files.Add(file);
-
-            if (file.Colors == "Red" || file.Colors == "Yellow")
-            {
-                var ancestors = await GetAncestorChainAsync(file.FolderId);
-                ApplyDelta(ancestors, file.Colors, +1);
-            }
-
             await _context.SaveChangesAsync();
-            await tx.CommitAsync();
-
             return file;
         }
-
-
-        public async Task<int> DeleteFileAsync(Guid fileId)
+        public async Task<int> DeleteFileAsync(Guid id)
         {
-            await using var tx = await _context.Database.BeginTransactionAsync();
-
-            var file = await _context.Files
-                .AsTracking()
-                .FirstOrDefaultAsync(f => f.Id == fileId);
-
-            if (file == null)
-                return 0;
-
-            if (file.Colors == "Red" || file.Colors == "Yellow")
-            {
-                var ancestors = await GetAncestorChainAsync(file.FolderId);
-                ApplyDelta(ancestors, file.Colors, -1);
-            }
-
-            _context.Files.Remove(file);
-
-            var result = await _context.SaveChangesAsync();
-            await tx.CommitAsync();
-
-            return result;
+            return await _context.Files
+                .Where(f => f.Id == id)
+                .ExecuteDeleteAsync();
         }
     }
 }
