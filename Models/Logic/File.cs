@@ -14,7 +14,9 @@ namespace Trace.Models.Logic
         public string Title { get; set; }
         public string Content { get; set; }
 
-        // User association
+        [Timestamp]                
+        public byte[] RowVersion { get; set; } = default!;
+
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
 

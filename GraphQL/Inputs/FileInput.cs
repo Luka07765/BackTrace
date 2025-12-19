@@ -6,7 +6,6 @@
         public string Title { get; set; }
         public string Content { get; set; }
         public Guid FolderId { get; set; }
-
         public string Colors { get; set; } = "Green";
 
         public int FilePosition { get; set; }
@@ -21,6 +20,7 @@
         public Guid? FolderId { get; set; }
 
         public string? Colors { get; set; }
+        public byte[]? RowVersion { get; set; } = default!;
 
         public int? FilePosition { get; set; }
         public int? IconId { get; set; }
