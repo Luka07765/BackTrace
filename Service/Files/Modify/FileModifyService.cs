@@ -43,8 +43,8 @@ namespace Trace.Service.Files.Modify
 
         public async Task<bool> DeleteFileAsync(Guid id)
         {
-            var result = await _fileModifyRepository.DeleteFileAsync(id);
-            return result > 0; 
+            return await _fileModifyRepository.DeleteFileAsync(id);
         }
+
     }
 }

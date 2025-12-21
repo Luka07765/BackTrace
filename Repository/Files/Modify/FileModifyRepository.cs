@@ -54,12 +54,12 @@ namespace Trace.Repository.Files.Modify
 
                     if (input.RowVersion != null)
                     {
-                     
+
                         rvProp.OriginalValue = input.RowVersion;
                     }
                     else
                     {
-                      
+
                         rvProp.OriginalValue = file.RowVersion;
                         rvProp.IsModified = false;
                     }
@@ -115,7 +115,7 @@ namespace Trace.Repository.Files.Modify
                     if (attempt == 1)
                         throw;
 
-              
+
                     foreach (var entry in _context.ChangeTracker.Entries())
                         entry.State = EntityState.Detached;
                 }
@@ -125,7 +125,7 @@ namespace Trace.Repository.Files.Modify
             return null;
         }
 
-  
+
 
 
         public async Task<File> CreateFileAsync(File file)
@@ -134,11 +134,51 @@ namespace Trace.Repository.Files.Modify
             await _context.SaveChangesAsync();
             return file;
         }
-        public async Task<int> DeleteFileAsync(Guid id)
+        public async Task<bool> DeleteFileAsync(Guid fileId)
         {
-            return await _context.Files
-                .Where(f => f.Id == id)
-                .ExecuteDeleteAsync();
+            for (int attempt = 0; attempt < 2; attempt++)
+            {
+                try
+                {
+                    var file = await _context.Files
+                        .AsTracking()
+                        .FirstOrDefaultAsync(f => f.Id == fileId);
+
+                    if (file == null)
+                        return false;
+
+                    var color = file.Colors;
+                    var folderId = file.FolderId;
+
+                    if (color is "Red" or "Yellow")
+                    {
+                        var ancestors = await GetAncestorChainAsync(folderId);
+
+                        foreach (var folder in ancestors)
+                        {
+                            if (color == "Red")
+                                folder.RedCount = Math.Max(0, folder.RedCount - 1);
+                            else if (color == "Yellow")
+                                folder.YellowCount = Math.Max(0, folder.YellowCount - 1);
+                        }
+                    }
+
+                    _context.Files.Remove(file);
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (attempt == 1)
+                        throw;
+
+                    foreach (var entry in _context.ChangeTracker.Entries())
+                        entry.State = EntityState.Detached;
+                }
+            }
+
+            return false;
         }
+
     }
 }
