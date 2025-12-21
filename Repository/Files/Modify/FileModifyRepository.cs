@@ -7,36 +7,21 @@ namespace Trace.Repository.Files.Modify
     using Microsoft.Extensions.Configuration;
     using System.Threading.Tasks;
     using Trace.Data;
+    using Trace.DTO;
     using Trace.GraphQL.Inputs;
     using Trace.Models.Logic;
-    using Trace.DTO;
+    using Trace.Repository.Color;
+
     public class FileModifyRepository : IFileModifyRepository
     {
         private readonly ApplicationDbContext _context;
-
-        public FileModifyRepository(ApplicationDbContext context, IConfiguration configuration)
+        private readonly IColorRepository _colorRepository;
+        public FileModifyRepository(ApplicationDbContext context, IConfiguration configuration, IColorRepository colorRepository)
         {
             _context = context;
-
+            _colorRepository = colorRepository;
         }
-        private async Task<List<Folder>> GetAncestorChainAsync(Guid folderId)
-        {
-            var sql = @"
-        WITH RECURSIVE ancestors AS (
-            SELECT * FROM ""Folders"" WHERE ""Id"" = {0}
-            UNION ALL
-            SELECT f.*
-            FROM ""Folders"" f
-            INNER JOIN ancestors a ON f.""Id"" = a.""ParentFolderId""
-        )
-        SELECT * FROM ancestors;
-    ";
-
-            return await _context.Folders
-                .FromSqlRaw(sql, folderId)
-                .AsTracking()
-                .ToListAsync();
-        }
+    
         public async Task<File?> UpdateFileAsync(Guid fileId, UpdateFileInput input)
         {
             for (int attempt = 0; attempt < 2; attempt++)
@@ -83,11 +68,11 @@ namespace Trace.Repository.Files.Modify
 
                     if (colorChanged || folderChanged)
                     {
-                        var oldAncestors = await GetAncestorChainAsync(oldFolderId);
+                        var oldAncestors = await _colorRepository.GetAncestorChainAsync(oldFolderId);
                         var newAncestors =
                             oldFolderId == newFolderId
                                 ? oldAncestors
-                                : await GetAncestorChainAsync(newFolderId);
+                                : await _colorRepository.GetAncestorChainAsync(newFolderId);
 
                         void ApplyDelta(IEnumerable<Folder> folders, string color, int delta)
                         {
@@ -152,7 +137,7 @@ namespace Trace.Repository.Files.Modify
 
                     if (color is "Red" or "Yellow")
                     {
-                        var ancestors = await GetAncestorChainAsync(folderId);
+                        var ancestors = await _colorRepository.GetAncestorChainAsync(folderId);
 
                         foreach (var folder in ancestors)
                         {

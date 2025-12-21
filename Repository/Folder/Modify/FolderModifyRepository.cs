@@ -13,8 +13,7 @@ namespace Trace.Repository.Folder.Modify
         private readonly ApplicationDbContext _context;
         private readonly IColorRepository _colorRepository;
         public FolderModifyRepository(
-        ApplicationDbContext context,
-        IColorRepository colorRepository)
+        ApplicationDbContext context,IColorRepository colorRepository)
         {
             _context = context;
             _colorRepository = colorRepository;
