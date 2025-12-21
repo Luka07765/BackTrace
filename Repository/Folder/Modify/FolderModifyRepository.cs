@@ -6,34 +6,21 @@ namespace Trace.Repository.Folder.Modify
     using Trace.Data;
     using Trace.GraphQL.Inputs;
     using Trace.Models.Logic;
+    using Trace.Repository.Color;
 
     public class FolderModifyRepository : IFolderModifyRepository
     {
         private readonly ApplicationDbContext _context;
-
-        public FolderModifyRepository(ApplicationDbContext context)
+        private readonly IColorRepository _colorRepository;
+        public FolderModifyRepository(
+        ApplicationDbContext context,
+        IColorRepository colorRepository)
         {
             _context = context;
+            _colorRepository = colorRepository;
         }
 
-        private async Task<List<Folder>> GetAncestorChainAsync(Guid folderId)
-        {
-            var sql = @"
-        WITH RECURSIVE ancestors AS (
-            SELECT * FROM ""Folders"" WHERE ""Id"" = {0}
-            UNION ALL
-            SELECT f.*
-            FROM ""Folders"" f
-            INNER JOIN ancestors a ON f.""Id"" = a.""ParentFolderId""
-        )
-        SELECT * FROM ancestors;
-    ";
 
-            return await _context.Folders
-                .FromSqlRaw(sql, folderId)
-                .AsTracking()
-                .ToListAsync();
-        }
 
         public async Task<Folder> CreateFolderAsync(Folder folder)
         {
@@ -68,7 +55,8 @@ namespace Trace.Repository.Folder.Modify
           
                 if (oldParentId.HasValue)
                 {
-                    var oldAncestors = await GetAncestorChainAsync(oldParentId.Value);
+                    var oldAncestors = await _colorRepository.GetAncestorChainAsync(oldParentId.Value);
+
                     foreach (var ancestor in oldAncestors)
                     {
                         ancestor.RedCount = Math.Max(0, ancestor.RedCount - folder.RedCount);
@@ -78,7 +66,8 @@ namespace Trace.Repository.Folder.Modify
 
                 if (newParentId.HasValue)
                 {
-                    var newAncestors = await GetAncestorChainAsync(newParentId.Value);
+                    var newAncestors = await _colorRepository.GetAncestorChainAsync(newParentId.Value);
+
                     foreach (var ancestor in newAncestors)
                     {
                         ancestor.RedCount += folder.RedCount;

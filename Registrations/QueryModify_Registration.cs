@@ -11,7 +11,7 @@ using Trace.Service.Folder.Fetch.Progressive;
 using Trace.Service.Folder.Fetch.Query;
 using Trace.Service.Folder.Modify;
 using Trace.Service.Tag;
-
+using Trace.Repository.Color;
 namespace Trace.Registrations
 {
     public static class QueryModify_Registration
@@ -30,7 +30,7 @@ namespace Trace.Registrations
             services.AddScoped<IFolderQueryService, FolderQueryService>();
             services.AddScoped<IFolderModifyRepository, FolderModifyRepository>();
             services.AddScoped<IFolderModifyService, FolderModifyService>();
-
+            services.AddScoped<IColorRepository, ColorRepository>();    
             services.AddScoped<ITagRepository, TagRepository>();
             services.AddScoped<ITagService, TagService>();
 
