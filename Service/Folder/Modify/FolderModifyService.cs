@@ -27,7 +27,24 @@ namespace Trace.Service.Folder.Modify
         }
 
 
+        private async Task<List<Folder>> GetAncestorChainAsync(Guid folderId)
+        {
+            var sql = @"
+        WITH RECURSIVE ancestors AS (
+            SELECT * FROM ""Folders"" WHERE ""Id"" = {0}
+            UNION ALL
+            SELECT f.*
+            FROM ""Folders"" f
+            INNER JOIN ancestors a ON f.""Id"" = a.""ParentFolderId""
+        )
+        SELECT * FROM ancestors;
+    ";
 
+            return await _context.Folders
+                .FromSqlRaw(sql, folderId)
+                .AsTracking()
+                .ToListAsync();
+        }
 
         public async Task<Folder> CreateFolderAsync(FolderInput input, string userId)
         {
@@ -36,7 +53,7 @@ namespace Trace.Service.Folder.Modify
 
             var folder = new Folder
             {
-              Id = input.Id.HasValue && input.Id.Value != Guid.Empty
+                Id = input.Id.HasValue && input.Id.Value != Guid.Empty
             ? input.Id.Value
             : Guid.NewGuid(),
                 Title = input.Title,
@@ -52,26 +69,44 @@ namespace Trace.Service.Folder.Modify
         }
         public async Task<bool> DeleteFolderAsync(Guid id)
         {
-            // 1️⃣ Delete files in this folder
-            var associatedFiles = await _context.Files
+            // 1️⃣ Load folder with counts
+            var folder = await _context.Folders
+                .AsTracking()
+                .FirstOrDefaultAsync(f => f.Id == id);
+
+            if (folder == null)
+                return false;
+
+            // 2️⃣ Subtract aggregated counts from ancestors ONCE
+            if (folder.ParentFolderId.HasValue)
+            {
+                var ancestors = await GetAncestorChainAsync(folder.ParentFolderId.Value);
+                foreach (var ancestor in ancestors)
+                {
+                    ancestor.RedCount = Math.Max(0, ancestor.RedCount - folder.RedCount);
+                    ancestor.YellowCount = Math.Max(0, ancestor.YellowCount - folder.YellowCount);
+                }
+            }
+
+            // 3️⃣ Delete files in this folder
+            var files = await _context.Files
                 .Where(f => f.FolderId == id)
                 .ToListAsync();
 
-            if (associatedFiles.Any())
-                _context.Files.RemoveRange(associatedFiles);
+            if (files.Any())
+                _context.Files.RemoveRange(files);
 
-            // 2️⃣ Recursively delete child folders
+            // 4️⃣ Recursively delete child folders (NO COUNT LOGIC HERE)
             var childFolders = await _context.Folders
                 .Where(f => f.ParentFolderId == id)
+                .Select(f => f.Id)
                 .ToListAsync();
 
-            foreach (var childFolder in childFolders)
-                await DeleteFolderAsync(childFolder.Id);
+            foreach (var childId in childFolders)
+                await DeleteFolderAsync(childId);
 
-            // 3️⃣ Delete this folder (use tracked entity if present)
-            var folder = await _context.Folders.FindAsync(id);
-            if (folder != null)
-                _context.Folders.Remove(folder);
+            // 5️⃣ Delete this folder
+            _context.Folders.Remove(folder);
 
             await _context.SaveChangesAsync();
             return true;
