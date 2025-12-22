@@ -8,7 +8,11 @@
             {
                 options.AddPolicy("AllowAll", builder =>
                 {
-                    builder.WithOrigins("https://front-w89v.vercel.app", "http://localhost:3000")
+                    builder
+                            .WithOrigins(
+                            "https://localhost:3000",
+                            "https://front-w89v.vercel.app"
+                        )
                            .AllowAnyHeader()
                            .AllowAnyMethod()
                            .AllowCredentials();
