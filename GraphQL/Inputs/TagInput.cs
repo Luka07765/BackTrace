@@ -4,6 +4,7 @@
     {
         public class CreateTagInput
         {
+            public Guid Id { get; set; }
             public string Title { get; set; }
             public string Color { get; set; } = "#FFFFFF";
             public int IconId { get; set; } = 1;

@@ -7,7 +7,7 @@
     {
         Task<Tag> GetTagByIdAsync(Guid tagId, string userId);
         Task<IEnumerable<Tag>> GetAllTagsAsync(string userId);
-        Task CreateTagAsync(string userId, string title, string color = "#FFFFFF", int iconId = 1);
+        Task CreateTagAsync(Guid id,string userId, string title, string color = "#FFFFFF", int iconId = 1);
         Task UpdateTagAsync(Tag tag);
         Task DeleteTagAsync(Guid tagId, string userId);
 

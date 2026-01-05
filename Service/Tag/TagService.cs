@@ -19,11 +19,12 @@
         public Task<IEnumerable<Tag>> GetAllTagsAsync(string userId)
             => _tagRepository.GetAllTagsAsync(userId);
 
-        public Task CreateTagAsync(string userId, string title, string color = "#FFFFFF", int iconId = 1)
+        public Task CreateTagAsync(Guid id,string userId, string title, string color = "#FFFFFF", int iconId = 1)
         {
             var tag = new Tag
             {
-                Id = Guid.NewGuid(),
+                Id = id,
+
                 Title = title,
                 Color = color,
                 IconId = iconId,

@@ -19,26 +19,34 @@ namespace Trace.GraphQL.Mutations.Tags
         [Authorize]
         [GraphQLName("createTag")]
         public async Task<Tag> CreateTag(
-            TagInput.CreateTagInput input,
-            [Service] ITagService tagService,
-            ClaimsPrincipal user)
+        TagInput.CreateTagInput input,
+        [Service] ITagService tagService,
+        ClaimsPrincipal user)
         {
             var userId = user.FindFirstValue("CustomUserId");
             if (string.IsNullOrEmpty(userId))
-            {
-                throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
-            }
+                throw new GraphQLException(
+                    new Error("User ID not found in claims", "UNAUTHORIZED")
+                );
 
-            await tagService.CreateTagAsync(userId, input.Title, input.Color, input.IconId);
+            await tagService.CreateTagAsync(
+                input.Id,
+                userId,
+                input.Title,
+                input.Color,
+                input.IconId
+            );
 
             return new Tag
             {
+                Id = input.Id,
                 Title = input.Title,
                 Color = input.Color,
                 IconId = input.IconId,
                 UserId = userId
             };
         }
+
 
         [Authorize]
         [GraphQLName("updateTag")]
