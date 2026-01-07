@@ -15,9 +15,30 @@
             _context = context;
         }
 
-        // =========================
-        // Breadcrumb builder
-        // =========================
+        private static int GetMatchRank(string title, string term)
+        {
+            if (title.Equals(term, StringComparison.OrdinalIgnoreCase))
+                return 0; // exact
+
+            if (title.StartsWith(term, StringComparison.OrdinalIgnoreCase))
+                return 1; // prefix
+
+            return 2;     // substring
+        }
+        private static (int start, int length)? GetMatchPosition(string title, string term)
+        {
+            if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(term))
+                return null;
+
+            var index = title
+                .IndexOf(term, StringComparison.OrdinalIgnoreCase);
+
+            if (index < 0)
+                return null;
+
+            return (index, term.Length);
+        }
+
         private static List<BreadcrumbItemDto> BuildBreadcrumbs(
             Guid startFolderId,
             Dictionary<Guid, Folder> folderMap)
@@ -88,32 +109,42 @@
             // 3️⃣ Folder hits
             foreach (var folder in matchedFolders)
             {
+                var match = GetMatchPosition(folder.Title, term);
                 results.Add(new SearchResultDto
                 {
                     Id = folder.Id,
                     Title = folder.Title,
                     Type = "Folder",
                     Breadcrumbs = BuildBreadcrumbs(folder.Id, folderMap),
-                    TraversalOrder = traversalIndex++
+                    TraversalOrder = traversalIndex++,
+                    MatchRank = GetMatchRank(folder.Title, term),
+                    MatchStart = match?.start,
+                    MatchLength = match?.length
+
                 });
             }
 
             // 4️⃣ File hits
             foreach (var file in matchedFiles)
             {
+                var match = GetMatchPosition(file.Title, term);
                 results.Add(new SearchResultDto
                 {
                     Id = file.Id,
                     Title = file.Title,
                     Type = "File",
                     Breadcrumbs = BuildBreadcrumbs(file.FolderId, folderMap),
-                    TraversalOrder = traversalIndex++
+                    TraversalOrder = traversalIndex++,
+                    MatchRank = GetMatchRank(file.Title, term),
+                    MatchStart = match?.start,
+                    MatchLength = match?.length
                 });
             }
 
-            // 5️⃣ Final deterministic ordering
+            
             return results
-                .OrderBy(r => r.Breadcrumbs.Count)
+                 .OrderBy(r => r.MatchRank)
+                .ThenBy(r => r.Breadcrumbs.Count)
                 .ThenBy(r => r.TraversalOrder)
                 .ThenBy(r => r.Type == "Folder" ? 0 : 1)
                 .ThenBy(r => r.Title)
