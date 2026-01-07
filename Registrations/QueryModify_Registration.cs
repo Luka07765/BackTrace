@@ -1,6 +1,6 @@
-﻿using Trace.Repository.Files.Fetch;
+﻿using Trace.Repository.Color;
+using Trace.Repository.Files.Fetch;
 using Trace.Repository.Files.Modify;
-
 using Trace.Repository.Folder.Fetch.Progressive;
 using Trace.Repository.Folder.Fetch.Query;
 using Trace.Repository.Folder.Modify;
@@ -10,8 +10,8 @@ using Trace.Service.Files.Modify;
 using Trace.Service.Folder.Fetch.Progressive;
 using Trace.Service.Folder.Fetch.Query;
 using Trace.Service.Folder.Modify;
+using Trace.Service.Search;
 using Trace.Service.Tag;
-using Trace.Repository.Color;
 namespace Trace.Registrations
 {
     public static class QueryModify_Registration
@@ -33,6 +33,8 @@ namespace Trace.Registrations
             services.AddScoped<IColorRepository, ColorRepository>();    
             services.AddScoped<ITagRepository, TagRepository>();
             services.AddScoped<ITagService, TagService>();
+            services.AddScoped<ISearchQueryService, SearchQueryService>();
+
 
             return services;
         }

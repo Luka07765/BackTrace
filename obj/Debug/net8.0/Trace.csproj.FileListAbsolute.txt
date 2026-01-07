@@ -820,3 +820,15 @@ D:\Projects\Back_Trace\obj\Debug\net8.0\Trace.genruntimeconfig.cache
 D:\Projects\Back_Trace\obj\Debug\net8.0\ref\Trace.dll
 D:\Projects\Back_Trace\bin\Debug\net8.0\BananaCakePop.Middleware.dll
 D:\Projects\Back_Trace\bin\Debug\net8.0\HotChocolate.AspNetCore.Authorization.dll
+D:\Projects\Back_Trace\bin\Debug\net8.0\Microsoft.IO.RecyclableMemoryStream.dll
+D:\Projects\Back_Trace\bin\Debug\net8.0\MimeMapping.dll
+D:\Projects\Back_Trace\bin\Debug\net8.0\SixLabors.ImageSharp.dll
+D:\Projects\Back_Trace\bin\Debug\net8.0\Supabase.dll
+D:\Projects\Back_Trace\bin\Debug\net8.0\Supabase.Core.dll
+D:\Projects\Back_Trace\bin\Debug\net8.0\Supabase.Functions.dll
+D:\Projects\Back_Trace\bin\Debug\net8.0\Supabase.Gotrue.dll
+D:\Projects\Back_Trace\bin\Debug\net8.0\Supabase.Postgrest.dll
+D:\Projects\Back_Trace\bin\Debug\net8.0\Supabase.Realtime.dll
+D:\Projects\Back_Trace\bin\Debug\net8.0\Supabase.Storage.dll
+D:\Projects\Back_Trace\bin\Debug\net8.0\System.Reactive.dll
+D:\Projects\Back_Trace\bin\Debug\net8.0\Websocket.Client.dll
