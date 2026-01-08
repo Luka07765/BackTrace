@@ -1,7 +1,7 @@
 [
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_0",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_1",
     "RelativePath": "",
     "HttpMethod": "GET",
     "IsController": false,
@@ -77,6 +77,22 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Trace.Controllers.ProfileController",
+    "Method": "UploadAvatar",
+    "RelativePath": "api/profile/avatar",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "File",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   }
 ]

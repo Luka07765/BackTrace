@@ -10,6 +10,7 @@ using Trace.Service.Files.Modify;
 using Trace.Service.Folder.Fetch.Progressive;
 using Trace.Service.Folder.Fetch.Query;
 using Trace.Service.Folder.Modify;
+using Trace.Service.Profile;
 using Trace.Service.Search;
 using Trace.Service.Tag;
 namespace Trace.Registrations
@@ -34,6 +35,8 @@ namespace Trace.Registrations
             services.AddScoped<ITagRepository, TagRepository>();
             services.AddScoped<ITagService, TagService>();
             services.AddScoped<ISearchQueryService, SearchQueryService>();
+            services.AddScoped<IProfileService, ProfileService>();
+
 
 
             return services;
