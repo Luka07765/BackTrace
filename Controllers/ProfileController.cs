@@ -3,6 +3,7 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Caching.Distributed;
     using System.Security.Claims;
     using Trace.DTO;
     using Trace.Models.Auth;
@@ -44,29 +45,38 @@
         [HttpPost("avatar")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> UploadAvatar(
-        [FromForm] UploadAvatarRequest request)
+      [FromForm] UploadAvatarRequest request,
+      [FromServices] IDistributedCache cache)
         {
             var userId = User.FindFirstValue("CustomUserId");
-            if (userId == null)
+            if (string.IsNullOrEmpty(userId))
                 return Unauthorized();
+
+            var cacheKey = $"avatar-upload:{userId}";
+
+            var countString = await cache.GetStringAsync(cacheKey);
+            var count = string.IsNullOrEmpty(countString) ? 0 : int.Parse(countString);
+
+            if (count >= 5)
+                return StatusCode(429, "Too many avatar uploads. Try again later.");
 
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
                 return Unauthorized();
 
-            try
-            {
-                var imageUrl = await _profileService
-                    .UploadAvatarAsync(user, request.File);
+            var imageUrl = await _profileService.UploadAvatarAsync(user, request.File);
 
-                return Ok(new { imageUrl });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { error = ex.Message });
-            }
+            await cache.SetStringAsync(
+                cacheKey,
+                (count + 1).ToString(),
+                new DistributedCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1)
+                });
+
+            return Ok(new { imageUrl });
         }
 
-    }
 
+    }
 }

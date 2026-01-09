@@ -23,32 +23,32 @@ namespace Trace.Service.Profile
         }
         public async Task RemoveAvatarAsync(ApplicationUser user)
         {
-            var path = $"users/{user.Id}.webp";
             var bucket = _supabase.Storage.From("avatars");
 
-           
-            await bucket.Remove(path);
+            if (!string.IsNullOrEmpty(user.ProfileImageUrl))
+            {
+                var oldPath = user.ProfileImageUrl
+                    .Split("/avatars/")[1]
+                    .Split("?")[0];
 
+                await bucket.Remove(oldPath);
+            }
 
-            // Reset profile image
             user.ProfileImageUrl = null;
-
-            // Increment version to invalidate caches
             user.SessionVersion++;
 
             await _userManager.UpdateAsync(user);
         }
+
 
         public async Task<string> UploadAvatarAsync(ApplicationUser user, IFormFile file)
         {
             if (file == null || file.Length == 0)
                 throw new InvalidOperationException("No file uploaded.");
 
-            // Size limit (2MB) – still keep this (prevents abuse)
             if (file.Length > 2 * 1024 * 1024)
                 throw new InvalidOperationException("Max file size is 2MB.");
 
-            // MIME allowlist (input types)
             var allowedTypes = new[]
             {
         "image/jpeg",
@@ -59,11 +59,9 @@ namespace Trace.Service.Profile
             if (!allowedTypes.Contains(file.ContentType))
                 throw new InvalidOperationException("Invalid image type.");
 
-            // Load & validate image bytes (throws if not a real image)
             using var inputStream = file.OpenReadStream();
             using var image = await Image.LoadAsync(inputStream);
 
-            // Resize + crop to square avatar (512x512)
             const int avatarSize = 512;
 
             image.Mutate(ctx =>
@@ -71,48 +69,51 @@ namespace Trace.Service.Profile
                 ctx.Resize(new ResizeOptions
                 {
                     Size = new Size(avatarSize, avatarSize),
-                    Mode = ResizeMode.Crop,     // crop center to square
+                    Mode = ResizeMode.Crop,
                     Position = AnchorPositionMode.Center
                 });
             });
 
-            // Encode to WebP (control output size/quality)
             byte[] webpBytes;
             using (var outStream = new MemoryStream())
             {
-                var encoder = new WebpEncoder
-                {
-                    Quality = 80 // 0-100; 75-85 is a good avatar range
-                };
-
+                var encoder = new WebpEncoder { Quality = 80 };
                 await image.SaveAsync(outStream, encoder);
                 webpBytes = outStream.ToArray();
             }
 
-            // Upload WebP to Supabase
-            var path = $"users/{user.Id}.webp";
             var bucket = _supabase.Storage.From("avatars");
 
+            // Delete old avatar file
+            if (!string.IsNullOrEmpty(user.ProfileImageUrl))
+            {
+                var oldPath = user.ProfileImageUrl
+                    .Split("/avatars/")[1]
+                    .Split("?")[0];
+
+                await bucket.Remove(oldPath);
+            }
+
+            // New versioned filename
+            var newVersion = user.SessionVersion + 1;
+            var path = $"users/{user.Id}_v{newVersion}.webp";
+
             await bucket.Upload(
-      webpBytes,
-      path,
-      new Supabase.Storage.FileOptions
-      {
-          ContentType = "image/webp",
-          Upsert = true,
-          CacheControl = "0" 
-      });
+                webpBytes,
+                path,
+                new Supabase.Storage.FileOptions
+                {
+                    ContentType = "image/webp",
+                    CacheControl = "0",
+                    Upsert = true
+                });
 
-
-            user.SessionVersion++;
-
-            var publicUrl = bucket.GetPublicUrl(path) + $"?v={user.SessionVersion}";
-            user.ProfileImageUrl = publicUrl;
-
+            user.SessionVersion = newVersion;
+            user.ProfileImageUrl = bucket.GetPublicUrl(path);
 
             await _userManager.UpdateAsync(user);
 
-            return publicUrl;
+            return user.ProfileImageUrl;
         }
 
     }
