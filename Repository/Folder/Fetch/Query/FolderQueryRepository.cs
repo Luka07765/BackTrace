@@ -28,6 +28,23 @@ namespace Trace.Repository.Folder.Fetch.Query
           .ToListAsync();
         }
 
+
+        public async Task<Folder> GetFolderByIdAsync(Guid id, string userId)
+        {
+            return await _context.Folders
+                .Include(f => f.SubFolders)
+                .Include(f => f.Files)
+                .FirstOrDefaultAsync(f => f.Id == id && f.UserId == userId);
+        }
+
+
+
+
+
+
+
+
+
         public async Task<IEnumerable<Folder>> GetRootFoldersAsync(string userId)
         {
             var roots = await _context.Folders
@@ -36,15 +53,6 @@ namespace Trace.Repository.Folder.Fetch.Query
 
 
             return roots;
-        }
-
-
-        public async Task<Folder> GetFolderByIdAsync(Guid id, string userId)
-        {
-            return await _context.Folders
-                .Include(f => f.SubFolders)
-                .Include(f => f.Files)
-                .FirstOrDefaultAsync(f => f.Id == id && f.UserId == userId);
         }
 
     }

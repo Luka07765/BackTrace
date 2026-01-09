@@ -10,6 +10,7 @@ namespace Trace.Models.Logic
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
 
-        public ICollection<Folder> RootFolders { get; set; }
+
+        public ICollection<Folder> RootFolders { get; set; } = new List<Folder>();
     }
 }
