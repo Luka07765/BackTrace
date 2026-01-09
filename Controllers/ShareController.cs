@@ -63,10 +63,10 @@ namespace Trace.Controllers
             file.ShareToken ??= Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
             file.ShareExpiresAt =  DateTime.UtcNow.AddDays(1);//request?.ExpiresAt ?? for the front_End sending data it should be valid
             await _context.SaveChangesAsync();
-
+            var frontendBaseUrl = "https://localhost:3000";
             return Ok(new
             {
-                shareUrl = $"{Request.Scheme}://{Request.Host}/api/share/public/{file.ShareToken}",
+                shareUrl = $"{frontendBaseUrl}/page/share/{file.ShareToken}",
                 expiresAt = file.ShareExpiresAt
             });
         }
