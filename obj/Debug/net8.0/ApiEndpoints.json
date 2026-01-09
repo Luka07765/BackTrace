@@ -81,6 +81,16 @@
   },
   {
     "ContainingType": "Trace.Controllers.ProfileController",
+    "Method": "RemoveAvatar",
+    "RelativePath": "api/profile/avatar",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Trace.Controllers.ProfileController",
     "Method": "UploadAvatar",
     "RelativePath": "api/profile/avatar",
     "HttpMethod": "POST",

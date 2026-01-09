@@ -6,6 +6,7 @@
     using System.Security.Claims;
     using Trace.DTO;
     using Trace.Models.Auth;
+    using Trace.Service.Auth.Token;
     using Trace.Service.Profile;
 
     [ApiController]
@@ -21,6 +22,22 @@
         {
             _profileService = profileService;
             _userManager = userManager;
+        }
+        [Authorize]
+        [HttpDelete("avatar")]
+        public async Task<IActionResult> RemoveAvatar()
+        {
+            var userId = User.FindFirstValue(CustomClaimTypes.UserId);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return Unauthorized();
+
+            await _profileService.RemoveAvatarAsync(user);
+
+            return Ok(new { message = "Avatar removed" });
         }
 
         [Authorize]
