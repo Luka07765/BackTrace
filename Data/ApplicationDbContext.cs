@@ -20,9 +20,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Folder> Folders { get; set; }
     public DbSet<File> Files { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
-    public DbSet<Tag> Tag{ get; set; }    
-    public DbSet<TagAssignment> TagAssignments { get; set; }    
+    public DbSet<Tag> Tags{ get; set; }    
+    public DbSet<TagAssignment> TagAssignments { get; set; }
 
+    public DbSet<Domain> Domains { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

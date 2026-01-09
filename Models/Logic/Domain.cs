@@ -2,7 +2,7 @@
 
 namespace Trace.Models.Logic
 {
-    public class ProjectDomain
+    public class Domain
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
