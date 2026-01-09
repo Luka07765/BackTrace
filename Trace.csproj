@@ -35,7 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Repository\ProjectDomain\" />
+    <Folder Include="Repository\Domain\" />
   </ItemGroup>
 
 </Project>
