@@ -6,6 +6,10 @@ namespace Trace.Service.Profile
     {
         Task<string> UploadAvatarAsync(ApplicationUser user, IFormFile file);
         Task RemoveAvatarAsync(ApplicationUser user);
-
+        Task ChangePasswordAsync(
+         ApplicationUser user,
+         string currentPassword,
+         string newPassword);
     }
 }
+

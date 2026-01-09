@@ -21,6 +21,28 @@ namespace Trace.Service.Profile
             _supabase = supabase;
             _userManager = userManager;
         }
+
+
+
+        public async Task ChangePasswordAsync(
+    ApplicationUser user,
+    string currentPassword,
+    string newPassword)
+        {
+            var result = await _userManager.ChangePasswordAsync(
+                user,
+                currentPassword,
+                newPassword);
+
+            if (!result.Succeeded)
+                throw new InvalidOperationException(
+                    string.Join(", ", result.Errors.Select(e => e.Description)));
+
+            // Invalidate all sessions
+            user.SessionVersion++;
+            await _userManager.UpdateAsync(user);
+        }
+
         public async Task RemoveAvatarAsync(ApplicationUser user)
         {
             var bucket = _supabase.Storage.From("avatars");

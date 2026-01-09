@@ -24,6 +24,37 @@
             _profileService = profileService;
             _userManager = userManager;
         }
+
+
+
+        [Authorize]
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword(
+    [FromBody] ChangePasswordRequest request)
+        {
+            var userId = User.FindFirstValue(CustomClaimTypes.UserId);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return Unauthorized();
+
+            try
+            {
+                await _profileService.ChangePasswordAsync(
+                    user,
+                    request.CurrentPassword,
+                    request.NewPassword);
+
+                return Ok(new { message = "Password updated successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
         [Authorize]
         [HttpDelete("avatar")]
         public async Task<IActionResult> RemoveAvatar()

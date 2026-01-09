@@ -104,5 +104,21 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Trace.Controllers.ProfileController",
+    "Method": "ChangePassword",
+    "RelativePath": "api/profile/change-password",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Trace.DTO.ChangePasswordRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   }
 ]
