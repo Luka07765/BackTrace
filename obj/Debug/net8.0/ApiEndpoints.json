@@ -123,6 +123,22 @@
   },
   {
     "ContainingType": "Trace.Controllers.ShareController",
+    "Method": "RevokeShare",
+    "RelativePath": "api/share/{fileId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "fileId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Trace.Controllers.ShareController",
     "Method": "CreateShare",
     "RelativePath": "api/share/{fileId}",
     "HttpMethod": "POST",
@@ -133,6 +149,11 @@
         "Name": "fileId",
         "Type": "System.Guid",
         "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "Trace.DTO.CreateShareRequest",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []

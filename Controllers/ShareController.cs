@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 using Trace.Data;
 using Trace.Models.Logic;
 using Trace.Service.Auth.Token;
-
+using Trace.DTO;
 namespace Trace.Controllers
 {
     [ApiController]
@@ -45,7 +45,7 @@ namespace Trace.Controllers
         //comments
         [Authorize]
         [HttpPost("{fileId:guid}")]
-        public async Task<IActionResult> CreateShare(Guid fileId)
+        public async Task<IActionResult> CreateShare(Guid fileId, [FromBody] CreateShareRequest? request)
         {
 
             var userId = User.FindFirstValue(CustomClaimTypes.UserId);
@@ -61,12 +61,13 @@ namespace Trace.Controllers
 
             file.IsShared = true;
             file.ShareToken ??= Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
-
+            file.ShareExpiresAt = request?.ExpiresAt ?? DateTime.UtcNow.AddDays(1);
             await _context.SaveChangesAsync();
 
             return Ok(new
             {
-                shareUrl = $"{Request.Scheme}://{Request.Host}/api/share/public/{file.ShareToken}"
+                shareUrl = $"{Request.Scheme}://{Request.Host}/api/share/public/{file.ShareToken}",
+                expiresAt = file.ShareExpiresAt
             });
         }
 
@@ -83,7 +84,17 @@ namespace Trace.Controllers
 
             if (file == null)
                 return NotFound();
+            if (file.ShareExpiresAt != null && file.ShareExpiresAt < DateTime.UtcNow)
+            {
+                // cleanup
+                file.IsShared = false;
+                file.ShareToken = null;
+                file.ShareExpiresAt = null;
 
+                await _context.SaveChangesAsync();
+
+                return NotFound();
+            }
             return Ok(new
             {
                 file.Title,

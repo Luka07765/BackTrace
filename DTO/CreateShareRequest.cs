@@ -1,6 +1,6 @@
 ﻿namespace Trace.DTO
 {
-    public class ShareExpiresAt
+    public class CreateShareRequest
     {
         public DateTime? ExpiresAt { get; set; }
     }
