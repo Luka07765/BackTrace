@@ -11,7 +11,8 @@ namespace Trace.Models.Logic
         public Guid Id { get; set; }
         public string Title { get; set; }
 
-        // User association
+        public Guid? ProjectDomainId { get; set; }
+        public ProjectDomain ProjectDomain { get; set; }
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
 

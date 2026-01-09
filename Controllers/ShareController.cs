@@ -61,7 +61,7 @@ namespace Trace.Controllers
 
             file.IsShared = true;
             file.ShareToken ??= Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
-            file.ShareExpiresAt = request?.ExpiresAt ?? DateTime.UtcNow.AddDays(1);
+            file.ShareExpiresAt =  DateTime.UtcNow.AddDays(1);//request?.ExpiresAt ?? for the front_End sending data it should be valid
             await _context.SaveChangesAsync();
 
             return Ok(new
