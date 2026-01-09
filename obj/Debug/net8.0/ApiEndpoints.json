@@ -120,5 +120,37 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Trace.Controllers.ShareController",
+    "Method": "CreateShare",
+    "RelativePath": "api/share/{fileId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "fileId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Trace.Controllers.ShareController",
+    "Method": "GetSharedFile",
+    "RelativePath": "api/share/public/{token}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "token",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   }
 ]

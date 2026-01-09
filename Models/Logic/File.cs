@@ -24,6 +24,10 @@ namespace Trace.Models.Logic
         public Guid FolderId { get; set; }
         public Folder Folder { get; set; }
         public string Colors { get; set; } = "[]";
+        public bool IsShared { get; set; } = false;
+
+        [StringLength(64)]
+        public string? ShareToken { get; set; }
 
         public int? FilePosition { get; set; }
 
