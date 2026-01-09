@@ -28,6 +28,7 @@ namespace Trace.Models.Logic
 
         [StringLength(64)]
         public string? ShareToken { get; set; }
+        public DateTime? ShareExpiresAt { get; set; }
 
         public int? FilePosition { get; set; }
 
