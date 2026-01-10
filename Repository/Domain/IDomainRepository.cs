@@ -10,6 +10,10 @@
         Task<Domain> CreateAsync(Domain domain);
         Task<Domain> UpdateAsync(Domain domain);
         Task<bool> DeleteAsync(Domain domain);
+        Task<List<Folder>> GetDomainData(Guid domainId, string userId);
+
+        Task<bool> ApplyDomain(Guid folderId, Guid domainId, string userId);
+
     }
 
 }

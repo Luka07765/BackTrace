@@ -27,5 +27,19 @@
 
             return await domainQueryService.GetDomains(userId);
         }
+
+
+        [Authorize]
+        [GraphQLName("getDomainData")]
+        public async Task<IEnumerable<Folder>> GetDomainData(
+    Guid domainId,
+    [Service] IDomainService service,
+    ClaimsPrincipal user)
+        {
+            var userId = user.FindFirstValue("CustomUserId");
+
+            return await service.GetDomainData(domainId, userId);
+        }
+
     }
 }

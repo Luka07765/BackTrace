@@ -50,6 +50,13 @@ namespace Trace.Service.Domain
 
             return await _repository.DeleteAsync(domain);
         }
+
+        public Task<List<Folder>> GetDomainData(Guid domainId, string userId)
+    => _repository.GetDomainData(domainId, userId);
+
+        public Task<bool> ApplyDomain(Guid folderId, Guid domainId, string userId)
+                    => _repository.ApplyDomain(folderId, domainId, userId);
+
     }
 
 }

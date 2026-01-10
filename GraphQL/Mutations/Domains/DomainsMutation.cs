@@ -77,5 +77,29 @@
                 throw new GraphQLException(new Error(ex.Message, "DELETE_FAILED"));
             }
         }
+
+        [Authorize]
+        [GraphQLName("applyDomain")]
+        public async Task<bool> ApplyDomain(
+        Guid folderId,
+        Guid domainId,
+        [Service] IDomainService service,
+        ClaimsPrincipal user)
+        {
+            var userId = user.FindFirstValue("CustomUserId");
+            if (string.IsNullOrEmpty(userId))
+                throw new GraphQLException(new Error("UNAUTHORIZED", "UNAUTHORIZED"));
+
+            var result = await service.ApplyDomain(folderId, domainId, userId);
+
+            if (!result)
+                throw new GraphQLException(new Error("Folder not found or not root", "NOT_FOUND"));
+
+            return true;
+        }
+
+
+
+
     }
 }

@@ -43,5 +43,31 @@ namespace Trace.Repository.Domain
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<List<Folder>> GetDomainData(Guid domainId, string userId)
+        {
+            return await _context.Folders
+                .Where(f =>
+                    f.UserId == userId &&
+                    f.ParentFolderId == null &&
+                    f.DomainId == domainId)
+                .OrderBy(f => f.FolderPosition)
+                .ToListAsync();
+        }
+
+        public async Task<bool> ApplyDomain(Guid folderId, Guid domainId, string userId)
+        {
+            var folder = await _context.Folders
+                .FirstOrDefaultAsync(f =>
+                    f.Id == folderId &&
+                    f.UserId == userId &&
+                    f.ParentFolderId == null);
+
+            if (folder == null) return false;
+
+            folder.DomainId = domainId;
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }
