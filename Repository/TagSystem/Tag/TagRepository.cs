@@ -17,7 +17,7 @@
 
         public async Task<Tag> GetTagByIdAsync(Guid tagId, string userId)
         {
-            return await _context.Tags
+            return await _context.Tag
                 .Include(t => t.TagAssignments)
                 .ThenInclude(ta => ta.File)
                 .FirstOrDefaultAsync(t => t.Id == tagId && t.UserId == userId);
@@ -25,7 +25,7 @@
 
         public async Task<IEnumerable<Tag>> GetAllTagsAsync(string userId)
         {
-            return await _context.Tags
+            return await _context.Tag
                 .Where(f => f.UserId == userId)
                 .Include(t => t.TagAssignments)
                 .ToListAsync();
@@ -36,23 +36,23 @@
             if (tag.Id == Guid.Empty)
                 tag.Id = Guid.NewGuid();  // ensure valid Id
 
-            _context.Tags.Add(tag);
+            _context.Tag.Add(tag);
             await _context.SaveChangesAsync();
         }
 
         public async Task UpdateTagAsync(Tag tag)
         {
-            _context.Tags.Update(tag);
+            _context.Tag.Update(tag);
             await _context.SaveChangesAsync();
         }
 
         public async Task DeleteTagAsync(Guid tagId, string userId)
         {
-            var tag = await _context.Tags.FirstOrDefaultAsync(t => t.Id == tagId && t.UserId == userId);
+            var tag = await _context.Tag.FirstOrDefaultAsync(t => t.Id == tagId && t.UserId == userId);
 
             if (tag != null)
             {
-                _context.Tags.Remove(tag);
+                _context.Tag.Remove(tag);
                 await _context.SaveChangesAsync();
             }
         }
