@@ -6,7 +6,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Trace.Models.Auth;
+using Trace.DTO.Auth;
+using Trace.Models.Account;
 
 namespace Trace.Service.Auth.Token
 {
@@ -29,7 +30,7 @@ namespace Trace.Service.Auth.Token
             _logger = logger;
         }
 
-        public async Task<string> CreateAccessToken(ApplicationUser user)
+        public async Task<string> CreateAccessToken(User user)
         {
             string jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? _configuration["Jwt:Key"]
     ?? throw new Exception("JWT secret is not set.");
@@ -63,7 +64,7 @@ namespace Trace.Service.Auth.Token
             return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
         }
 
-        public async Task<TokenResponse> CreateTokenResponse(ApplicationUser user, string ipAddress)
+        public async Task<TokenResponse> CreateTokenResponse(User user, string ipAddress)
         {
             var accessToken = await CreateAccessToken(user);
             var refreshToken = await _refreshTokenService.GenerateRefreshToken(user.Id, ipAddress);
@@ -141,7 +142,7 @@ namespace Trace.Service.Auth.Token
             return false;
         }
 
-        public async Task<bool> ValidateSessionVersion(string token, ApplicationUser user)
+        public async Task<bool> ValidateSessionVersion(string token, User user)
         {
             var handler = new JwtSecurityTokenHandler();
             JwtSecurityToken jwtToken = null;
@@ -166,7 +167,7 @@ namespace Trace.Service.Auth.Token
             return false;
         }
 
-        public async Task<bool> IsAccessTokenValid(string token, ApplicationUser user)
+        public async Task<bool> IsAccessTokenValid(string token, User user)
         {
             if (await IsAccessTokenRevoked(token))
             {

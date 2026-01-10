@@ -1,12 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Trace.DTO
+namespace Trace.DTO.Auth
 {
-    public class LoginModel
+    public class LoginDto
     {
-        [EmailAddress]
+        [Required, EmailAddress]
         public required string Email { get; set; }
-        [DataType(DataType.Password)]
+
+        [Required]
         public required string Password { get; set; }
     }
 }

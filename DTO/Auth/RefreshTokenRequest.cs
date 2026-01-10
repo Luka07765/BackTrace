@@ -1,4 +1,4 @@
-﻿namespace Trace.Models.Auth
+﻿namespace Trace.DTO.Auth
 {
     public class RefreshTokenRequest
     {

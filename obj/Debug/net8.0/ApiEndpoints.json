@@ -27,7 +27,7 @@
     "Parameters": [
       {
         "Name": "model",
-        "Type": "Trace.DTO.LoginModel",
+        "Type": "Trace.DTO.Auth.LoginDto",
         "IsRequired": true
       }
     ],
@@ -63,7 +63,7 @@
     "Parameters": [
       {
         "Name": "model",
-        "Type": "Trace.DTO.RegisterModel",
+        "Type": "Trace.DTO.Auth.RegisterDto",
         "IsRequired": true
       }
     ],

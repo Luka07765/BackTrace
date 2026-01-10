@@ -4,16 +4,16 @@
     using HotChocolate.Authorization;
     using System.Security.Claims;
     using Microsoft.AspNetCore.Identity;
-    using Trace.Models.Auth;
+    using Trace.Models.Account;
 
     [ExtendObjectType("Query")]
     public class QueryProfile
     {
         [Authorize]
         [GraphQLName("getProfile")]
-        public async Task<ApplicationUser> GetProfile(
+        public async Task<User> GetProfile(
             ClaimsPrincipal user,
-            [Service] UserManager<ApplicationUser> userManager)
+            [Service] UserManager<User> userManager)
         {
             var userId = user.FindFirstValue("CustomUserId");
 

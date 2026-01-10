@@ -5,11 +5,12 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Trace.Data.Configurations;
 using Trace.DTO;
+using Trace.Models.Account;
 using Trace.Models.Auth;
 using Trace.Models.Logic;
 using Trace.Models.TagSystem;
 
-public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+public class ApplicationDbContext : IdentityDbContext<User>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)

@@ -1,13 +1,13 @@
-﻿using Trace.DTO;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
-using Trace.Models.Auth;
+using Trace.DTO.Auth;
+using Trace.Models.Account;
 
 namespace Trace.Service.Auth.GeneralAuth
 {
     public interface IUserService
     {
-        Task<IdentityResult> RegisterUser(RegisterModel model);
-        Task<ApplicationUser> AuthenticateUser(LoginModel model);
+        Task<IdentityResult> RegisterUser(RegisterDto model);
+        Task<User> AuthenticateUser(LoginDto model);
     }
 }

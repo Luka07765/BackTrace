@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Trace.Models.Auth;
+using Trace.Models.Account;
 using Trace.Models.TagSystem;
 
 namespace Trace.Models.Logic
@@ -18,7 +18,7 @@ namespace Trace.Models.Logic
         public byte[] RowVersion { get; set; } = default!;
 
         public string UserId { get; set; }
-        public ApplicationUser User { get; set; }
+        public User User { get; set; }
 
        
         public Guid FolderId { get; set; }

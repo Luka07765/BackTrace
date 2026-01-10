@@ -1,4 +1,4 @@
-﻿using Trace.Models.Auth;
+﻿using Trace.Models.Account;
 
 namespace Trace.Models.Logic
 {
@@ -8,7 +8,7 @@ namespace Trace.Models.Logic
         public string Title { get; set; }
 
         public string UserId { get; set; }
-        public ApplicationUser User { get; set; }
+        public User User { get; set; }
 
 
         public ICollection<Folder> RootFolders { get; set; } = new List<Folder>();

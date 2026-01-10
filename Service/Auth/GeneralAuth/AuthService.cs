@@ -1,19 +1,19 @@
-﻿using Trace.DTO;
-using Microsoft.AspNetCore.Identity;
-using Trace.Models.Auth;
+﻿using Microsoft.AspNetCore.Identity;
+using Trace.DTO.Auth;
+using Trace.Models.Account;
 
 namespace Trace.Service.Auth.GeneralAuth
 {
     public class UserService : IUserService
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<User> _userManager;
 
-        public UserService(UserManager<ApplicationUser> userManager)
+        public UserService(UserManager<User> userManager)
         {
             _userManager = userManager;
         }
 
-        public async Task<IdentityResult> RegisterUser(RegisterModel model)
+        public async Task<IdentityResult> RegisterUser(RegisterDto model)
         {
             // Username must be unique
             if (await _userManager.FindByNameAsync(model.Username) != null)
@@ -29,7 +29,7 @@ namespace Trace.Service.Auth.GeneralAuth
                     new IdentityError { Description = "Email already exists." });
             }
 
-            var user = new ApplicationUser
+            var user = new User
             {
                 UserName = model.Username,
                 Email = model.Email,
@@ -41,7 +41,7 @@ namespace Trace.Service.Auth.GeneralAuth
         }
 
         // ✅ FIXED: authenticate by EMAIL
-        public async Task<ApplicationUser?> AuthenticateUser(LoginModel model)
+        public async Task<User?> AuthenticateUser(LoginDto model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)

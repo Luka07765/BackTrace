@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using Trace.Models.Auth;
 using Microsoft.AspNetCore.Identity;
+using Trace.Models.Account;
 
 
 namespace Trace.Service.Auth.Token
@@ -10,10 +11,10 @@ namespace Trace.Service.Auth.Token
     public class RefreshTokenService : IRefreshTokenService
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<User> _userManager;
         private const int TokenValidityDays = 7; // Base validity period for a new token
 
-        public RefreshTokenService(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public RefreshTokenService(ApplicationDbContext context, UserManager<User> userManager)
         {
             _context = context;
             _userManager = userManager;

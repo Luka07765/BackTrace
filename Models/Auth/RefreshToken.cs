@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Trace.Models.Account;
 
 namespace Trace.Models.Auth
 {
@@ -16,6 +17,6 @@ namespace Trace.Models.Auth
         public bool IsActive => Revoked == null && !IsExpired;
         public int SessionVersion { get; set; }
         public string UserId { get; set; } // Foreign Key
-        public ApplicationUser User { get; set; }
+        public User User { get; set; }
     }
 }

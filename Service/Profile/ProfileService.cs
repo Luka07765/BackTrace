@@ -4,7 +4,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Webp;
 using SixLabors.ImageSharp.Processing;
 using Supabase;
-using Trace.Models.Auth;
+using Trace.Models.Account;
 
 namespace Trace.Service.Profile
 {
@@ -12,11 +12,11 @@ namespace Trace.Service.Profile
     public class ProfileService : IProfileService
     {
         private readonly Client _supabase;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<User> _userManager;
 
         public ProfileService(
             Client supabase,
-            UserManager<ApplicationUser> userManager)
+            UserManager<User> userManager)
         {
             _supabase = supabase;
             _userManager = userManager;
@@ -25,7 +25,7 @@ namespace Trace.Service.Profile
 
 
         public async Task ChangePasswordAsync(
-    ApplicationUser user,
+    User user,
     string currentPassword,
     string newPassword)
         {
@@ -43,7 +43,7 @@ namespace Trace.Service.Profile
             await _userManager.UpdateAsync(user);
         }
 
-        public async Task RemoveAvatarAsync(ApplicationUser user)
+        public async Task RemoveAvatarAsync(User user)
         {
             var bucket = _supabase.Storage.From("avatars");
 
@@ -63,7 +63,7 @@ namespace Trace.Service.Profile
         }
 
 
-        public async Task<string> UploadAvatarAsync(ApplicationUser user, IFormFile file)
+        public async Task<string> UploadAvatarAsync(User user, IFormFile file)
         {
             if (file == null || file.Length == 0)
                 throw new InvalidOperationException("No file uploaded.");

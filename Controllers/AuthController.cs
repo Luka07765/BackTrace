@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using Trace.DTO;
-using Trace.Models.Auth;
+using Trace.DTO.Auth;
+using Trace.Models.Account;
 using Trace.Service.Auth.GeneralAuth;
 using Trace.Service.Auth.Token;
 
@@ -16,14 +16,14 @@ namespace Jade.Controllers
         private readonly ITokenService _tokenService;
         private readonly IUserService _userService;
         private readonly IRefreshTokenService _refreshTokenService;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<User> _userManager;
         private readonly ILogger<AuthController> _logger; // Use ILogger<AuthController> for type-safe logging
 
         public AuthController(
             ITokenService tokenService,
             IUserService userService,
             IRefreshTokenService refreshTokenService,
-            UserManager<ApplicationUser> userManager,
+            UserManager<User> userManager,
             ILogger<AuthController> logger) // Add logger here
         {
             _tokenService = tokenService;
@@ -34,7 +34,7 @@ namespace Jade.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        public async Task<IActionResult> Register([FromBody] RegisterDto model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -52,7 +52,7 @@ namespace Jade.Controllers
         }
 
         [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody] LoginModel model)
+        public async Task<IActionResult> Login([FromBody] LoginDto model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

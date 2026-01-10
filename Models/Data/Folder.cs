@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
-using Trace.Models.Auth;
+using Trace.Models.Account;
 
 namespace Trace.Models.Logic
 {
@@ -13,7 +12,7 @@ namespace Trace.Models.Logic
 
         // Ownership
         public string UserId { get; set; }
-        public ApplicationUser User { get; set; }
+        public User User { get; set; }
 
 
         // Hierarchy

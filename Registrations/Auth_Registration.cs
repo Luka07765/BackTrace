@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
-using Trace.Models.Auth;
+using Trace.Models.Account;
 using Trace.Service.Auth.GeneralAuth;
 using Trace.Service.Auth.Token;
 
@@ -21,7 +21,7 @@ namespace Trace.Registrations
             var audience = Environment.GetEnvironmentVariable("JWT_Audience") ?? config["Jwt:Audience"];
 
             // === Identity Configuration ===
-            services.AddIdentityCore<ApplicationUser>()
+            services.AddIdentityCore<User>()
                 .AddEntityFrameworkStores<Data.ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 

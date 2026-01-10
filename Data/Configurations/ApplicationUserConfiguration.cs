@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Trace.Models.Auth;
+using Trace.Models.Account;
 
 namespace Trace.Data.Configurations
 {
-    public class ApplicationUserConfiguration : IEntityTypeConfiguration<ApplicationUser>
+    public class ApplicationUserConfiguration : IEntityTypeConfiguration<User>
     {
-        public void Configure(EntityTypeBuilder<ApplicationUser> entity)
+        public void Configure(EntityTypeBuilder<User> entity)
         {
             entity.Ignore(e => e.PhoneNumber);
             entity.Ignore(e => e.PhoneNumberConfirmed);
