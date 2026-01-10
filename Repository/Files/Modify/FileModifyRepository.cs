@@ -109,16 +109,15 @@ namespace Trace.Repository.Files.Modify
 
             return null;
         }
-
-
-
-
         public async Task<File> CreateFileAsync(File file)
         {
             _context.Files.Add(file);
             await _context.SaveChangesAsync();
             return file;
         }
+
+
+
         public async Task<bool> DeleteFileAsync(Guid fileId)
         {
             for (int attempt = 0; attempt < 2; attempt++)
@@ -165,5 +164,41 @@ namespace Trace.Repository.Files.Modify
             return false;
         }
 
+
+        public async Task<bool> SoftDeleteFileAsync(Guid fileId)
+        {
+            var file = await _context.Files
+                .AsTracking()
+                .FirstOrDefaultAsync(f => f.Id == fileId && f.DeletedAt == null);
+
+            if (file == null)
+                return false;
+
+            file.OriginalFolderId ??= file.FolderId;
+            file.DeletedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        // 2️⃣ Restore
+        public async Task<bool> RestoreFileAsync(Guid fileId)
+        {
+            var file = await _context.Files
+                .AsTracking()
+                .FirstOrDefaultAsync(f => f.Id == fileId && f.DeletedAt != null);
+
+            if (file.OriginalFolderId == null)
+                return false;
+
+
+            file.DeletedAt = null;
+            file.FolderId = file.OriginalFolderId.Value;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+ 
     }
 }

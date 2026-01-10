@@ -32,6 +32,9 @@ namespace Trace.Models.Logic
 
         public int? FilePosition { get; set; }
 
+        public DateTime? DeletedAt { get; set; }
+        public Guid? OriginalFolderId { get; set; }
+
         public int IconId { get; set; } = 1;
         [NotMapped]
         public IEnumerable<Trace.Models.TagSystem.Tag> Tags => TagAssignments.Select(ta => ta.Tag);

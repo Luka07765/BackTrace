@@ -8,5 +8,7 @@
     {
         Task<IEnumerable<File>> GetAllFilesAsync(string userId);
         Task<File> GetFileByIdAsync(Guid id, string userId);
+
+        Task<List<File>> GetFileTrashedAsync(string userId);
     }
 }

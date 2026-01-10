@@ -41,5 +41,21 @@
 
             return await fileService.GetFileByIdAsync(id, userId);
         }
+
+
+
+        [Authorize]
+        [GraphQLName("trashedFiles")]
+        public async Task<List<File>> GetTrashedFiles(
+         [Service] IFileQueryService fileQueryService,
+         ClaimsPrincipal user)
+        {
+            var userId = user.FindFirstValue("CustomUserId");
+
+            if (string.IsNullOrEmpty(userId))
+                throw new GraphQLException(new Error("Unauthorized", "UNAUTHORIZED"));
+
+            return await fileQueryService.GetFileTrashedAsync(userId);
+        }
     }
 }

@@ -46,5 +46,16 @@ namespace Trace.Service.Files.Modify
             return await _fileModifyRepository.DeleteFileAsync(id);
         }
 
+        public async Task<bool> SoftFileDeleteAsync(Guid fileId)
+    {
+        return await _fileModifyRepository.SoftDeleteFileAsync(fileId);
+    }
+
+        public async Task<bool> RestoreFileAsync(Guid fileId)
+    {
+        return await _fileModifyRepository.RestoreFileAsync(fileId);
+    }
+
+  
     }
 }

@@ -23,5 +23,10 @@ namespace Trace.Service.Files.Fetch
             return await _fileQueryRepository.GetFileByIdAsync(id, userId);
         }
 
+        public async Task<List<File>> GetFileTrashedAsync(string userId)
+        {
+            return await _fileQueryRepository.GetFileTrashedAsync(userId);
+        }
+
     }
 }

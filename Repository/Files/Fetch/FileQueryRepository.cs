@@ -40,5 +40,14 @@ namespace Trace.Repository.Files.Fetch
                 .FirstOrDefaultAsync(f => f.Id == id && f.UserId == userId);
         }
 
+
+        public async Task<List<File>> GetFileTrashedAsync(string userId)
+        {
+            return await _context.Files
+                .Where(f => f.UserId == userId && f.DeletedAt != null)
+                .OrderByDescending(f => f.DeletedAt)
+                .ToListAsync();
+        }
+
     }
 }

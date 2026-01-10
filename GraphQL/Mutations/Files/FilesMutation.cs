@@ -36,6 +36,30 @@ namespace Trace.GraphQL.Mutations.Files
 
 
 
+
+        [Authorize]
+        [GraphQLName("createFile")]
+        public async Task<File> CreateFileAsync(
+            CreateFileInput input,
+            [Service] IFileModifyService fileModifyService,
+      
+            ClaimsPrincipal user)
+        {
+            // ✅ Extract User ID from JWT claims
+            var userId = user.FindFirstValue("CustomUserId");
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
+            }
+
+    
+
+        
+            return await fileModifyService.CreateFileAsync(input, userId);
+        }
+
+
+
         [Authorize]
         [GraphQLName("deleteFile")]
         public async Task<bool> DeleteFile(
@@ -61,25 +85,41 @@ namespace Trace.GraphQL.Mutations.Files
 
 
         [Authorize]
-        [GraphQLName("createFile")]
-        public async Task<File> CreateFileAsync(
-            CreateFileInput input,
-            [Service] IFileModifyService fileModifyService,
-      
-            ClaimsPrincipal user)
+        [GraphQLName("softDeleteFile")]
+        public async Task<bool> SoftDeleteFile(
+    Guid id,
+    [Service] IFileModifyService fileModifyService)
         {
-            // ✅ Extract User ID from JWT claims
-            var userId = user.FindFirstValue("CustomUserId");
-            if (string.IsNullOrEmpty(userId))
-            {
-                throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
-            }
+            var result = await fileModifyService.SoftFileDeleteAsync(id);
 
-    
+            if (!result)
+                throw new GraphQLException(new Error("File not found or already deleted", "NOT_FOUND"));
 
-        
-            return await fileModifyService.CreateFileAsync(input, userId);
+            return true;
         }
+
+        [Authorize]
+        [GraphQLName("restoreFile")]
+        public async Task<bool> RestoreFile(
+            Guid id,
+            [Service] IFileModifyService fileModifyService)
+        {
+            var result = await fileModifyService.RestoreFileAsync(id);
+
+            if (!result)
+                throw new GraphQLException(new Error("File not found in trash", "NOT_FOUND"));
+
+            return true;
+        }
+
+
+
+
+
+
+
+
+
     }
 
 

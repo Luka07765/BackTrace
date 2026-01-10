@@ -37,10 +37,17 @@ namespace Trace.Service.Folder.Fetch.Progressive
             string userId,
             [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
-            // Fetch children of root (no root folder itself)
+        
             var (subFolders, files) = await _repo.GetContentsAsync(rootFolderId, userId);
-            subFolders = subFolders.Where(f => f.Id != rootFolderId).ToList();
 
+
+            subFolders = subFolders
+                  .Where(f => f.Id != rootFolderId)
+                  .ToList();
+
+            files = files
+                  .Where(f => f.DeletedAt == null)
+                  .ToList();
 
             if (!subFolders.Any() && !files.Any())
                 yield break;
@@ -64,7 +71,9 @@ namespace Trace.Service.Folder.Fetch.Progressive
                     // 👇 Sequentially await each repository call
                     var contents = await _repo.GetContentsAsync(folder.Id, userId);
                     var childSubFolders = contents.SubFolders;
-                    var childFiles = contents.Files;
+                    var childFiles = contents.Files
+                       .Where(f => f.DeletedAt == null)
+                       .ToList();
 
                     childSubFolders = childSubFolders.Where(f => f.Id != rootFolderId).ToList();
 

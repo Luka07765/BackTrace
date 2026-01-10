@@ -9,5 +9,9 @@ namespace Trace.Service.Files.Modify
         Task<bool> DeleteFileAsync(Guid id);
 
         Task<File?> UpdateFileAsync(Guid id, UpdateFileInput input);
+
+        Task<bool> SoftFileDeleteAsync(Guid fileId);
+        Task<bool> RestoreFileAsync(Guid fileId);
+      
     }
 }
