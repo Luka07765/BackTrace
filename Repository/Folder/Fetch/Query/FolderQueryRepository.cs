@@ -37,14 +37,6 @@ namespace Trace.Repository.Folder.Fetch.Query
                 .FirstOrDefaultAsync(f => f.Id == id && f.UserId == userId);
         }
 
-
-
-
-
-
-
-
-
         public async Task<IEnumerable<Folder>> GetRootFoldersAsync(string userId)
         {
             var roots = await _context.Folders
@@ -53,6 +45,15 @@ namespace Trace.Repository.Folder.Fetch.Query
 
 
             return roots;
+        }
+
+
+        public async Task<List<Domain>> GetDomains(string userId)
+        {
+            return await _context.Domains
+                .Where(d => d.UserId == userId)
+                .OrderBy(d => d.Title)
+                .ToListAsync();
         }
 
     }

@@ -33,5 +33,9 @@ namespace Trace.Service.Folder.Fetch.Query
         {
             return await _folderQueryRepository.GetRootFoldersAsync(userId);
         }
+
+
+        public Task<List<Domain>> GetDomains(string userId)
+            => _folderQueryRepository.GetDomains(userId);
     }
 }
