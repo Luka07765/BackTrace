@@ -46,22 +46,7 @@ namespace Trace.GraphQL.Queries.Folders
 
 
 
-        [Authorize]
-        [GraphQLName("getDomains")]
-        public async Task<IEnumerable<Domain>> GetDomains(
-            [Service] IFolderQueryService folderQueryService,
-            ClaimsPrincipal user)
-        {
-            var userId = user.FindFirstValue("CustomUserId");
 
-            if (string.IsNullOrEmpty(userId))
-            {
-                throw new GraphQLException(
-                    new Error("User ID not found in claims", "UNAUTHORIZED"));
-            }
-
-            return await folderQueryService.GetDomains(userId);
-        }
         [Authorize]
         [GraphQLName("getRootFolders")]
         public async Task<IEnumerable<Folder>> GetRootFolders(

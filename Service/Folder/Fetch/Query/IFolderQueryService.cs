@@ -12,6 +12,6 @@
         Task<IEnumerable<Folder>> GetRootFoldersAsync(string userId);
 
 
-        Task<List<Domain>> GetDomains(string userId);
+       
     }
 }

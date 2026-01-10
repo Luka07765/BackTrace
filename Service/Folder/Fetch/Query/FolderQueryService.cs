@@ -35,7 +35,6 @@ namespace Trace.Service.Folder.Fetch.Query
         }
 
 
-        public Task<List<Domain>> GetDomains(string userId)
-            => _folderQueryRepository.GetDomains(userId);
+       
     }
 }

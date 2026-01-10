@@ -1,11 +1,12 @@
 ﻿using Trace.Repository.Color;
+using Trace.Repository.Domain;
 using Trace.Repository.Files.Fetch;
 using Trace.Repository.Files.Modify;
 using Trace.Repository.Folder.Fetch.Progressive;
 using Trace.Repository.Folder.Fetch.Query;
 using Trace.Repository.Folder.Modify;
 using Trace.Repository.TagSystem.Tag;
-using Trace.Service.Domain.Fetch;
+using Trace.Service.Domain;
 using Trace.Service.Files.Fetch;
 using Trace.Service.Files.Modify;
 using Trace.Service.Folder.Fetch.Progressive;
@@ -37,7 +38,8 @@ namespace Trace.Registrations
             services.AddScoped<ITagService, TagService>();
             services.AddScoped<ISearchQueryService, SearchQueryService>();
             services.AddScoped<IProfileService, ProfileService>();
-      
+            services.AddScoped<IDomainRepository, DomainRepository>();
+            services.AddScoped<IDomainService, DomainService>();    
 
 
 

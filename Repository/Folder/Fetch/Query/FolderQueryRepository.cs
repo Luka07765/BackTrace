@@ -48,13 +48,7 @@ namespace Trace.Repository.Folder.Fetch.Query
         }
 
 
-        public async Task<List<Domain>> GetDomains(string userId)
-        {
-            return await _context.Domains
-                .Where(d => d.UserId == userId)
-                .OrderBy(d => d.Title)
-                .ToListAsync();
-        }
+   
 
     }
 }
