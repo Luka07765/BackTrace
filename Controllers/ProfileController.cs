@@ -7,7 +7,7 @@
     using System.Security.Claims;
     using Trace.DTO;
     using Trace.Models.Account;
-    using Trace.Service.Auth.Token;
+    using Trace.Service.Auth;
     using Trace.Service.Profile;
 
     [ApiController]

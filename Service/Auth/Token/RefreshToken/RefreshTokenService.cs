@@ -1,13 +1,14 @@
-﻿using Trace.Data;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
-using Trace.Models.Auth;
-using Microsoft.AspNetCore.Identity;
-using Trace.Models.Account;
+﻿
 
-
-namespace Trace.Service.Auth.Token
+namespace Trace.Service.Auth.Token.RefreshToken
 {
+    using Trace.Data;
+    using Microsoft.EntityFrameworkCore;
+    using System.Security.Cryptography;
+    using Trace.Models.Auth;
+    using Microsoft.AspNetCore.Identity;
+    using Trace.Models.Account;
+
     public class RefreshTokenService : IRefreshTokenService
     {
         private readonly ApplicationDbContext _context;
@@ -29,7 +30,7 @@ namespace Trace.Service.Auth.Token
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                throw new System.Collections.Generic.KeyNotFoundException("User not found.");
+                throw new KeyNotFoundException("User not found.");
             }
 
             // Invalidate all active refresh tokens for the user before generating a new one

@@ -1,7 +1,8 @@
-﻿using Trace.Models.Auth;
+﻿
 
-namespace Trace.Service.Auth.Token
+namespace Trace.Service.Auth.Token.RefreshToken
 {
+    using Trace.Models.Auth;
 
     public interface IRefreshTokenService
     {

@@ -2,7 +2,7 @@
 using Trace.DTO.Auth;
 using Trace.Models.Account;
 
-namespace Trace.Service.Auth.Token
+namespace Trace.Service.Auth.Token.AccessToken
 {
     public interface ITokenService
     {

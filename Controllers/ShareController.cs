@@ -5,8 +5,8 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using Trace.Data;
 using Trace.Models.Logic;
-using Trace.Service.Auth.Token;
 using Trace.DTO;
+using Trace.Service.Auth;
 namespace Trace.Controllers
 {
     [ApiController]

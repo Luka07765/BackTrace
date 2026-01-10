@@ -8,8 +8,9 @@ using System.Security.Claims;
 using System.Text;
 using Trace.DTO.Auth;
 using Trace.Models.Account;
+using Trace.Service.Auth.Token.RefreshToken;
 
-namespace Trace.Service.Auth.Token
+namespace Trace.Service.Auth.Token.AccessToken
 {
     public class TokenService : ITokenService
     {

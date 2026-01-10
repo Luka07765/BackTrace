@@ -33,7 +33,6 @@ namespace Trace.Service.Auth.GeneralAuth
             {
                 UserName = model.Username,
                 Email = model.Email,
-                SecurityStamp = Guid.NewGuid().ToString(),
                 SessionVersion = 0
             };
 

@@ -1,4 +1,4 @@
-﻿namespace Trace.Service.Auth.Token
+﻿namespace Trace.Service.Auth
 {
     public static class CustomClaimTypes
     {
