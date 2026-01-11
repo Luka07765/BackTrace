@@ -19,9 +19,9 @@ namespace Trace.Service.Auth.Token.Phase1_AccessToken
             _configuration = configuration;
         }
 
-        public async Task<string> CreateAccessToken(User user)
+        public  Task<string> CreateAccessToken(User user)
         {
-            string jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? _configuration["Jwt:Key"];
+            string jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? _configuration["Jwt:Key"]  ?? throw new Exception("JWT secret is not set.");
             string validAudience = Environment.GetEnvironmentVariable("JWT_Audience") ?? _configuration["Jwt:Audience"];
             string validIssuer = Environment.GetEnvironmentVariable("JWT_Issuer") ?? _configuration["Jwt:Issuer"];
             string AccessTokenLifetime = Environment.GetEnvironmentVariable("AccessTokenLifetime") ?? _configuration["Jwt:AccessTokenLifetime"];
@@ -46,7 +46,7 @@ namespace Trace.Service.Auth.Token.Phase1_AccessToken
                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
             );
 
-            return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
+            return  Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
         }
     }
 }
