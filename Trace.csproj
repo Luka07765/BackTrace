@@ -36,7 +36,6 @@
 
   <ItemGroup>
     <Folder Include="Service\Auth\Token\Phase4_Rotation\" />
-    <Folder Include="Service\Auth\Token\Phase3_Logout\" />
   </ItemGroup>
 
 </Project>

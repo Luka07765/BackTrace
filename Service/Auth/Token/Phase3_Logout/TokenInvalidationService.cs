@@ -1,34 +1,21 @@
-﻿
-using Microsoft.Extensions.Caching.Distributed;
-
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.Extensions.Caching.Distributed;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Trace.DTO.Auth;
 using Trace.Models.Account;
-using Trace.Service.Auth.Token.RefreshToken;
-//start of auth 
-namespace Trace.Service.Auth.Token.AccessToken
-{
-    public class TokenService : ITokenService
-    {
-        private readonly IConfiguration _configuration;
-        private readonly IRefreshTokenService _refreshTokenService;
-        private readonly IDistributedCache _cache;
-        private readonly ILogger<TokenService> _logger;
 
-        public TokenService(
-            IConfiguration configuration,
-            IRefreshTokenService refreshTokenService,
-            IDistributedCache cache,
-            ILogger<TokenService> logger)
+namespace Trace.Service.Auth.Token.Phase3_Logout
+{
+    public class TokenInvalidationService : ITokenInvalidationService
+    {
+        private readonly IDistributedCache _cache;
+        private readonly ILogger<TokenInvalidationService> _logger;
+
+        public TokenInvalidationService(IDistributedCache cache, ILogger<TokenInvalidationService> logger)
         {
-            _configuration = configuration;
-            _refreshTokenService = refreshTokenService;
             _cache = cache;
             _logger = logger;
         }
+
+
 
 
         public async Task RevokeAccessToken(string token)
@@ -46,7 +33,6 @@ namespace Trace.Service.Auth.Token.AccessToken
                 return;
             }
 
-            // Extract JTI
             var jti = jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti)?.Value;
             if (string.IsNullOrEmpty(jti))
             {
@@ -54,11 +40,9 @@ namespace Trace.Service.Auth.Token.AccessToken
                 return;
             }
 
-            // Set revoked flag in distributed cache
-            var tokenExpiration = jwtToken.ValidTo; // Use token's expiration
             var options = new DistributedCacheEntryOptions
             {
-                AbsoluteExpiration = tokenExpiration // Expire cache entry when the token itself expires
+                AbsoluteExpiration = jwtToken.ValidTo
             };
 
             await _cache.SetStringAsync($"tokens:revoked:jti:{jti}", "true", options);
@@ -74,18 +58,13 @@ namespace Trace.Service.Auth.Token.AccessToken
             {
                 jwtToken = handler.ReadJwtToken(token);
             }
-            catch (Exception ex)
+            catch
             {
-                _logger.LogError(ex, "Failed to parse JWT token during revocation check.");
-                return true; // Treat invalid token as revoked
-            }
-
-            // Check expiration
-            if (jwtToken.ValidTo < DateTime.UtcNow)
-            {
-                _logger.LogWarning("Token has expired.");
                 return true;
             }
+
+            if (jwtToken.ValidTo < DateTime.UtcNow)
+                return true;
 
             var jti = jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti)?.Value;
             if (!string.IsNullOrEmpty(jti))
@@ -106,37 +85,28 @@ namespace Trace.Service.Auth.Token.AccessToken
             {
                 jwtToken = handler.ReadJwtToken(token);
             }
-            catch (Exception ex)
+            catch
             {
-                _logger.LogError(ex, "Failed to parse JWT token during SessionVersion validation.");
                 return false;
             }
 
-            var sessionVersionClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.SessionVersion)?.Value;
-            if (int.TryParse(sessionVersionClaim, out var tokenSessionVersion))
-            {
-                return tokenSessionVersion == user.SessionVersion;
-            }
+            var sessionVersionClaim = jwtToken.Claims
+                .FirstOrDefault(c => c.Type == CustomClaimTypes.SessionVersion)?.Value;
 
-            _logger.LogWarning("Session version mismatch or missing in token.");
+            if (int.TryParse(sessionVersionClaim, out var tokenSessionVersion))
+                return tokenSessionVersion == user.SessionVersion;
+
             return false;
         }
 
         public async Task<bool> IsAccessTokenValid(string token, User user)
         {
             if (await IsAccessTokenRevoked(token))
-            {
-                _logger.LogWarning("Access token is revoked.");
                 return false;
-            }
 
             if (!await ValidateSessionVersion(token, user))
-            {
-                _logger.LogWarning("Session version validation failed for token.");
                 return false;
-            }
 
-            _logger.LogInformation("Access token is valid.");
             return true;
         }
     }

@@ -5,7 +5,7 @@ using System.Security.Claims;
 using Trace.DTO.Auth;
 using Trace.Models.Account;
 using Trace.Service.Auth.GeneralAuth;
-using Trace.Service.Auth.Token.AccessToken;
+
 using Trace.Service.Auth.Token.RefreshToken;
 using Trace.Service.Auth.Token.Phase2_RefreshToken;
 using Trace.Service.Auth.Token.Phase1_AccessToken;

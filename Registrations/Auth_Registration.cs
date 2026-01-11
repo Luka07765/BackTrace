@@ -5,9 +5,10 @@ using System.Security.Claims;
 using System.Text;
 using Trace.Models.Account;
 using Trace.Service.Auth.GeneralAuth;
-using Trace.Service.Auth.Token.AccessToken;
+
 using Trace.Service.Auth.Token.Phase1_AccessToken;
 using Trace.Service.Auth.Token.Phase2_RefreshToken;
+using Trace.Service.Auth.Token.Phase3_Logout;
 using Trace.Service.Auth.Token.RefreshToken;
 
 namespace Trace.Registrations
@@ -40,10 +41,11 @@ namespace Trace.Registrations
 
             // === Auth-related services ===
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<ITokenService, TokenService>();
+           
             services.AddScoped<IRefreshTokenService, RefreshTokenService>();
             services.AddScoped<IAccessTokenService, AccessTokenService>();
             services.AddScoped<ITokenResponseService, TokenResponseService>();
+            services.AddScoped<ITokenInvalidationService, TokenInvalidationService>();
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret));
 
@@ -74,11 +76,11 @@ namespace Trace.Registrations
                 {
                     OnTokenValidated = async context =>
                     {
-                        var tokenService = context.HttpContext.RequestServices.GetRequiredService<ITokenService>();
+                        var tokenRevoke = context.HttpContext.RequestServices.GetRequiredService<ITokenInvalidationService>();
                         var accessToken = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
                         if (!string.IsNullOrEmpty(accessToken))
                         {
-                            var revoked = await tokenService.IsAccessTokenRevoked(accessToken);
+                            var revoked = await tokenRevoke.IsAccessTokenRevoked(accessToken);
                             if (revoked)
                                 context.Fail("Token has been revoked.");
                         }
