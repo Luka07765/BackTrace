@@ -20,6 +20,7 @@ namespace Trace.Registrations
         {
             services.AddGraphQLServer()
                 .AddAuthorization()
+
                 .AddQueryType<Query>()
                 .AddTypeExtension<QueryDomains>()       
                 .AddTypeExtension<QueryTags>()
