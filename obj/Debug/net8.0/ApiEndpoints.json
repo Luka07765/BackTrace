@@ -18,9 +18,9 @@
     ]
   },
   {
-    "ContainingType": "Jade.Controllers.AuthController",
+    "ContainingType": "Trace.Controllers.Auth.LoginController",
     "Method": "Login",
-    "RelativePath": "api/Auth/Login",
+    "RelativePath": "api/auth/login",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -34,9 +34,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "Jade.Controllers.AuthController",
+    "ContainingType": "Trace.Controllers.Auth.LogoutController",
     "Method": "Logout",
-    "RelativePath": "api/Auth/Logout",
+    "RelativePath": "api/auth/logout",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -44,9 +44,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "Jade.Controllers.AuthController",
-    "Method": "RefreshToken",
-    "RelativePath": "api/Auth/RefreshToken",
+    "ContainingType": "Trace.Controllers.Auth.RefreshController",
+    "Method": "Refresh",
+    "RelativePath": "api/auth/refresh",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -54,9 +54,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "Jade.Controllers.AuthController",
+    "ContainingType": "Trace.Controllers.Auth.RegisterController",
     "Method": "Register",
-    "RelativePath": "api/Auth/Register",
+    "RelativePath": "api/auth/register",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
