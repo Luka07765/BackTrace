@@ -2,7 +2,7 @@
 using Trace.Models.Account;
 using Trace.Service.Auth.Token.Phase1_AccessToken;
 using Trace.Service.Auth.Token.Phase2_RefreshToken.Refresh;
-using Trace.Service.Auth.Token.RefreshToken;
+
 namespace Trace.Service.Auth.Token.Phase2_RefreshToken.Response
 {
     public class TokenResponseService : ITokenResponseService
