@@ -6,6 +6,8 @@ using System.Text;
 using Trace.Models.Account;
 using Trace.Service.Auth.GeneralAuth;
 using Trace.Service.Auth.Token.AccessToken;
+using Trace.Service.Auth.Token.Phase1_AccessToken;
+using Trace.Service.Auth.Token.Phase2_RefreshToken;
 using Trace.Service.Auth.Token.RefreshToken;
 
 namespace Trace.Registrations
@@ -40,6 +42,8 @@ namespace Trace.Registrations
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+            services.AddScoped<IAccessTokenService, AccessTokenService>();
+            services.AddScoped<ITokenResponseService, TokenResponseService>();
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret));
 

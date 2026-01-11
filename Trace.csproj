@@ -34,4 +34,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Service\Auth\Token\Phase4_Rotation\" />
+    <Folder Include="Service\Auth\Token\Phase3_Logout\" />
+  </ItemGroup>
+
 </Project>

@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -31,51 +30,6 @@ namespace Trace.Service.Auth.Token.AccessToken
             _logger = logger;
         }
 
-        public async Task<string> CreateAccessToken(User user)
-        {
-            string jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? _configuration["Jwt:Key"]
-    ?? throw new Exception("JWT secret is not set.");
-            string validAudience = Environment.GetEnvironmentVariable("JWT_Audience") ?? _configuration["Jwt:Audience"];
-            string validIssuer = Environment.GetEnvironmentVariable("JWT_Issuer") ?? _configuration["Jwt:Issuer"];
-            string AccessTokenLifetime = Environment.GetEnvironmentVariable("AccessTokenLifetime") ?? _configuration["Jwt:AccessTokenLifetime"];
-
-            var jti = Guid.NewGuid().ToString();
-
-            var claims = new[]
-{
-            new Claim(CustomClaimTypes.Jti, Guid.NewGuid().ToString()), // Unique token ID
-            new Claim(CustomClaimTypes.Email, user.Email ?? string.Empty),
-            new Claim(CustomClaimTypes.Subject, user.UserName ?? string.Empty),
-            new Claim(CustomClaimTypes.UserId, user.Id ?? string.Empty),
-            new Claim(CustomClaimTypes.UserName, user.UserName ?? string.Empty),
-            new Claim(CustomClaimTypes.SessionVersion, user.SessionVersion.ToString())
-};
-
-
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret));
-
-            var token = new JwtSecurityToken(
-                issuer: validIssuer,
-                audience: validAudience,
-                expires: DateTime.UtcNow.AddMinutes(double.Parse(AccessTokenLifetime)), // Configurable expiration
-                claims: claims,
-                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-            );
-
-            return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
-        }
-
-        public async Task<TokenResponse> CreateTokenResponse(User user, string ipAddress)
-        {
-            var accessToken = await CreateAccessToken(user);
-            var refreshToken = await _refreshTokenService.GenerateRefreshToken(user.Id, ipAddress);
-
-            return new TokenResponse
-            {
-                AccessToken = accessToken,
-                RefreshToken = refreshToken.Token
-            };
-        }
 
         public async Task RevokeAccessToken(string token)
         {

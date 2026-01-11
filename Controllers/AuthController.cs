@@ -7,27 +7,32 @@ using Trace.Models.Account;
 using Trace.Service.Auth.GeneralAuth;
 using Trace.Service.Auth.Token.AccessToken;
 using Trace.Service.Auth.Token.RefreshToken;
-
+using Trace.Service.Auth.Token.Phase2_RefreshToken;
+using Trace.Service.Auth.Token.Phase1_AccessToken;
 namespace Jade.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly ITokenService _tokenService;
+        private readonly IAccessTokenService _tokenAccess;
+        private readonly ITokenResponseService _tokenResponse;
+        
         private readonly IUserService _userService;
         private readonly IRefreshTokenService _refreshTokenService;
         private readonly UserManager<User> _userManager;
         private readonly ILogger<AuthController> _logger; // Use ILogger<AuthController> for type-safe logging
 
         public AuthController(
-            ITokenService tokenService,
+            IAccessTokenService AccessTokenService,
+            ITokenResponseService tokenResponseService,
             IUserService userService,
             IRefreshTokenService refreshTokenService,
             UserManager<User> userManager,
             ILogger<AuthController> logger) // Add logger here
         {
-            _tokenService = tokenService;
+            _tokenAccess = AccessTokenService;
+            _tokenResponse = tokenResponseService;
             _userService = userService;
             _refreshTokenService = refreshTokenService;
             _userManager = userManager;
@@ -75,7 +80,7 @@ namespace Jade.Controllers
             var ipAddress = GetIpAddress();
 
             // Generate tokens
-            var tokenResponse = await _tokenService.CreateTokenResponse(user, ipAddress);
+            var tokenResponse = await _tokenResponse.CreateTokenResponse(user, ipAddress);
 
             // Set refresh token in HttpOnly cookie
             var cookieOptions = new CookieOptions
@@ -167,7 +172,7 @@ namespace Jade.Controllers
             var newRefreshToken = await _refreshTokenService.GenerateRefreshToken(user.Id, ipAddress);
             await _refreshTokenService.InvalidateRefreshToken(existingToken, ipAddress, newRefreshToken.Token);
 
-            var newAccessToken = await _tokenService.CreateAccessToken(user);
+            var newAccessToken = await _tokenAccess.CreateAccessToken(user);
 
 
             var cookieOptions = new CookieOptions
