@@ -4,13 +4,13 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
 using Trace.Models.Account;
+using Trace.Service.Auth;
 using Trace.Service.Auth.GeneralAuth;
-
 using Trace.Service.Auth.Token.Phase1_AccessToken;
 using Trace.Service.Auth.Token.Phase2_RefreshToken.Refresh;
 using Trace.Service.Auth.Token.Phase2_RefreshToken.Response;
-using Trace.Service.Auth.Token.Phase3_Logout.InvalidateToken;
 using Trace.Service.Auth.Token.Phase3_Logout.InvalidateRefresh;
+using Trace.Service.Auth.Token.Phase3_Logout.InvalidateToken;
 using Trace.Service.Auth.Token.Phase4_Rotation;
 
 namespace Trace.Registrations
@@ -61,6 +61,8 @@ namespace Trace.Registrations
             })
             .AddJwtBearer(options =>
             {
+
+
                 options.RequireHttpsMetadata = false;
                 options.SaveToken = true;
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -73,11 +75,26 @@ namespace Trace.Registrations
                     ClockSkew = TimeSpan.Zero,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    NameClaimType = ClaimTypes.NameIdentifier
+                    NameClaimType = CustomClaimTypes.UserId
+
+
                 };
 
                 options.Events = new JwtBearerEvents
                 {
+                    OnAuthenticationFailed = context =>
+                    {
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        return Task.CompletedTask;
+                    },
+
+                    OnChallenge = context =>
+                    {
+                        context.HandleResponse();
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        return Task.CompletedTask;
+                    },
+
                     OnTokenValidated = async context =>
                     {
                         var tokenRevoke = context.HttpContext.RequestServices.GetRequiredService<ITokenInvalidationService>();
@@ -103,7 +120,7 @@ namespace Trace.Registrations
                 ClockSkew = TimeSpan.Zero,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                NameClaimType = ClaimTypes.NameIdentifier
+                NameClaimType = CustomClaimTypes.UserId
             });
 
             return services;

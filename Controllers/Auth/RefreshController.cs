@@ -2,52 +2,51 @@
 namespace Trace.Controllers.Auth
 {
 
-    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
-
-    using Trace.DTO.Auth;
     using Trace.Models.Account;
 
     using Trace.Service.Auth.Token.Phase1_AccessToken;
-    using Trace.Service.Auth.Token.Phase2_RefreshToken.Refresh;
-
-    using Trace.Service.Auth.Token.Phase3_Logout.InvalidateRefresh;
+    using Trace.Service.Auth.Token.Phase4_Rotation;
 
     [ApiController]
     [Route("api/auth")]
     public class RefreshController : ControllerBase
     {
-        private readonly ITokenRefreshService _refreshService;
-        private readonly IRefreshInvalidationService _invalidationService;
+        private readonly ITokenRotationService _rotationService;
         private readonly IAccessTokenService _accessService;
-        private readonly UserManager<User> _userManager;
 
         public RefreshController(
-            ITokenRefreshService refreshService,
-            IRefreshInvalidationService invalidationService,
-            IAccessTokenService accessService,
-            UserManager<User> userManager)
+            ITokenRotationService rotationService,
+            IAccessTokenService accessService)
         {
-            _refreshService = refreshService;
-            _invalidationService = invalidationService;
+            _rotationService = rotationService;
             _accessService = accessService;
-            _userManager = userManager;
         }
 
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh()
         {
             var refreshToken = Request.Cookies["refreshToken"];
-            if (string.IsNullOrEmpty(refreshToken))
-                return BadRequest();
+            if (string.IsNullOrWhiteSpace(refreshToken))
+                return Unauthorized();
 
             var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
-            var existing = await _refreshService.GetRefreshToken(refreshToken);
 
-            var user = await _userManager.FindByIdAsync(existing.UserId);
+            var newRefresh = await _rotationService.TokenRotation(refreshToken, ip);
+            if (newRefresh == null)
+            {
+                Response.Cookies.Delete("refreshToken");
+                return Unauthorized();
+            }
 
-            var newRefresh = await _refreshService.GenerateRefreshToken(user.Id, ip);
-            await _invalidationService.InvalidateRefreshToken(existing, ip, newRefresh.Token);
+            var userId = newRefresh.UserId;
+
+            // Access token needs user — get minimal user object
+            var user = new User
+            {
+                Id = userId,
+                SessionVersion = newRefresh.SessionVersion
+            };
 
             var newAccess = await _accessService.CreateAccessToken(user);
 
@@ -56,7 +55,7 @@ namespace Trace.Controllers.Auth
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.None,
-                Expires = DateTime.UtcNow.AddDays(7)
+                Expires = newRefresh.Expires
             });
 
             return Ok(new { AccessToken = newAccess });
