@@ -1,27 +1,28 @@
 ﻿using Trace.DTO.Auth;
-using Trace.Service.Auth.Token.Phase1_AccessToken;
-using Trace.Service.Auth.Token.RefreshToken;
 using Trace.Models.Account;
-namespace Trace.Service.Auth.Token.Phase2_RefreshToken
+using Trace.Service.Auth.Token.Phase1_AccessToken;
+using Trace.Service.Auth.Token.Phase2_RefreshToken.Refresh;
+using Trace.Service.Auth.Token.RefreshToken;
+namespace Trace.Service.Auth.Token.Phase2_RefreshToken.Response
 {
     public class TokenResponseService : ITokenResponseService
     {
         private readonly IAccessTokenService _accessTokenService;
-        private readonly IRefreshTokenService _refreshTokenService;
+        private readonly ITokenRefreshService _refreshService;
 
         public TokenResponseService(
          IAccessTokenService accessTokenService,
-         IRefreshTokenService refreshTokenService)
+         ITokenRefreshService refreshService)
         {
             _accessTokenService = accessTokenService;
-            _refreshTokenService = refreshTokenService;
+            _refreshService = refreshService;
         }
 
 
         public async Task<TokenResponse> CreateTokenResponse(User user, string ipAddress)
         {
             var accessToken = await _accessTokenService.CreateAccessToken(user);
-            var refreshToken = await _refreshTokenService.GenerateRefreshToken(user.Id, ipAddress);
+            var refreshToken = await _refreshService.GenerateRefreshToken(user.Id, ipAddress);
 
             return new TokenResponse
             {

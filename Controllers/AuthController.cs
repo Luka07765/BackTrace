@@ -5,10 +5,11 @@ using System.Security.Claims;
 using Trace.DTO.Auth;
 using Trace.Models.Account;
 using Trace.Service.Auth.GeneralAuth;
-
-using Trace.Service.Auth.Token.RefreshToken;
-using Trace.Service.Auth.Token.Phase2_RefreshToken;
 using Trace.Service.Auth.Token.Phase1_AccessToken;
+using Trace.Service.Auth.Token.Phase2_RefreshToken.Refresh;
+using Trace.Service.Auth.Token.Phase2_RefreshToken.Response;
+using Trace.Service.Auth.Token.Phase3_Logout.InvalidateRefresh;
+
 namespace Jade.Controllers
 {
     [ApiController]
@@ -17,24 +18,29 @@ namespace Jade.Controllers
     {
         private readonly IAccessTokenService _tokenAccess;
         private readonly ITokenResponseService _tokenResponse;
-        
+        private readonly ITokenRefreshService _refreshService;
+        private readonly IRefreshInvalidationService _invalidationService;
         private readonly IUserService _userService;
-        private readonly IRefreshTokenService _refreshTokenService;
+       
         private readonly UserManager<User> _userManager;
         private readonly ILogger<AuthController> _logger; // Use ILogger<AuthController> for type-safe logging
 
         public AuthController(
-            IAccessTokenService AccessTokenService,
+            IAccessTokenService accessTokenService,
             ITokenResponseService tokenResponseService,
             IUserService userService,
-            IRefreshTokenService refreshTokenService,
+         
+            ITokenRefreshService refreshService,
+            IRefreshInvalidationService invalidationService,
             UserManager<User> userManager,
             ILogger<AuthController> logger) // Add logger here
         {
-            _tokenAccess = AccessTokenService;
+            _tokenAccess = accessTokenService;
             _tokenResponse = tokenResponseService;
+            _refreshService = refreshService;
+            _invalidationService = invalidationService;
             _userService = userService;
-            _refreshTokenService = refreshTokenService;
+          
             _userManager = userManager;
             _logger = logger; // Assign logger
         }
@@ -151,7 +157,7 @@ namespace Jade.Controllers
             var ipAddress = GetIpAddress();
 
        
-            var existingToken = await _refreshTokenService.GetRefreshToken(refreshToken);
+            var existingToken = await _refreshService.GetRefreshToken(refreshToken);
             if (existingToken == null || !existingToken.IsActive)
             {
                 return Unauthorized(new { message = "Refresh token is invalid or has been revoked." });
@@ -169,8 +175,8 @@ namespace Jade.Controllers
             {
                 return Unauthorized(new { message = "Invalid refresh token. User has logged off or session has expired." });
             }
-            var newRefreshToken = await _refreshTokenService.GenerateRefreshToken(user.Id, ipAddress);
-            await _refreshTokenService.InvalidateRefreshToken(existingToken, ipAddress, newRefreshToken.Token);
+            var newRefreshToken = await _refreshService.GenerateRefreshToken(user.Id, ipAddress);
+            await _invalidationService.InvalidateRefreshToken(existingToken, ipAddress, newRefreshToken.Token);
 
             var newAccessToken = await _tokenAccess.CreateAccessToken(user);
 
@@ -228,7 +234,7 @@ namespace Jade.Controllers
 
             // Invalidate all refresh tokens
             var ipAddress = GetIpAddress();
-            await _refreshTokenService.InvalidateAllUserRefreshTokens(userId, ipAddress);
+            await _invalidationService.InvalidateAllUserRefreshTokens(userId, ipAddress);
 
 
             if (Request.Cookies.ContainsKey("refreshToken"))

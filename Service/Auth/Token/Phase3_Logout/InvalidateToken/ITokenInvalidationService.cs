@@ -1,4 +1,4 @@
-﻿namespace Trace.Service.Auth.Token.Phase3_Logout
+﻿namespace Trace.Service.Auth.Token.Phase3_Logout.InvalidateToken
 {
     public interface ITokenInvalidationService
     {

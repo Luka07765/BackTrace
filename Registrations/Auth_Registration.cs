@@ -7,9 +7,11 @@ using Trace.Models.Account;
 using Trace.Service.Auth.GeneralAuth;
 
 using Trace.Service.Auth.Token.Phase1_AccessToken;
-using Trace.Service.Auth.Token.Phase2_RefreshToken;
-using Trace.Service.Auth.Token.Phase3_Logout;
-using Trace.Service.Auth.Token.RefreshToken;
+using Trace.Service.Auth.Token.Phase2_RefreshToken.Refresh;
+using Trace.Service.Auth.Token.Phase2_RefreshToken.Response;
+using Trace.Service.Auth.Token.Phase3_Logout.InvalidateToken;
+using Trace.Service.Auth.Token.Phase3_Logout.InvalidateRefresh;
+using Trace.Service.Auth.Token.Phase4_Rotation;
 
 namespace Trace.Registrations
 {
@@ -42,11 +44,13 @@ namespace Trace.Registrations
             // === Auth-related services ===
             services.AddScoped<IUserService, UserService>();
            
-            services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+           
             services.AddScoped<IAccessTokenService, AccessTokenService>();
             services.AddScoped<ITokenResponseService, TokenResponseService>();
             services.AddScoped<ITokenInvalidationService, TokenInvalidationService>();
-
+            services.AddScoped<ITokenRefreshService, TokenRefreshService>();
+            services.AddScoped<IRefreshInvalidationService, RefreshInvalidationService>();  
+            services.AddScoped<ITokenRotationService, TokenRotationService>();
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret));
 
             // === JWT Authentication (same as Program.cs) ===

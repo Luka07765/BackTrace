@@ -1,6 +1,6 @@
 ﻿using Trace.DTO.Auth;
 using Trace.Models.Account;
-namespace Trace.Service.Auth.Token.Phase2_RefreshToken
+namespace Trace.Service.Auth.Token.Phase2_RefreshToken.Response
 {
     public interface ITokenResponseService
     {

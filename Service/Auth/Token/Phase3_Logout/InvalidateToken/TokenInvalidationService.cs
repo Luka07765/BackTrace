@@ -2,7 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using Trace.Models.Account;
 
-namespace Trace.Service.Auth.Token.Phase3_Logout
+namespace Trace.Service.Auth.Token.Phase3_Logout.InvalidateToken
 {
     public class TokenInvalidationService : ITokenInvalidationService
     {
