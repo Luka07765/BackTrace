@@ -51,22 +51,30 @@ namespace Trace.Service.Folder.Modify
             if (string.IsNullOrWhiteSpace(input.Title))
                 throw new ArgumentException("Mora da ima naziv foldera.");
 
-            if (input.ParentFolderId == null && input.DomainId == null)
+            bool isRoot = input.ParentFolderId == null;
+
+            if (isRoot && input.DomainId == null)
                 throw new ArgumentException("Root folder must belong to a domain.");
+
+            if (!isRoot && input.DomainId != null)
+                throw new ArgumentException("Sub folder must not have domain.");
 
             var folder = new Folder
             {
                 Id = input.Id.HasValue && input.Id.Value != Guid.Empty
-            ? input.Id.Value
-            : Guid.NewGuid(),
+                    ? input.Id.Value
+                    : Guid.NewGuid(),
+
                 Title = input.Title,
-                DomainId = input.DomainId,
-                ParentFolderId = input.ParentFolderId,
+                DomainId = isRoot ? input.DomainId : null,
+                ParentFolderId = isRoot ? null : input.ParentFolderId,
                 UserId = userId,
                 IconId = input.IconId ?? 1
             };
+
             return await _folderModifyRepository.CreateFolderAsync(folder);
         }
+
         public async Task<Folder?> UpdateFolderAsync(Guid id, FolderInput input)
         {
             return await _folderModifyRepository.UpdateFolderAsync(id, input);
