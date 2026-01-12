@@ -3,6 +3,6 @@
     using Trace.Models.Auth;
     public interface ITokenRotationService
     {
-        Task<RefreshToken> TokenRotation(string oldToken, string ipAddress);
+        Task<RefreshToken?> TokenRotation(string oldRefreshToken, string oldAccessToken, string ipAddress);
     }
 }

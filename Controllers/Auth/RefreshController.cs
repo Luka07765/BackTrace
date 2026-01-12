@@ -1,7 +1,5 @@
-﻿
-namespace Trace.Controllers.Auth
+﻿namespace Trace.Controllers.Auth
 {
-
     using Microsoft.AspNetCore.Mvc;
     using Trace.Models.Account;
     using Microsoft.AspNetCore.Identity;
@@ -26,7 +24,6 @@ namespace Trace.Controllers.Auth
             _userManager = userManager;
         }
 
-
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh()
         {
@@ -34,16 +31,22 @@ namespace Trace.Controllers.Auth
             if (string.IsNullOrWhiteSpace(refreshToken))
                 return Unauthorized();
 
-            var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+            var authHeader = Request.Headers.Authorization.ToString();
+            if (string.IsNullOrWhiteSpace(authHeader) || !authHeader.StartsWith("Bearer "))
+                return Unauthorized();
 
-            var newRefresh = await _rotationService.TokenRotation(refreshToken, ip);
+            var accessToken = authHeader["Bearer ".Length..].Trim();
+            if (string.IsNullOrWhiteSpace(accessToken))
+                return Unauthorized();
+
+            var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+            var newRefresh = await _rotationService.TokenRotation(refreshToken, accessToken, ip);
             if (newRefresh == null)
             {
                 Response.Cookies.Delete("refreshToken");
                 return Unauthorized();
             }
-
-            var userId = newRefresh.UserId;
 
             var user = await _userManager.FindByIdAsync(newRefresh.UserId);
             if (user == null || user.SessionVersion != newRefresh.SessionVersion)
