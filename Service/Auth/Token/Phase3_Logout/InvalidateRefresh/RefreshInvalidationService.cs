@@ -33,7 +33,7 @@
         }
 
 
-        public async Task InvalidateAllUserRefreshTokens(string userId, string ipAddress)
+        public async Task InvalidateAllRefreshTokens(string userId, string ipAddress)
         {
             var now = DateTime.UtcNow;
 

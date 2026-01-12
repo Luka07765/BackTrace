@@ -4,6 +4,6 @@
     public interface IRefreshInvalidationService
     {
         Task InvalidateRefreshToken(RefreshToken token, string ipAddress, string replacedByToken = null);
-        Task InvalidateAllUserRefreshTokens(string userId, string ipAddress);
+        Task InvalidateAllRefreshTokens(string userId, string ipAddress);
     }
 }

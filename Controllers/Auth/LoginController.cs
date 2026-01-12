@@ -42,7 +42,7 @@
             await _userManager.UpdateAsync(user);
 
             // 🔐 INVALIDATE ALL OLD REFRESH TOKENS
-            await _refreshInvalidation.InvalidateAllUserRefreshTokens(user.Id, ip);
+            await _refreshInvalidation.InvalidateAllRefreshTokens(user.Id, ip);
 
             // 🎟 ISSUE TOKENS FOR NEW SESSION
             var tokenResponse = await _tokenResponse.CreateTokenResponse(user, ip);

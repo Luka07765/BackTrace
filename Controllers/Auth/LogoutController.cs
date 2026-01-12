@@ -45,7 +45,7 @@
 
             // 2. Revoke all refresh tokens
             var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
-            await _refreshInvalidation.InvalidateAllUserRefreshTokens(userId, ip);
+            await _refreshInvalidation.InvalidateAllRefreshTokens(userId, ip);
 
             // 3. Revoke current access token (JTI blacklist)
             var accessToken = HttpContext.Request.Headers["Authorization"]
