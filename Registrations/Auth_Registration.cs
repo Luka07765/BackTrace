@@ -53,7 +53,7 @@ namespace Trace.Registrations
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAccessTokenService, AccessTokenService>();
             services.AddScoped<ITokenResponseService, TokenResponseService>();
-            services.AddScoped<ITokenInvalidationService, TokenInvalidationService>();
+            services.AddScoped<IAccessInvalidationService, AccessInvalidationService>();
             services.AddScoped<ITokenRefreshService, TokenRefreshService>();
             services.AddScoped<IRefreshInvalidationService, RefreshInvalidationService>();
             services.AddScoped<ITokenRotationService, TokenRotationService>();
@@ -90,7 +90,7 @@ namespace Trace.Registrations
                 {
                     OnTokenValidated = async context =>
                     {
-                        var tokenInvalidation = context.HttpContext.RequestServices.GetRequiredService<ITokenInvalidationService>();
+                        var tokenInvalidation = context.HttpContext.RequestServices.GetRequiredService<IAccessInvalidationService>();
                         var userManager = context.HttpContext.RequestServices.GetRequiredService<UserManager<User>>();
 
                         // Extract raw token (needed because your invalidation service parses JWT again)

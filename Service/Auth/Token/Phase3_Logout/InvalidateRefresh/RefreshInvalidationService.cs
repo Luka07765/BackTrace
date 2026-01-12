@@ -16,17 +16,22 @@
         public async Task InvalidateRefreshToken(RefreshToken token, string ipAddress, string newToken = null)
         {
             if (token == null) return;
-            if (token.Revoked != null) return;
+
+            var entity = await _context.RefreshTokens
+                .FirstOrDefaultAsync(t => t.Id == token.Id);
+
+            if (entity == null) return;
+            if (entity.Revoked != null) return;
 
             var now = DateTime.UtcNow;
 
-            token.Revoked = now;
-            token.RevokedByIp = ipAddress;
-            token.ReplacedByToken = newToken;
+            entity.Revoked = now;
+            entity.RevokedByIp = ipAddress;
+            entity.ReplacedByToken = newToken;
 
-            _context.RefreshTokens.Update(token);
             await _context.SaveChangesAsync();
         }
+
 
         public async Task InvalidateAllUserRefreshTokens(string userId, string ipAddress)
         {

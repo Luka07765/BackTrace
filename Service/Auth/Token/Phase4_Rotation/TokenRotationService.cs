@@ -35,17 +35,9 @@
                 return null;
             }
 
-            // Replay protection
-            if (existing.ReplacedByToken != null)
-            {
-                // BREACH RESPONSE: kill all tokens
-                user.SessionVersion++;
-                await _userManager.UpdateAsync(user);
-
-                await _invalidationService.InvalidateAllUserRefreshTokens(user.Id, ipAddress);
-
+            if (existing.SessionVersion != user.SessionVersion)
                 return null;
-            }
+
 
 
 

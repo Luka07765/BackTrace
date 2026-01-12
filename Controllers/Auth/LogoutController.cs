@@ -14,12 +14,12 @@
     public class LogoutController : ControllerBase
     {
         private readonly IRefreshInvalidationService _refreshInvalidation;
-        private readonly ITokenInvalidationService _tokenInvalidation;
+        private readonly IAccessInvalidationService _tokenInvalidation;
         private readonly UserManager<User> _userManager;
 
         public LogoutController(
             IRefreshInvalidationService refreshInvalidation,
-            ITokenInvalidationService tokenInvalidation,
+            IAccessInvalidationService tokenInvalidation,
             UserManager<User> userManager)
         {
             _refreshInvalidation = refreshInvalidation;

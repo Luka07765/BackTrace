@@ -2,7 +2,7 @@
 {
     using Trace.Models.Account;
 
-    public interface ITokenInvalidationService
+    public interface IAccessInvalidationService
     {
         Task RevokeAccessToken(string token);
         Task<bool> IsAccessTokenRevoked(string token);

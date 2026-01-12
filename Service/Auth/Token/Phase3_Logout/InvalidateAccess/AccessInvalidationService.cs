@@ -4,12 +4,12 @@ using Trace.Models.Account;
 
 namespace Trace.Service.Auth.Token.Phase3_Logout.InvalidateToken
 {
-    public class TokenInvalidationService : ITokenInvalidationService
+    public class AccessInvalidationService : IAccessInvalidationService
     {
         private readonly IDistributedCache _cache;
-        private readonly ILogger<TokenInvalidationService> _logger;
+        private readonly ILogger<AccessInvalidationService> _logger;
 
-        public TokenInvalidationService(IDistributedCache cache, ILogger<TokenInvalidationService> logger)
+        public AccessInvalidationService(IDistributedCache cache, ILogger<AccessInvalidationService> logger)
         {
             _cache = cache;
             _logger = logger;

@@ -44,23 +44,25 @@ namespace Trace.Service.Auth.Token.Phase2_RefreshToken.Refresh
         }
 
         public async Task<RefreshToken?> GetRefreshToken(string token)
-
         {
             var refreshToken = await _context.RefreshTokens
                 .Include(rt => rt.User)
-                .SingleOrDefaultAsync(rt => rt.Token == token);
+                .Where(rt => rt.Token == token)
+                .OrderByDescending(rt => rt.Created)
+                .FirstOrDefaultAsync();
 
             if (refreshToken == null)
                 return null;
 
             if (refreshToken.Expires < DateTime.UtcNow ||
-     refreshToken.Revoked != null ||
-     refreshToken.ReplacedByToken != null)
+                refreshToken.Revoked != null ||
+                refreshToken.ReplacedByToken != null)
                 return null;
 
-
             var user = refreshToken.User;
-            if (user == null || refreshToken.UserId != user.Id || refreshToken.SessionVersion != user.SessionVersion)
+            if (user == null ||
+                refreshToken.UserId != user.Id ||
+                refreshToken.SessionVersion != user.SessionVersion)
                 return null;
 
             return refreshToken;
