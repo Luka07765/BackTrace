@@ -26,6 +26,12 @@ namespace Trace.Registrations
             var issuer = Environment.GetEnvironmentVariable("JWT_Issuer") ?? config["Jwt:Issuer"];
             var audience = Environment.GetEnvironmentVariable("JWT_Audience") ?? config["Jwt:Audience"];
 
+            if (string.IsNullOrWhiteSpace(issuer))
+                throw new Exception("JWT_Issuer/Jwt:Issuer is missing.");
+
+            if (string.IsNullOrWhiteSpace(audience))
+                throw new Exception("JWT_Audience/Jwt:Audience is missing.");
+
             // === Identity Configuration ===
             services.AddIdentityCore<User>()
                 .AddEntityFrameworkStores<Data.ApplicationDbContext>()
@@ -38,22 +44,23 @@ namespace Trace.Registrations
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequireLowercase = false;
+
+                // Optional; unrelated to JWT bearer validation:
                 options.ClaimsIdentity.UserNameClaimType = ClaimTypes.Email;
             });
 
             // === Auth-related services ===
             services.AddScoped<IUserService, UserService>();
-           
-           
             services.AddScoped<IAccessTokenService, AccessTokenService>();
             services.AddScoped<ITokenResponseService, TokenResponseService>();
             services.AddScoped<ITokenInvalidationService, TokenInvalidationService>();
             services.AddScoped<ITokenRefreshService, TokenRefreshService>();
-            services.AddScoped<IRefreshInvalidationService, RefreshInvalidationService>();  
+            services.AddScoped<IRefreshInvalidationService, RefreshInvalidationService>();
             services.AddScoped<ITokenRotationService, TokenRotationService>();
+
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret));
 
-            // === JWT Authentication (same as Program.cs) ===
+            // === JWT Authentication ===
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -61,10 +68,9 @@ namespace Trace.Registrations
             })
             .AddJwtBearer(options =>
             {
-
-
                 options.RequireHttpsMetadata = false;
                 options.SaveToken = true;
+
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
@@ -75,23 +81,56 @@ namespace Trace.Registrations
                     ClockSkew = TimeSpan.Zero,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
+
+                    // IMPORTANT: your custom user id claim
                     NameClaimType = CustomClaimTypes.UserId
-
-
                 };
 
                 options.Events = new JwtBearerEvents
                 {
-          
                     OnTokenValidated = async context =>
                     {
-                        var tokenRevoke = context.HttpContext.RequestServices.GetRequiredService<ITokenInvalidationService>();
-                        var accessToken = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-                        if (!string.IsNullOrEmpty(accessToken))
+                        var tokenInvalidation = context.HttpContext.RequestServices.GetRequiredService<ITokenInvalidationService>();
+                        var userManager = context.HttpContext.RequestServices.GetRequiredService<UserManager<User>>();
+
+                        // Extract raw token (needed because your invalidation service parses JWT again)
+                        var authHeader = context.Request.Headers.Authorization.ToString();
+                        var accessToken = authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase)
+                            ? authHeader["Bearer ".Length..].Trim()
+                            : authHeader.Trim();
+
+                        if (string.IsNullOrWhiteSpace(accessToken))
                         {
-                            var revoked = await tokenRevoke.IsAccessTokenRevoked(accessToken);
-                            if (revoked)
-                                context.Fail("Token has been revoked.");
+                            context.Fail("Missing token.");
+                            return;
+                        }
+
+                        // 1) JTI blacklist check (uses CustomClaimTypes.Jti in your fixed service)
+                        if (await tokenInvalidation.IsAccessTokenRevoked(accessToken))
+                        {
+                            context.Fail("Token has been revoked.");
+                            return;
+                        }
+
+                        // 2) SessionVersion enforcement (makes logout SessionVersion++ actually work)
+                        var userId = context.Principal?.FindFirstValue(CustomClaimTypes.UserId);
+                        if (string.IsNullOrWhiteSpace(userId))
+                        {
+                            context.Fail("Invalid token (missing user id).");
+                            return;
+                        }
+
+                        var user = await userManager.FindByIdAsync(userId);
+                        if (user == null)
+                        {
+                            context.Fail("User not found.");
+                            return;
+                        }
+
+                        if (!tokenInvalidation.ValidateSessionVersion(accessToken, user))
+                        {
+                            context.Fail("Session expired.");
+                            return;
                         }
                     }
                 };
