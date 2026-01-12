@@ -129,11 +129,12 @@ namespace Trace.Registrations
                             return;
                         }
 
-                        if (!tokenInvalidation.ValidateSessionVersion(accessToken, user))
+                        if (!tokenInvalidation.ValidateSessionVersion(context.Principal, user))
                         {
                             context.Fail("Session expired.");
                             return;
                         }
+
                     }
                 };
             });

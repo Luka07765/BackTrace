@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using Trace.Models.Account;
 
 namespace Trace.Service.Auth.Token.Phase3_Logout.InvalidateToken
@@ -74,22 +75,10 @@ namespace Trace.Service.Auth.Token.Phase3_Logout.InvalidateToken
             return !string.IsNullOrEmpty(revoked);
         }
 
-        public bool ValidateSessionVersion(string token, User user)
+        public bool ValidateSessionVersion(ClaimsPrincipal principal, User user)
         {
-            var handler = new JwtSecurityTokenHandler();
-
-            JwtSecurityToken jwtToken;
-            try
-            {
-                jwtToken = handler.ReadJwtToken(token);
-            }
-            catch
-            {
-                return false;
-            }
-
-            var sessionVersionClaim = jwtToken.Claims
-                .FirstOrDefault(c => c.Type == CustomClaimTypes.SessionVersion)?.Value;
+            var sessionVersionClaim = principal
+                .FindFirst(CustomClaimTypes.SessionVersion)?.Value;
 
             if (!int.TryParse(sessionVersionClaim, out var tokenSessionVersion))
                 return false;
@@ -97,15 +86,7 @@ namespace Trace.Service.Auth.Token.Phase3_Logout.InvalidateToken
             return tokenSessionVersion == user.SessionVersion;
         }
 
-        public async Task<bool> IsAccessTokenValid(string token, User user)
-        {
-            if (await IsAccessTokenRevoked(token))
-                return false;
 
-            if (!ValidateSessionVersion(token, user))
-                return false;
 
-            return true;
-        }
     }
 }
