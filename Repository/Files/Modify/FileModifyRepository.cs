@@ -181,7 +181,8 @@ namespace Trace.Repository.Files.Modify
             return true;
         }
 
-        // 2️⃣ Restore
+
+        //The restore method it will have move kada opet radis restore seti se da ima move i restore lokacija.
         public async Task<bool> RestoreFileAsync(Guid fileId)
         {
             var file = await _context.Files
