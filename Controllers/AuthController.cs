@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Trace.DTO.Auth;
 using Trace.Models.Account;
+using Trace.Service.Auth;
 using Trace.Service.Auth.GeneralAuth;
 using Trace.Service.Auth.Token.Phase1_AccessToken;
 using Trace.Service.Auth.Token.Phase2_RefreshToken.Refresh;
@@ -45,7 +46,7 @@ namespace Jade.Controllers
             _logger = logger; 
         }
 
-   
+
 
 
 
@@ -55,35 +56,23 @@ namespace Jade.Controllers
         [HttpGet("ValidateToken")]
         public async Task<IActionResult> ValidateToken()
         {
-            try
-            {
-                var userId = User.FindFirstValue("CustomUserId"); // Access custom claim "CustomUserId"
-                var sessionVersionInToken = User.FindFirstValue("CustomSessionVersion");
+            var userId = User.FindFirstValue(CustomClaimTypes.UserId);
+            var sessionVersionInToken = User.FindFirstValue(CustomClaimTypes.SessionVersion);
 
-                if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(sessionVersionInToken))
-                {
-                    return Unauthorized(new { message = "Token is invalid or missing claims." });
-                }
+            if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(sessionVersionInToken))
+                return Unauthorized(new { message = "Token missing required claims." });
 
-                // Retrieve user from database by ID
-                var user = await _userManager.FindByIdAsync(userId);
-                if (user == null)
-                {
-                    return NotFound(new { message = "User not found." });
-                }
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return Unauthorized(new { message = "User not found." });
 
-                if (user.SessionVersion.ToString() != sessionVersionInToken)
-                {
-                    return Unauthorized(new { message = "User has logged off. Token is invalid." });
-                }
+            if (!int.TryParse(sessionVersionInToken, out var tokenSessionVersion))
+                return Unauthorized(new { message = "Invalid session version." });
 
-                // Token is valid
-                return Ok(new { message = "Token is valid.", userId });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "An error occurred while validating the token.", error = ex.Message });
-            }
+            if (user.SessionVersion != tokenSessionVersion)
+                return Unauthorized(new { message = "Session expired." });
+
+            return Ok(new { message = "Token is valid.", userId });
         }
 
 

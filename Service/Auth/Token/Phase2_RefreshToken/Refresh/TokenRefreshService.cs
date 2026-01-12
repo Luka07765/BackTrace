@@ -53,8 +53,11 @@ namespace Trace.Service.Auth.Token.Phase2_RefreshToken.Refresh
             if (refreshToken == null)
                 return null;
 
-            if (refreshToken.Expires < DateTime.UtcNow || refreshToken.Revoked != null)
+            if (refreshToken.Expires < DateTime.UtcNow ||
+     refreshToken.Revoked != null ||
+     refreshToken.ReplacedByToken != null)
                 return null;
+
 
             var user = refreshToken.User;
             if (user == null || refreshToken.UserId != user.Id || refreshToken.SessionVersion != user.SessionVersion)

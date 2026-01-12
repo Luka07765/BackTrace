@@ -99,6 +99,8 @@ namespace Trace.Registrations
                             ? authHeader["Bearer ".Length..].Trim()
                             : authHeader.Trim();
 
+
+
                         if (string.IsNullOrWhiteSpace(accessToken))
                         {
                             context.Fail("Missing token.");

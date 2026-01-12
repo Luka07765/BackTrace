@@ -4,7 +4,7 @@ namespace Trace.Controllers.Auth
 
     using Microsoft.AspNetCore.Mvc;
     using Trace.Models.Account;
-
+    using Microsoft.AspNetCore.Identity;
     using Trace.Service.Auth.Token.Phase1_AccessToken;
     using Trace.Service.Auth.Token.Phase4_Rotation;
 
@@ -14,14 +14,18 @@ namespace Trace.Controllers.Auth
     {
         private readonly ITokenRotationService _rotationService;
         private readonly IAccessTokenService _accessService;
+        private readonly UserManager<User> _userManager;
 
         public RefreshController(
             ITokenRotationService rotationService,
-            IAccessTokenService accessService)
+            IAccessTokenService accessService,
+            UserManager<User> userManager)
         {
             _rotationService = rotationService;
             _accessService = accessService;
+            _userManager = userManager;
         }
+
 
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh()
@@ -41,12 +45,12 @@ namespace Trace.Controllers.Auth
 
             var userId = newRefresh.UserId;
 
-            // Access token needs user — get minimal user object
-            var user = new User
+            var user = await _userManager.FindByIdAsync(newRefresh.UserId);
+            if (user == null || user.SessionVersion != newRefresh.SessionVersion)
             {
-                Id = userId,
-                SessionVersion = newRefresh.SessionVersion
-            };
+                Response.Cookies.Delete("refreshToken");
+                return Unauthorized();
+            }
 
             var newAccess = await _accessService.CreateAccessToken(user);
 
