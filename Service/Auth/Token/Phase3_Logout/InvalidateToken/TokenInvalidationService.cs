@@ -15,14 +15,11 @@ namespace Trace.Service.Auth.Token.Phase3_Logout.InvalidateToken
             _logger = logger;
         }
 
-
-
-
         public async Task RevokeAccessToken(string token)
         {
             var handler = new JwtSecurityTokenHandler();
-            JwtSecurityToken jwtToken = null;
 
+            JwtSecurityToken jwtToken;
             try
             {
                 jwtToken = handler.ReadJwtToken(token);
@@ -33,27 +30,28 @@ namespace Trace.Service.Auth.Token.Phase3_Logout.InvalidateToken
                 return;
             }
 
-            var jti = jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti)?.Value;
-            if (string.IsNullOrEmpty(jti))
+            var jti = jwtToken.Claims
+                .FirstOrDefault(c => c.Type == CustomClaimTypes.Jti)?.Value;
+
+            if (string.IsNullOrWhiteSpace(jti))
             {
-                _logger.LogWarning("JTI not found in token, unable to revoke.");
+                _logger.LogWarning("Custom JTI not found in token, unable to revoke.");
                 return;
             }
 
             var options = new DistributedCacheEntryOptions
             {
-                AbsoluteExpiration = jwtToken.ValidTo
+                AbsoluteExpiration = new DateTimeOffset(jwtToken.ValidTo)
             };
 
             await _cache.SetStringAsync($"tokens:revoked:jti:{jti}", "true", options);
-            _logger.LogInformation("Token with JTI {JTI} has been revoked.", jti);
         }
 
         public async Task<bool> IsAccessTokenRevoked(string token)
         {
             var handler = new JwtSecurityTokenHandler();
-            JwtSecurityToken jwtToken = null;
 
+            JwtSecurityToken jwtToken;
             try
             {
                 jwtToken = handler.ReadJwtToken(token);
@@ -66,21 +64,21 @@ namespace Trace.Service.Auth.Token.Phase3_Logout.InvalidateToken
             if (jwtToken.ValidTo < DateTime.UtcNow)
                 return true;
 
-            var jti = jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti)?.Value;
-            if (!string.IsNullOrEmpty(jti))
-            {
-                var revoked = await _cache.GetStringAsync($"tokens:revoked:jti:{jti}");
-                return !string.IsNullOrEmpty(revoked);
-            }
+            var jti = jwtToken.Claims
+                .FirstOrDefault(c => c.Type == CustomClaimTypes.Jti)?.Value;
 
-            return false;
+            if (string.IsNullOrWhiteSpace(jti))
+                return true;
+
+            var revoked = await _cache.GetStringAsync($"tokens:revoked:jti:{jti}");
+            return !string.IsNullOrEmpty(revoked);
         }
 
-        public async Task<bool> ValidateSessionVersion(string token, User user)
+        public bool ValidateSessionVersion(string token, User user)
         {
             var handler = new JwtSecurityTokenHandler();
-            JwtSecurityToken jwtToken = null;
 
+            JwtSecurityToken jwtToken;
             try
             {
                 jwtToken = handler.ReadJwtToken(token);
@@ -93,10 +91,10 @@ namespace Trace.Service.Auth.Token.Phase3_Logout.InvalidateToken
             var sessionVersionClaim = jwtToken.Claims
                 .FirstOrDefault(c => c.Type == CustomClaimTypes.SessionVersion)?.Value;
 
-            if (int.TryParse(sessionVersionClaim, out var tokenSessionVersion))
-                return tokenSessionVersion == user.SessionVersion;
+            if (!int.TryParse(sessionVersionClaim, out var tokenSessionVersion))
+                return false;
 
-            return false;
+            return tokenSessionVersion == user.SessionVersion;
         }
 
         public async Task<bool> IsAccessTokenValid(string token, User user)
@@ -104,7 +102,7 @@ namespace Trace.Service.Auth.Token.Phase3_Logout.InvalidateToken
             if (await IsAccessTokenRevoked(token))
                 return false;
 
-            if (!await ValidateSessionVersion(token, user))
+            if (!ValidateSessionVersion(token, user))
                 return false;
 
             return true;
