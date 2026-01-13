@@ -5,7 +5,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Caching.Distributed;
     using System.Security.Claims;
-    using Trace.DTO;
+    using Trace.DTO.Profile;
     using Trace.Models.Account;
     using Trace.Service.Auth;
     using Trace.Service.Profile;
