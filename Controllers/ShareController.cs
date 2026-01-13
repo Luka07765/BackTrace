@@ -58,7 +58,7 @@ namespace Trace.Controllers
 
             var now = DateTime.UtcNow;
 
-            // bug fix: if expired or missing token, generate a new one
+      
             var isExpired = file.ShareExpiresAt != null && file.ShareExpiresAt < now;
             if (string.IsNullOrWhiteSpace(file.ShareToken) || isExpired)
             {
@@ -66,7 +66,7 @@ namespace Trace.Controllers
             }
 
             file.IsShared = true;
-            file.ShareExpiresAt = now.AddDays(1); // keep your behavior
+            file.ShareExpiresAt = now.AddDays(1);
 
             await _context.SaveChangesAsync();
 
