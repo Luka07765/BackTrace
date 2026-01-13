@@ -82,17 +82,14 @@ namespace Trace.Controllers
         [HttpGet("public/{token}")]
         public async Task<IActionResult> GetSharedFile(string token)
         {
-            var normalizedToken = token.Trim().ToUpper();
+            var normalizedToken = (token ?? string.Empty).Trim().ToUpper();
 
             if (normalizedToken.Length == 0)
                 return NotFound();
 
     
-                var file = await _context.Files
-        .FirstOrDefaultAsync(f =>
-            f.IsShared &&
-            f.ShareToken != null &&
-            f.ShareToken.Equals(normalizedToken, StringComparison.OrdinalIgnoreCase));
+            var file = await _context.Files
+                .FirstOrDefaultAsync(f => f.IsShared && f.ShareToken == normalizedToken);
 
             if (file == null)
                 return NotFound();
