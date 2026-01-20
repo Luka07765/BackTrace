@@ -1,13 +1,14 @@
 ﻿
-using Microsoft.AspNetCore.Identity;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats.Webp;
-using SixLabors.ImageSharp.Processing;
-using Supabase;
-using Trace.Models.Account;
+
 
 namespace Trace.Service.Profile
 {
+    using Microsoft.AspNetCore.Identity;
+    using SixLabors.ImageSharp;
+    using SixLabors.ImageSharp.Formats.Webp;
+    using SixLabors.ImageSharp.Processing;
+    using Supabase;
+    using Trace.Models.Account;
 
     public class ProfileService : IProfileService
     {

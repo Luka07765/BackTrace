@@ -1,4 +1,4 @@
-﻿namespace Trace.DTO
+﻿namespace Trace.DTO.Profile
 {
     public class UploadAvatarRequest
     {
