@@ -5191,11 +5191,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Projects\\Back_Trace\\Trace.csproj",
+      "projectUniqueName": "D:\\Projects\\trace\\back_trace\\Trace.csproj",
       "projectName": "Trace",
-      "projectPath": "D:\\Projects\\Back_Trace\\Trace.csproj",
+      "projectPath": "D:\\Projects\\trace\\back_trace\\Trace.csproj",
       "packagesPath": "C:\\Users\\ACER\\.nuget\\packages\\",
-      "outputPath": "D:\\Projects\\Back_Trace\\obj\\",
+      "outputPath": "D:\\Projects\\trace\\back_trace\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

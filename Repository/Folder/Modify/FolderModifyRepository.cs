@@ -43,8 +43,8 @@ namespace Trace.Repository.Folder.Modify
             if (input.IconId.HasValue)
                 folder.IconId = input.IconId.Value;
 
-            if (input.ParentFolderId.HasValue)
-                folder.ParentFolderId = input.ParentFolderId.Value;
+            folder.ParentFolderId = input.ParentFolderId;
+
 
             var newParentId = folder.ParentFolderId;
 

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "E0mCkliqkOg=",
+  "dgSpecHash": "SFLDftejJe4=",
   "success": true,
-  "projectFilePath": "D:\\Projects\\Back_Trace\\Trace.csproj",
+  "projectFilePath": "D:\\Projects\\trace\\back_trace\\Trace.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ACER\\.nuget\\packages\\bananacakepop.middleware\\13.0.0\\bananacakepop.middleware.13.0.0.nupkg.sha512",
     "C:\\Users\\ACER\\.nuget\\packages\\dapper\\2.1.35\\dapper.2.1.35.nupkg.sha512",
@@ -120,9 +120,9 @@
       "code": "NU1603",
       "level": "Warning",
       "message": "Trace depends on HotChocolate.AspNetCore (>= 13.8.5) but HotChocolate.AspNetCore 13.8.5 was not found. HotChocolate.AspNetCore 13.9.0 was resolved instead.",
-      "projectPath": "D:\\Projects\\Back_Trace\\Trace.csproj",
+      "projectPath": "D:\\Projects\\trace\\back_trace\\Trace.csproj",
       "warningLevel": 1,
-      "filePath": "D:\\Projects\\Back_Trace\\Trace.csproj",
+      "filePath": "D:\\Projects\\trace\\back_trace\\Trace.csproj",
       "libraryId": "HotChocolate.AspNetCore",
       "targetGraphs": [
         "net8.0"
@@ -132,9 +132,9 @@
       "code": "NU1603",
       "level": "Warning",
       "message": "Trace depends on HotChocolate.Data (>= 13.8.5) but HotChocolate.Data 13.8.5 was not found. HotChocolate.Data 13.9.0 was resolved instead.",
-      "projectPath": "D:\\Projects\\Back_Trace\\Trace.csproj",
+      "projectPath": "D:\\Projects\\trace\\back_trace\\Trace.csproj",
       "warningLevel": 1,
-      "filePath": "D:\\Projects\\Back_Trace\\Trace.csproj",
+      "filePath": "D:\\Projects\\trace\\back_trace\\Trace.csproj",
       "libraryId": "HotChocolate.Data",
       "targetGraphs": [
         "net8.0"
@@ -144,9 +144,9 @@
       "code": "NU1603",
       "level": "Warning",
       "message": "Trace depends on HotChocolate.Execution (>= 13.8.5) but HotChocolate.Execution 13.8.5 was not found. HotChocolate.Execution 13.9.0 was resolved instead.",
-      "projectPath": "D:\\Projects\\Back_Trace\\Trace.csproj",
+      "projectPath": "D:\\Projects\\trace\\back_trace\\Trace.csproj",
       "warningLevel": 1,
-      "filePath": "D:\\Projects\\Back_Trace\\Trace.csproj",
+      "filePath": "D:\\Projects\\trace\\back_trace\\Trace.csproj",
       "libraryId": "HotChocolate.Execution",
       "targetGraphs": [
         "net8.0"
@@ -156,9 +156,9 @@
       "code": "NU1603",
       "level": "Warning",
       "message": "Trace depends on HotChocolate.Subscriptions (>= 13.8.5) but HotChocolate.Subscriptions 13.8.5 was not found. HotChocolate.Subscriptions 13.9.0 was resolved instead.",
-      "projectPath": "D:\\Projects\\Back_Trace\\Trace.csproj",
+      "projectPath": "D:\\Projects\\trace\\back_trace\\Trace.csproj",
       "warningLevel": 1,
-      "filePath": "D:\\Projects\\Back_Trace\\Trace.csproj",
+      "filePath": "D:\\Projects\\trace\\back_trace\\Trace.csproj",
       "libraryId": "HotChocolate.Subscriptions",
       "targetGraphs": [
         "net8.0"
@@ -168,9 +168,9 @@
       "code": "NU1603",
       "level": "Warning",
       "message": "Trace depends on HotChocolate.Types (>= 13.8.5) but HotChocolate.Types 13.8.5 was not found. HotChocolate.Types 13.9.0 was resolved instead.",
-      "projectPath": "D:\\Projects\\Back_Trace\\Trace.csproj",
+      "projectPath": "D:\\Projects\\trace\\back_trace\\Trace.csproj",
       "warningLevel": 1,
-      "filePath": "D:\\Projects\\Back_Trace\\Trace.csproj",
+      "filePath": "D:\\Projects\\trace\\back_trace\\Trace.csproj",
       "libraryId": "HotChocolate.Types",
       "targetGraphs": [
         "net8.0"
