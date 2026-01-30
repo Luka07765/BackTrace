@@ -37,35 +37,43 @@ namespace Trace.Repository.Folder.Modify
 
             var oldParentId = folder.ParentFolderId;
 
+            // ---- scalar updates ----
             if (input.Title != null)
                 folder.Title = input.Title;
 
             if (input.IconId.HasValue)
                 folder.IconId = input.IconId.Value;
 
-            folder.ParentFolderId = input.ParentFolderId;
+            if (input.DomainId.HasValue)
+                folder.DomainId = input.DomainId.Value;
 
+            // ---- parent update (no restrictions) ----
+            if (input.ParentFolderId.HasValue || input.ParentFolderId == null)
+                folder.ParentFolderId = input.ParentFolderId;
 
             var newParentId = folder.ParentFolderId;
 
-          
+            // ---- reconcile only if parent actually changed ----
             if (oldParentId != newParentId)
             {
-          
                 if (oldParentId.HasValue)
                 {
-                    var oldAncestors = await _colorRepository.GetAncestorChainAsync(oldParentId.Value);
+                    var oldAncestors =
+                        await _colorRepository.GetAncestorChainAsync(oldParentId.Value);
 
                     foreach (var ancestor in oldAncestors)
                     {
-                        ancestor.RedCount = Math.Max(0, ancestor.RedCount - folder.RedCount);
-                        ancestor.YellowCount = Math.Max(0, ancestor.YellowCount - folder.YellowCount);
+                        ancestor.RedCount =
+                            Math.Max(0, ancestor.RedCount - folder.RedCount);
+                        ancestor.YellowCount =
+                            Math.Max(0, ancestor.YellowCount - folder.YellowCount);
                     }
                 }
 
                 if (newParentId.HasValue)
                 {
-                    var newAncestors = await _colorRepository.GetAncestorChainAsync(newParentId.Value);
+                    var newAncestors =
+                        await _colorRepository.GetAncestorChainAsync(newParentId.Value);
 
                     foreach (var ancestor in newAncestors)
                     {
@@ -78,8 +86,6 @@ namespace Trace.Repository.Folder.Modify
             await _context.SaveChangesAsync();
             return folder;
         }
-
-
 
 
 
