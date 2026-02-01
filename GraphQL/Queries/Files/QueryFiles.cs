@@ -58,5 +58,23 @@
 
             return await fileQueryService.GetFileTrashedAsync(userId);
         }
+
+
+        [Authorize]
+        [GraphQLName("getFilesByRole")]
+        public async Task<List<File>> GetFilesByRole(
+    Guid roleId,
+    [Service] IFileQueryService fileQueryService,
+    ClaimsPrincipal user)
+        {
+            var userId = user.FindFirstValue("CustomUserId");
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
+            }
+
+            return await fileQueryService.GetFilesByRoleAsync(roleId, userId);
+        }
+
     }
 }

@@ -24,8 +24,8 @@ namespace Trace.Models.Data
 
         public Guid? RoleId { get; set; }
         public Role? Role { get; set; }
-        public Guid FolderId { get; set; }
-        public Folder Folder { get; set; }
+        public Guid? FolderId { get; set; }
+        public Folder? Folder { get; set; }
         public string Colors { get; set; } = "[]";
         public bool IsShared { get; set; } = false;
 

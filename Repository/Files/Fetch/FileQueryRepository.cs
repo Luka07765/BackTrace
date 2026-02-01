@@ -50,5 +50,19 @@ namespace Trace.Repository.Files.Fetch
                 .ToListAsync();
         }
 
+        public async Task<List<File>> GetFilesByRoleAsync(Guid roleId, string userId)
+        {
+            return await _context.Files
+                .Where(f =>
+                    f.UserId == userId &&
+                    f.RoleId == roleId &&
+                    f.DeletedAt == null
+                )
+                .Include(f => f.TagAssignments)
+                 .ThenInclude(ta => ta.Tag)
+                .ToListAsync();
+        }
+
+
     }
 }

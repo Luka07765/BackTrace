@@ -41,7 +41,7 @@
         }
 
         private static List<BreadcrumbItemDto> BuildBreadcrumbs(
-            Guid startFolderId,
+            Guid? startFolderId,
             Dictionary<Guid, Folder> folderMap)
         {
             var list = new List<BreadcrumbItemDto>();

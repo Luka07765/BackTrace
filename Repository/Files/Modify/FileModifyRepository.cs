@@ -69,11 +69,17 @@ namespace Trace.Repository.Files.Modify
 
                     if (colorChanged || folderChanged)
                     {
-                        var oldAncestors = await _colorRepository.GetAncestorChainAsync(oldFolderId);
+                        var oldAncestors = oldFolderId.HasValue
+             ? await _colorRepository.GetAncestorChainAsync(oldFolderId.Value)
+             : new List<Folder>();
+
                         var newAncestors =
                             oldFolderId == newFolderId
                                 ? oldAncestors
-                                : await _colorRepository.GetAncestorChainAsync(newFolderId);
+                                : newFolderId.HasValue
+                                    ? await _colorRepository.GetAncestorChainAsync(newFolderId.Value)
+                                    : new List<Folder>();
+
 
                         void ApplyDelta(IEnumerable<Folder> folders, string color, int delta)
                         {
@@ -142,9 +148,10 @@ namespace Trace.Repository.Files.Modify
                     var color = file.Colors;
                     var folderId = file.FolderId;
 
-                    if (color is "Red" or "Yellow")
+                    if (color is "Red" or "Yellow" && folderId.HasValue)
                     {
-                        var ancestors = await _colorRepository.GetAncestorChainAsync(folderId);
+                        var ancestors =
+                            await _colorRepository.GetAncestorChainAsync(folderId.Value);
 
                         foreach (var folder in ancestors)
                         {
@@ -154,6 +161,7 @@ namespace Trace.Repository.Files.Modify
                                 folder.YellowCount = Math.Max(0, folder.YellowCount - 1);
                         }
                     }
+
 
                     _context.Files.Remove(file);
                     await _context.SaveChangesAsync();

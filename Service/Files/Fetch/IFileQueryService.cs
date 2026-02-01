@@ -11,5 +11,8 @@
         Task<File> GetFileByIdAsync(Guid id, string userId);
 
         Task<List<File>> GetFileTrashedAsync(string userId);
+
+        Task<List<File>> GetFilesByRoleAsync(Guid roleId, string userId);
+
     }
 }

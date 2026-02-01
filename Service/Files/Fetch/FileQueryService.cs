@@ -28,6 +28,10 @@ namespace Trace.Service.Files.Fetch
         {
             return await _fileQueryRepository.GetFileTrashedAsync(userId);
         }
+        public async Task<List<File>> GetFilesByRoleAsync(Guid roleId, string userId)
+        {
+            return await _fileQueryRepository.GetFilesByRoleAsync(roleId, userId);
+        }
 
     }
 }

@@ -7,7 +7,7 @@ namespace Trace.GraphQL.Inputs
         public Guid? Id { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
-        public Guid FolderId { get; set; }
+        public Guid? FolderId { get; set; }
         public string Colors { get; set; } = "Green";
 
         public int FilePosition { get; set; }
