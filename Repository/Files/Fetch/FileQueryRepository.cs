@@ -7,7 +7,8 @@ namespace Trace.Repository.Files.Fetch
     using System.Linq;
     using System.Threading.Tasks;
     using Trace.Data;
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
+
     using Npgsql;
     using Microsoft.Extensions.Configuration;
     public class FileQueryRepository : IFileQueryRepository

@@ -2,7 +2,8 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
+
     public interface IFileQueryRepository
     {
         Task<IEnumerable<File>> GetAllFilesAsync(string userId);

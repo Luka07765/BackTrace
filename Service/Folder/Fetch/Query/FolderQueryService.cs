@@ -3,7 +3,8 @@
 namespace Trace.Service.Folder.Fetch.Query
 {
     using Trace.Data;
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
+
     using Trace.Repository.Folder.Fetch.Query;
 
     public class FolderQueryService : IFolderQueryService

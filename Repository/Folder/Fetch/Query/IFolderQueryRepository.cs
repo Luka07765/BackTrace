@@ -2,7 +2,8 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
+
     public interface IFolderQueryRepository
     {
         Task<IEnumerable<Folder>> GetAllFoldersAsync(string userId);

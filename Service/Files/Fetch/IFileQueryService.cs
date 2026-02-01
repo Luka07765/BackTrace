@@ -3,7 +3,8 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
+
     public interface IFileQueryService
     {
         Task<IEnumerable<File>> GetAllFilesAsync(string userId);

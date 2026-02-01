@@ -3,7 +3,8 @@ namespace Trace.Service.Files.Fetch
 {
     using Trace.Repository.Files.Fetch;
 
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
+
     public class FileQueryService : IFileQueryService
     {
         private readonly IFileQueryRepository _fileQueryRepository;

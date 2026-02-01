@@ -3,7 +3,8 @@
     using Microsoft.EntityFrameworkCore;
     using System;
     using Trace.Data;
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
+
     using Trace.Models.TagSystem;
 
     public class TagRepository : ITagRepository

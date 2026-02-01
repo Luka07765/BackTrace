@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Trace.Models.Account;
 using Trace.Models.TagSystem;
 
-namespace Trace.Models.Logic
+namespace Trace.Models.Data
 {
     public class File
     // Represents a file in the system
@@ -21,7 +21,8 @@ namespace Trace.Models.Logic
         public string UserId { get; set; }
         public User User { get; set; }
 
-       
+        public Guid? RoleId { get; set; }
+        public Role? Role { get; set; }
         public Guid FolderId { get; set; }
         public Folder Folder { get; set; }
         public string Colors { get; set; } = "[]";

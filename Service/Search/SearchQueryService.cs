@@ -3,7 +3,8 @@
     using Microsoft.EntityFrameworkCore;
     using Trace.Data;
     using Trace.DTO;
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
+
 
     public class SearchQueryService : ISearchQueryService
     {

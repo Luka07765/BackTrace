@@ -3,7 +3,8 @@ namespace Trace.Repository.Domain.Fetch
 {
     using Microsoft.EntityFrameworkCore;
     using Trace.Data;
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
+
     public class DomainQueryRepository : IDomainQueryRepository
     {
         private readonly ApplicationDbContext _context;

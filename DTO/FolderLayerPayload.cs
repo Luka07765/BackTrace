@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 namespace Trace.DTO
 {
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
+
 
     public class FolderLayerPayload
     {

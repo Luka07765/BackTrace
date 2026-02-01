@@ -112,6 +112,16 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "Trace.Controllers.RolesController",
+    "Method": "Get",
+    "RelativePath": "api/roles",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Trace.Controllers.ShareController",
     "Method": "RevokeShare",
     "RelativePath": "api/share/{fileId}",

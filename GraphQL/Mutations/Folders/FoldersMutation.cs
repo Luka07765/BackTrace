@@ -5,7 +5,8 @@
     using System.Security.Claims;
     using System.Threading.Tasks;
     using Trace.GraphQL.Inputs;
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
+
 
     using Trace.Service.Folder.Modify;
 

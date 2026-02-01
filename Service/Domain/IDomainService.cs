@@ -1,7 +1,8 @@
 ﻿namespace Trace.Service.Domain
 {
     using System.Threading.Tasks;
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
+
     public interface IDomainService
     {
         Task<List<Domain>> GetDomains(string userId);

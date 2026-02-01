@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Trace.Models.Logic;
+using Trace.Models.Data;
+
 
 namespace Trace.Data.Configurations
 {

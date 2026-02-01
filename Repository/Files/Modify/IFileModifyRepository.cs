@@ -2,7 +2,8 @@
 {
     using System.Threading.Tasks;
     using Trace.GraphQL.Inputs;
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
+
     public interface IFileModifyRepository
     {
         Task<File> CreateFileAsync(File file);

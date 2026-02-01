@@ -6,7 +6,8 @@ namespace Trace.GraphQL.Queries.Tag
     using HotChocolate;
     using HotChocolate.Authorization;
     using System.Security.Claims;
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
+
     using Trace.Service.Tag;
     using Trace.Models.TagSystem;
     using Trace.Service.Folder;

@@ -1,13 +1,14 @@
 ﻿namespace Trace.Data;
 
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Trace.Data.Configurations;
-using Trace.DTO;
+
+using Trace.Data.Seeds;
+
 using Trace.Models.Account;
 using Trace.Models.Auth;
-using Trace.Models.Logic;
+using Trace.Models.Data;
+
 using Trace.Models.TagSystem;
 
 public class ApplicationDbContext : IdentityDbContext<User>
@@ -23,6 +24,7 @@ public class ApplicationDbContext : IdentityDbContext<User>
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Tag> Tag{ get; set; }    
     public DbSet<TagAssignment> TagAssignments { get; set; }
+    public DbSet<Role> Roles { get; set; }
 
     public DbSet<Domain> Domains { get; set; }
 
@@ -32,7 +34,9 @@ public class ApplicationDbContext : IdentityDbContext<User>
         base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<User>().ToTable("AspNetUsers");
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
-    
+        modelBuilder.Entity<Role>()
+             .HasData(RoleSeed.Get());
+
 
     }
 }

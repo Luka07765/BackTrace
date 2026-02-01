@@ -5,7 +5,8 @@ namespace Trace.Repository.Folder.Modify
     using Microsoft.EntityFrameworkCore;
     using Trace.Data;
     using Trace.GraphQL.Inputs;
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
+
     using Trace.Repository.Color;
 
     public class FolderModifyRepository : IFolderModifyRepository

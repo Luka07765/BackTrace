@@ -4,7 +4,7 @@ namespace Trace.Repository.Domain
 {
     using Microsoft.EntityFrameworkCore;
     using Trace.Data;
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
     public class DomainRepository : IDomainRepository
     {
         private readonly ApplicationDbContext _context;

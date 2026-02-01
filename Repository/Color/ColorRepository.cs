@@ -7,7 +7,8 @@ namespace Trace.Repository.Color
     using Microsoft.EntityFrameworkCore;
     using Trace.Data;
     using Trace.GraphQL.Inputs;
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
+
     public class ColorRepository : IColorRepository
     {
         private readonly ApplicationDbContext _context;

@@ -5,7 +5,8 @@
     using HotChocolate;
     using HotChocolate.Authorization;
     using System.Security.Claims;
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
+
     using Trace.Service.Domain;
 
     [ExtendObjectType(Name = "Mutation")]

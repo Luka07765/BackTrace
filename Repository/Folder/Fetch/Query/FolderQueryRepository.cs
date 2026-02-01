@@ -6,7 +6,8 @@ namespace Trace.Repository.Folder.Fetch.Query
     using Microsoft.EntityFrameworkCore;
     using System.Threading.Tasks;
     using Trace.Data;
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
+
 
 
     public class FolderQueryRepository: IFolderQueryRepository

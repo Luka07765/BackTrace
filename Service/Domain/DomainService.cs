@@ -4,7 +4,7 @@ namespace Trace.Service.Domain
     using Trace.Repository.Domain;
 
     using System.Threading.Tasks;
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
 
     public class DomainService : IDomainService
     {

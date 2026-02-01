@@ -1,7 +1,8 @@
 ﻿
 namespace Trace.Repository.Color
 {
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
+
     public interface IColorRepository
     {
         Task<List<Folder>> GetAncestorChainAsync(Guid folderId);

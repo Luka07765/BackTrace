@@ -1,7 +1,8 @@
 ﻿namespace Trace.Repository.Domain
 {
     using System.Threading.Tasks;
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
+
 
 
     public interface IDomainRepository

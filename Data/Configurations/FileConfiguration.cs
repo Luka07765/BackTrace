@@ -2,7 +2,8 @@
 {
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
+
     public class FileConfiguration : IEntityTypeConfiguration<File>
     {
         public void Configure(EntityTypeBuilder<File> entity)

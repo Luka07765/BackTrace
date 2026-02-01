@@ -5,7 +5,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Trace.DTO;
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
 
     public interface IFolderProgressiveService
     {

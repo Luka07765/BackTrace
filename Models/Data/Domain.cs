@@ -1,6 +1,6 @@
 ﻿using Trace.Models.Account;
 
-namespace Trace.Models.Logic
+namespace Trace.Models.Data
 {
     public class Domain
     {

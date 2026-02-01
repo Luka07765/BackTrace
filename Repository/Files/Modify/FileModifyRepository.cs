@@ -9,7 +9,8 @@ namespace Trace.Repository.Files.Modify
     using Trace.Data;
     using Trace.DTO;
     using Trace.GraphQL.Inputs;
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
+
     using Trace.Repository.Color;
 
     public class FileModifyRepository : IFileModifyRepository

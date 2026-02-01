@@ -1,7 +1,8 @@
 ﻿namespace Trace.Service.Tag
 {
     using Trace.Models.TagSystem;
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
+
     using Trace.Repository.TagSystem.Tag;
 
     public class TagService : ITagService

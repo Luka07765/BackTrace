@@ -2,8 +2,9 @@
 namespace Trace.Service.Files.Modify
 {
     using Trace.GraphQL.Inputs;
-    using Trace.Models.Logic;
-  
+    using Trace.Models.Data;
+
+
     using Trace.Repository.Files.Modify;
 
     public class FileModifyService : IFileModifyService

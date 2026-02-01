@@ -1,7 +1,8 @@
 ﻿namespace Trace.Repository.Folder.Modify
 {
     using System.Threading.Tasks;
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
+
     using Trace.GraphQL.Inputs; 
 
     public interface IFolderModifyRepository

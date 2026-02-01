@@ -9,7 +9,8 @@ namespace Trace.Service.Folder.Fetch.Progressive
     using System.Threading;
     using System.Threading.Tasks;
     using Trace.DTO;
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
+
 
     using Trace.Repository.Folder.Fetch.Progressive;
 

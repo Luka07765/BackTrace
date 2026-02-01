@@ -6,7 +6,8 @@ namespace Trace.GraphQL.Queries.Folders
     using HotChocolate;
     using HotChocolate.Authorization;
     using System.Security.Claims;
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
+
     using Trace.Service.Folder.Fetch.Query;
 
 

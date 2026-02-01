@@ -7,7 +7,8 @@ namespace Trace.Service.Folder.Modify
     using Trace.Data;
     using Trace.GraphQL.Inputs;
 
-    using Trace.Models.Logic;
+    using Trace.Models.Data;
+
     using Trace.Repository.Files.Modify;
     using Trace.Repository.Folder.Modify;
 
