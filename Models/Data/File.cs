@@ -7,6 +7,7 @@ using Trace.Models.TagSystem;
 namespace Trace.Models.Logic
 {
     public class File
+    // Represents a file in the system
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)] 
