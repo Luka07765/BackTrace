@@ -1,4 +1,6 @@
-﻿namespace Trace.GraphQL.Inputs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Trace.GraphQL.Inputs
 {
     public class CreateFileInput
     {
@@ -11,6 +13,9 @@
         public int FilePosition { get; set; }
 
         public int IconId { get; set; }
+
+        [Required]
+        public Guid RoleId { get; set; }
     }
 
     public class UpdateFileInput

@@ -15,11 +15,7 @@ namespace Trace.Models.Data
         public User User { get; set; }
 
 
-        // Hierarchy
-
-        public Guid? DomainId { get; set; }
-        public Domain Domain { get; set; }
-
+ 
 
         public Guid? ParentFolderId { get; set; }
         public Folder ParentFolder { get; set; }

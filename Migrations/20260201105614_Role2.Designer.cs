@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Trace.Data;
@@ -11,9 +12,11 @@ using Trace.Data;
 namespace Trace.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260201105614_Role2")]
+    partial class Role2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -306,6 +309,28 @@ namespace Trace.Migrations
                     b.ToTable("RefreshTokens");
                 });
 
+            modelBuilder.Entity("Trace.Models.Data.Domain", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "Title");
+
+                    b.ToTable("Domains", (string)null);
+                });
+
             modelBuilder.Entity("Trace.Models.Data.File", b =>
                 {
                     b.Property<Guid>("Id")
@@ -318,9 +343,6 @@ namespace Trace.Migrations
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone");
@@ -360,9 +382,6 @@ namespace Trace.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("text");
@@ -382,6 +401,9 @@ namespace Trace.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("DomainId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("FolderPosition")
@@ -408,6 +430,8 @@ namespace Trace.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DomainId");
 
                     b.HasIndex("ParentFolderId");
 
@@ -549,6 +573,17 @@ namespace Trace.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Trace.Models.Data.Domain", b =>
+                {
+                    b.HasOne("Trace.Models.Account.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Trace.Models.Data.File", b =>
                 {
                     b.HasOne("Trace.Models.Data.Folder", "Folder")
@@ -576,6 +611,11 @@ namespace Trace.Migrations
 
             modelBuilder.Entity("Trace.Models.Data.Folder", b =>
                 {
+                    b.HasOne("Trace.Models.Data.Domain", "Domain")
+                        .WithMany("RootFolders")
+                        .HasForeignKey("DomainId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("Trace.Models.Data.Folder", "ParentFolder")
                         .WithMany("SubFolders")
                         .HasForeignKey("ParentFolderId")
@@ -586,6 +626,8 @@ namespace Trace.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Domain");
 
                     b.Navigation("ParentFolder");
 
@@ -620,6 +662,11 @@ namespace Trace.Migrations
                     b.Navigation("File");
 
                     b.Navigation("Tag");
+                });
+
+            modelBuilder.Entity("Trace.Models.Data.Domain", b =>
+                {
+                    b.Navigation("RootFolders");
                 });
 
             modelBuilder.Entity("Trace.Models.Data.File", b =>

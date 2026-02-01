@@ -18,7 +18,7 @@ namespace Trace.Service.Files.Modify
         }
         public async Task<File> CreateFileAsync(CreateFileInput input, string userId)
         {
-    
+            var now = DateTime.UtcNow;
             var file = new File
             {
               Id = input.Id.HasValue && input.Id.Value != Guid.Empty
@@ -31,7 +31,10 @@ namespace Trace.Service.Files.Modify
                 UserId = userId,
                 Colors = input.Colors ?? "Green",
                 FilePosition = input.FilePosition,
-                IconId = input.IconId == 0 ? 1 : input.IconId 
+                IconId = input.IconId == 0 ? 1 : input.IconId,
+               RoleId = input.RoleId,
+                CreatedAt = now,
+                UpdatedAt = now
             };
 
 

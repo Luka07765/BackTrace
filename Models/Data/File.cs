@@ -15,6 +15,7 @@ namespace Trace.Models.Data
         public string Title { get; set; }
         public string Content { get; set; }
 
+
         [Timestamp]                
         public byte[] RowVersion { get; set; } = default!;
 
@@ -32,6 +33,8 @@ namespace Trace.Models.Data
         public string? ShareToken { get; set; }
         public DateTime? ShareExpiresAt { get; set; }
 
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
         public int? FilePosition { get; set; }
 
         public DateTime? DeletedAt { get; set; }

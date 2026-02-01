@@ -92,6 +92,7 @@ namespace Trace.Repository.Files.Modify
                         if (newColor is "Red" or "Yellow")
                             ApplyDelta(newAncestors, newColor, +1);
                     }
+                    file.UpdatedAt = DateTime.UtcNow;
 
                     await _context.SaveChangesAsync();
                     return file;
@@ -112,6 +113,12 @@ namespace Trace.Repository.Files.Modify
         }
         public async Task<File> CreateFileAsync(File file)
         {
+
+            var roleExists = await _context.Roles
+        .AnyAsync(r => r.Id == file.RoleId);
+
+            if (!roleExists)
+                throw new InvalidOperationException("Invalid RoleId");
             _context.Files.Add(file);
             await _context.SaveChangesAsync();
             return file;
