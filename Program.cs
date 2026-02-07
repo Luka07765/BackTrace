@@ -1,4 +1,4 @@
-﻿using Supabase;
+﻿
 using Trace.Registrations;
 
 
@@ -29,17 +29,6 @@ builder.Services.Register_QueryAndModify();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSingleton(provider =>
-{
-    return new Supabase.Client(
-        builder.Configuration["Supabase:Url"],
-        builder.Configuration["Supabase:ServiceKey"],
-        new SupabaseOptions
-        {
-            AutoConnectRealtime = false
-        }
-    );
-});
 
 
 
