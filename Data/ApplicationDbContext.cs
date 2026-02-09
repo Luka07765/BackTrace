@@ -24,7 +24,7 @@ public class ApplicationDbContext : IdentityDbContext<User>
     public DbSet<Tag> Tag{ get; set; }    
     public DbSet<TagAssignment> TagAssignments { get; set; }
 
-    public DbSet<Domain> Domains { get; set; }
+    
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

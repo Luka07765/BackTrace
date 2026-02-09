@@ -51,13 +51,7 @@ namespace Trace.Service.Folder.Modify
             if (string.IsNullOrWhiteSpace(input.Title))
                 throw new ArgumentException("Mora da ima naziv foldera.");
 
-            bool isRoot = input.ParentFolderId == null;
-
-            if (isRoot && input.DomainId == null)
-                throw new ArgumentException("Root folder must belong to a domain.");
-
-            if (!isRoot && input.DomainId != null)
-                throw new ArgumentException("Sub folder must not have domain.");
+     
 
             var folder = new Folder
             {
@@ -66,8 +60,7 @@ namespace Trace.Service.Folder.Modify
                     : Guid.NewGuid(),
 
                 Title = input.Title,
-                DomainId = isRoot ? input.DomainId : null,
-                ParentFolderId = isRoot ? null : input.ParentFolderId,
+                ParentFolderId = input.ParentFolderId,
                 UserId = userId,
                 IconId = input.IconId ?? 1
             };

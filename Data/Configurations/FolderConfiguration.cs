@@ -19,10 +19,6 @@ namespace Trace.Data.Configurations
                   .OnDelete(DeleteBehavior.Cascade);
 
 
-            entity.HasOne(f => f.Domain)
-           .WithMany(d => d.RootFolders)
-           .HasForeignKey(f => f.DomainId)
-           .OnDelete(DeleteBehavior.SetNull);
 
         }
 

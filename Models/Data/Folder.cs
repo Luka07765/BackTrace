@@ -17,9 +17,7 @@ namespace Trace.Models.Logic
 
         // Hierarchy
 
-        public Guid? DomainId { get; set; }
-        public Domain Domain { get; set; }
-
+   
 
         public Guid? ParentFolderId { get; set; }
         public Folder ParentFolder { get; set; }

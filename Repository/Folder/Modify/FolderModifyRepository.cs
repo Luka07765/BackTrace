@@ -44,9 +44,7 @@ namespace Trace.Repository.Folder.Modify
             if (input.IconId.HasValue)
                 folder.IconId = input.IconId.Value;
 
-            if (input.DomainId.HasValue)
-                folder.DomainId = input.DomainId.Value;
-
+          
             // ---- parent update (no restrictions) ----
             if (input.ParentFolderId.HasValue || input.ParentFolderId == null)
                 folder.ParentFolderId = input.ParentFolderId;
