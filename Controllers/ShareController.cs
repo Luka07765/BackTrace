@@ -66,7 +66,7 @@ namespace Trace.Controllers
             }
 
             file.IsShared = true;
-            file.ShareExpiresAt = now.AddDays(1);
+            file.ShareExpiresAt = now.AddDays(7);
 
             await _context.SaveChangesAsync();
 
