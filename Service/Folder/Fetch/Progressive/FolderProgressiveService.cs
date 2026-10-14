@@ -1,98 +1,80 @@
-﻿
-
-namespace Trace.Service.Folder.Fetch.Progressive
+﻿namespace Trace.Service.Folder.Fetch.Progressive
 {
-    using Microsoft.Extensions.Logging;
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.CompilerServices;
     using System.Threading;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Logging;
     using Trace.DTO;
     using Trace.Models.Logic;
-
     using Trace.Repository.Folder.Fetch.Progressive;
 
     public class FolderProgressiveService : IFolderProgressiveService
     {
+        // Hard stop in case the data is broken in a way the cycle guard can't catch.
+        private const int MaxDepth = 64;
+
         private readonly IFolderProgressiveRepository _repo;
         private readonly ILogger<FolderProgressiveService> _logger;
-       
 
         public FolderProgressiveService(
             IFolderProgressiveRepository repo,
-           
             ILogger<FolderProgressiveService> logger)
         {
             _repo = repo;
             _logger = logger;
-     
         }
 
-        public Task<(List<Folder> SubFolders, List<File> Files)> GetContentsAsync(Guid folderId, string userId)
-            => _repo.GetContentsAsync(folderId, userId);
+        public Task<(List<Folder> SubFolders, List<File> Files)> GetContentsAsync(
+            Guid folderId, string userId, CancellationToken cancellationToken = default)
+            => _repo.GetContentsAsync(folderId, userId, cancellationToken);
 
+        // Breadth-first: layer 1 = direct children of the root, layer 2 = their children, ...
+        // Each layer is sent to the client as soon as it's fetched (one repository call per layer).
         public async IAsyncEnumerable<FolderLayerPayload> StreamFolderHierarchyAsync(
             Guid rootFolderId,
             string userId,
             [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
-        
-            var (subFolders, files) = await _repo.GetContentsAsync(rootFolderId, userId);
+            var visited = new HashSet<Guid> { rootFolderId };
+            var currentIds = new List<Guid> { rootFolderId };
+            var depth = 0;
 
-
-            subFolders = subFolders
-                  .Where(f => f.Id != rootFolderId)
-                  .ToList();
-
-            files = files
-                  .Where(f => f.DeletedAt == null)
-                  .ToList();
-
-            if (!subFolders.Any() && !files.Any())
-                yield break;
-
-            int depth = 1;
-            yield return new FolderLayerPayload(depth, subFolders, files);
-
-            var currentLayer = subFolders;
-
-            // Iterate safely (strictly sequential, no concurrent DB calls)
-            while (currentLayer.Any() && !cancellationToken.IsCancellationRequested)
+            while (currentIds.Count > 0)
             {
-                var nextLayer = new List<Folder>();
-                var nextLayerFiles = new List<File>();
+                cancellationToken.ThrowIfCancellationRequested();
 
-                foreach (var folder in currentLayer)
+                if (depth >= MaxDepth)
                 {
-                    if (cancellationToken.IsCancellationRequested)
-                        yield break;
-
-                    // 👇 Sequentially await each repository call
-                    var contents = await _repo.GetContentsAsync(folder.Id, userId);
-                    var childSubFolders = contents.SubFolders;
-                    var childFiles = contents.Files
-                       .Where(f => f.DeletedAt == null)
-                       .ToList();
-
-                    childSubFolders = childSubFolders.Where(f => f.Id != rootFolderId).ToList();
-
-                    folder.SubFolders = childSubFolders;
-                    folder.Files = childFiles;
-
-                    nextLayer.AddRange(childSubFolders);
-                    nextLayerFiles.AddRange(childFiles);
+                    _logger.LogWarning(
+                        "Folder hierarchy for {RootFolderId} exceeded max depth {MaxDepth}; stopping stream.",
+                        rootFolderId, MaxDepth);
+                    yield break;
                 }
 
-                if (!nextLayer.Any() && !nextLayerFiles.Any())
+                var (subFolders, files) = await _repo.GetChildrenAsync(currentIds, userId, cancellationToken);
+
+                // Cycle guard: skip any folder we've already sent.
+                var newFolders = new List<Folder>(subFolders.Count);
+                foreach (var folder in subFolders)
+                {
+                    if (visited.Add(folder.Id))
+                        newFolders.Add(folder);
+                    else
+                        _logger.LogWarning(
+                            "Cycle in folder tree of {RootFolderId}: folder {FolderId} seen twice.",
+                            rootFolderId, folder.Id);
+                }
+
+                if (newFolders.Count == 0 && files.Count == 0)
                     yield break;
 
                 depth++;
-                yield return new FolderLayerPayload(depth, nextLayer, nextLayerFiles);
+                yield return new FolderLayerPayload(depth, newFolders, files);
 
-                //await Task.Delay(5000, cancellationToken);
-
-                currentLayer = nextLayer;
+                currentIds = newFolders.Select(f => f.Id).ToList();
             }
         }
     }

@@ -9,7 +9,8 @@
 
     public interface IFolderProgressiveService
     {
-        Task<(List<Folder> SubFolders, List<File> Files)> GetContentsAsync(Guid folderId, string userId);
+        Task<(List<Folder> SubFolders, List<File> Files)> GetContentsAsync(
+            Guid folderId, string userId, CancellationToken cancellationToken = default);
 
         IAsyncEnumerable<FolderLayerPayload> StreamFolderHierarchyAsync(
             Guid rootFolderId,
@@ -17,5 +18,3 @@
             CancellationToken cancellationToken = default);
     }
 }
-
-

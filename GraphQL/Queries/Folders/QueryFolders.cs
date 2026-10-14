@@ -1,65 +1,42 @@
-﻿
-namespace Trace.GraphQL.Queries.Folders
+﻿namespace Trace.GraphQL.Queries.Folders
 {
+    using System;
     using System.Collections.Generic;
+    using System.Security.Claims;
+    using System.Threading;
     using System.Threading.Tasks;
     using HotChocolate;
     using HotChocolate.Authorization;
-    using System.Security.Claims;
+    using HotChocolate.Types;
     using Trace.Models.Logic;
     using Trace.Service.Folder.Fetch.Query;
-
 
     [ExtendObjectType("Query")]
     public class QueryFolders
     {
         [Authorize]
         [GraphQLName("getFolders")]
-        public async Task<IEnumerable<Folder>> GetFolders(
+        public Task<IEnumerable<Folder>> GetFolders(
             [Service] IFolderQueryService folderQueryService,
-            ClaimsPrincipal user)
-        {
-            var userId = user.FindFirstValue("CustomUserId");
-            if (string.IsNullOrEmpty(userId))
-            {
-                throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
-            }
-
-            return await folderQueryService.GetAllFoldersAsync(userId);
-        }
+            ClaimsPrincipal user,
+            CancellationToken cancellationToken)
+            => folderQueryService.GetAllFoldersAsync(user.GetRequiredUserId(), cancellationToken);
 
         [Authorize]
         [GraphQLName("getFolderById")]
-        public async Task<Folder> GetFolderById(
+        public Task<Folder?> GetFolderById(
             Guid id,
             [Service] IFolderQueryService folderQueryService,
-            ClaimsPrincipal user)
-        {
-            var userId = user.FindFirstValue("CustomUserId");
-            if (string.IsNullOrEmpty(userId))
-            {
-                throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
-            }
-
-            return await folderQueryService.GetFolderByIdAsync(id, userId);
-        }
-
-
-
+            ClaimsPrincipal user,
+            CancellationToken cancellationToken)
+            => folderQueryService.GetFolderByIdAsync(id, user.GetRequiredUserId(), cancellationToken);
 
         [Authorize]
         [GraphQLName("getRootFolders")]
-        public async Task<IEnumerable<Folder>> GetRootFolders(
-    [Service] IFolderQueryService folderQueryService,
-    ClaimsPrincipal user)
-        {
-            var userId = user.FindFirstValue("CustomUserId");
-            if (string.IsNullOrEmpty(userId))
-            {
-                throw new GraphQLException(new Error("User ID not found in claims", "UNAUTHORIZED"));
-            }
-
-            return await folderQueryService.GetRootFoldersAsync(userId);
-        }
+        public Task<IEnumerable<Folder>> GetRootFolders(
+            [Service] IFolderQueryService folderQueryService,
+            ClaimsPrincipal user,
+            CancellationToken cancellationToken)
+            => folderQueryService.GetRootFoldersAsync(user.GetRequiredUserId(), cancellationToken);
     }
 }

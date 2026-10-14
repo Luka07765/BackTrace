@@ -1,53 +1,53 @@
-﻿
-namespace Trace.Repository.Files.Fetch
+﻿namespace Trace.Repository.Files.Fetch
 {
-    using Microsoft.EntityFrameworkCore;
-    using Dapper;
+    using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
+    using Microsoft.EntityFrameworkCore;
     using Trace.Data;
     using Trace.Models.Logic;
-    using Npgsql;
-    using Microsoft.Extensions.Configuration;
+
     public class FileQueryRepository : IFileQueryRepository
     {
         private readonly ApplicationDbContext _context;
 
-        public FileQueryRepository(ApplicationDbContext context, IConfiguration configuration)
+        public FileQueryRepository(ApplicationDbContext context)
         {
             _context = context;
-
         }
 
-
-        public async Task<IEnumerable<File>> GetAllFilesAsync(string userId)
+        public async Task<IEnumerable<File>> GetAllFilesAsync(string userId, CancellationToken ct = default)
         {
             return await _context.Files
-                .Where(f => f.UserId == userId)
-                 .Include(f => f.TagAssignments)
-                .ThenInclude(ta => ta.Tag)
-                .ToListAsync();
+                .AsNoTracking()
+                .Where(f => f.UserId == userId && f.DeletedAt == null)
+                .Include(f => f.TagAssignments)
+                    .ThenInclude(ta => ta.Tag)
+                .AsSplitQuery()
+                .ToListAsync(ct);
         }
 
-
-     
-        public async Task<File> GetFileByIdAsync(Guid id, string userId)
+        public Task<File?> GetFileByIdAsync(Guid id, string userId, bool includeTrashed = false, CancellationToken ct = default)
         {
-            return await _context.Files
-                .Include(f => f.TagAssignments)       
-                .ThenInclude(ta => ta.Tag)     
-                .FirstOrDefaultAsync(f => f.Id == id && f.UserId == userId);
+            return _context.Files
+                .AsNoTracking()
+                .Where(f => f.Id == id && f.UserId == userId)
+                .Where(f => includeTrashed || f.DeletedAt == null)
+                .Include(f => f.TagAssignments)
+                    .ThenInclude(ta => ta.Tag)
+                .AsSplitQuery()
+                .FirstOrDefaultAsync(ct);
         }
 
-
-        public async Task<List<File>> GetFileTrashedAsync(string userId)
+        public Task<List<File>> GetFileTrashedAsync(string userId, CancellationToken ct = default)
         {
-            return await _context.Files
+            return _context.Files
+                .AsNoTracking()
                 .Where(f => f.UserId == userId && f.DeletedAt != null)
                 .OrderByDescending(f => f.DeletedAt)
-                .ToListAsync();
+                .ToListAsync(ct);
         }
-
     }
 }

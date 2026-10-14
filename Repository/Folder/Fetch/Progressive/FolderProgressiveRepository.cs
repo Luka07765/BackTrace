@@ -1,7 +1,11 @@
 ﻿namespace Trace.Repository.Folder.Fetch.Progressive
 {
-    using Microsoft.EntityFrameworkCore;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
+    using Microsoft.EntityFrameworkCore;
     using Trace.Data;
     using Trace.Models.Logic;
 
@@ -14,27 +18,33 @@
             _contextFactory = contextFactory;
         }
 
-        public async Task<(List<Folder> SubFolders, List<File> Files)> GetContentsAsync(Guid folderId, string userId)
+        public Task<(List<Folder> SubFolders, List<File> Files)> GetContentsAsync(
+            Guid folderId, string userId, CancellationToken ct = default)
+            => GetChildrenAsync(new[] { folderId }, userId, ct);
+
+        // All children of a whole layer: 2 queries on 1 connection, however many folders are in the layer.
+        public async Task<(List<Folder> SubFolders, List<File> Files)> GetChildrenAsync(
+            IReadOnlyCollection<Guid> parentFolderIds, string userId, CancellationToken ct = default)
         {
-            // each query gets its own context instance
-            await using var context1 = _contextFactory.CreateDbContext();
-            await using var context2 = _contextFactory.CreateDbContext();
+            if (parentFolderIds.Count == 0)
+                return (new List<Folder>(), new List<File>());
 
-            var subFoldersTask = context1.Folders
+            // Guid? so Contains works whether FolderId / ParentFolderId are nullable or not.
+            var ids = parentFolderIds.Select(id => (Guid?)id).ToList();
+
+            await using var context = await _contextFactory.CreateDbContextAsync(ct);
+
+            var subFolders = await context.Folders
                 .AsNoTracking()
-                .Where(f => f.ParentFolderId == folderId && f.UserId == userId)
-                .ToListAsync();
+                .Where(f => f.UserId == userId && ids.Contains(f.ParentFolderId))
+                .ToListAsync(ct);
 
-            var filesTask = context2.Files
+            var files = await context.Files
                 .AsNoTracking()
-                .Where(file => file.FolderId == folderId && file.UserId == userId)
-                .ToListAsync();
+                .Where(f => f.UserId == userId && f.DeletedAt == null && ids.Contains(f.FolderId))
+                .ToListAsync(ct);
 
-            await Task.WhenAll(subFoldersTask, filesTask);
-
-            return (await subFoldersTask, await filesTask);
+            return (subFolders, files);
         }
-
     }
-
 }

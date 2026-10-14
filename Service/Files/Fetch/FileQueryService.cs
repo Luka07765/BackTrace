@@ -1,32 +1,28 @@
-﻿
-namespace Trace.Service.Files.Fetch
+﻿namespace Trace.Service.Files.Fetch
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Trace.Models.Logic;
     using Trace.Repository.Files.Fetch;
 
-    using Trace.Models.Logic;
     public class FileQueryService : IFileQueryService
     {
         private readonly IFileQueryRepository _fileQueryRepository;
 
-        public FileQueryService(IFileQueryRepository fileRepository)
+        public FileQueryService(IFileQueryRepository fileQueryRepository)
         {
-            _fileQueryRepository = fileRepository;
+            _fileQueryRepository = fileQueryRepository;
         }
 
-        public async Task<IEnumerable<File>> GetAllFilesAsync(string userId)
-        {
-            return await _fileQueryRepository.GetAllFilesAsync(userId);
-        }
+        public Task<IEnumerable<File>> GetAllFilesAsync(string userId, CancellationToken ct = default)
+            => _fileQueryRepository.GetAllFilesAsync(userId, ct);
 
-        public async Task<File> GetFileByIdAsync(Guid id, string userId)
-        {
-            return await _fileQueryRepository.GetFileByIdAsync(id, userId);
-        }
+        public Task<File?> GetFileByIdAsync(Guid id, string userId, bool includeTrashed = false, CancellationToken ct = default)
+            => _fileQueryRepository.GetFileByIdAsync(id, userId, includeTrashed, ct);
 
-        public async Task<List<File>> GetFileTrashedAsync(string userId)
-        {
-            return await _fileQueryRepository.GetFileTrashedAsync(userId);
-        }
-
+        public Task<List<File>> GetFileTrashedAsync(string userId, CancellationToken ct = default)
+            => _fileQueryRepository.GetFileTrashedAsync(userId, ct);
     }
 }

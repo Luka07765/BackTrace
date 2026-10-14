@@ -1,44 +1,27 @@
-﻿
-namespace Trace.GraphQL.Subscriptions
+﻿namespace Trace.GraphQL.Subscriptions
 {
-    using Trace.DTO;
-
-    using System.Runtime.CompilerServices;
+    using System;
+    using System.Collections.Generic;
     using System.Security.Claims;
+    using System.Threading;
+    using HotChocolate;
+    using HotChocolate.Types;
+    using Trace.DTO;
     using Trace.Service.Folder.Fetch.Progressive;
 
     public class FolderSubscription
     {
-        private readonly IFolderProgressiveService _folderProgressiveService;
-
-        public FolderSubscription(IFolderProgressiveService folderProgressiveService)
-        {
-            _folderProgressiveService = folderProgressiveService;
-        }
         [GraphQLName("getProgressive")]
-        [SubscribeAndResolve] // ✅ use this instead of [Subscribe]
-        public async IAsyncEnumerable<FolderLayerPayload> FolderProgressiveAsync(
+        [SubscribeAndResolve]
+        public IAsyncEnumerable<FolderLayerPayload> FolderProgressiveAsync(
             Guid folderId,
             ClaimsPrincipal user,
-            [EnumeratorCancellation] CancellationToken cancellationToken)
+            [Service] IFolderProgressiveService folderProgressiveService,
+            CancellationToken cancellationToken)
         {
-            var userId = user.FindFirstValue("CustomUserId");
+            var userId = user.GetRequiredUserId();
 
-            Console.WriteLine($"🟡 Subscription START for folder {folderId}, userId = {userId}");
-
-
-            if (string.IsNullOrEmpty(userId))
-            {
-                Console.WriteLine("❌ No userId in token, stopping stream.");
-                yield break;
-            }
-
-
-            await foreach (var layer in _folderProgressiveService.StreamFolderHierarchyAsync(folderId, userId, cancellationToken))
-            {
-                yield return layer;
-            }
+            return folderProgressiveService.StreamFolderHierarchyAsync(folderId, userId, cancellationToken);
         }
     }
-
 }
